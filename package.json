@@ -1,0 +1,24 @@
+{
+  "name": "react-outline",
+  "version": "0.0.0",
+  "description": "react styling framework to keep your makeup clean",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codemeasandwich/react-outline.git"
+  },
+  "keywords": [
+    "react",
+    "inline",
+    "styles"
+  ],
+  "author": "Brian Shannon (http://www.codemeasandwich.com)",
+  "license": "Apache-2.0 ",
+  "bugs": {
+    "url": "https://github.com/codemeasandwich/react-outline/issues"
+  },
+  "homepage": "https://github.com/codemeasandwich/react-outline#readme"
+}
