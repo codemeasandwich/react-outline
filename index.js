@@ -1,7 +1,13 @@
+//import autoprefixer from 'autoprefixer';
+//import postcssJs      from 'postcss-js';
+//const prefixer = postcssJs.sync([ autoprefixer ]);
+import Prefixer from 'inline-style-prefixer'
+
+const prefixer = new Prefixer()
 
 function hasKids(obj){
   for(const name in obj){
-    if("style" !== name && "object" === typeof obj[name])
+    if("base" !== name && "object" === typeof obj[name])
     return true
   }
 }
@@ -9,7 +15,7 @@ function hasKids(obj){
 function replacedStyleFn({styleCSS,styleFn,radium},args){
 
     const processedStyles = 1=== styleFn.length ? styleFn(...args) : styleFn(styleCSS,...args);
-    const styleBase = styleCSS && styleCSS.style||styleCSS||{};
+    const styleBase = styleCSS && styleCSS.base||styleCSS||{};
     const autoAddStyles = [], firstVal = args[0];
     if(!!firstVal && "object" === typeof firstVal)
     Object.keys(firstVal).forEach( cssName => {
@@ -28,37 +34,63 @@ function replacedStyleFn({styleCSS,styleFn,radium},args){
     return Object.assign({},styleBase,...autoAddStyles,processedStyles);
 }
 
-const userSetOptions = {}
+const userSetOptions = {/* prefix:getVendorPrefix()*/ }
+
+const replaceColors = (colors,style) =>{
+
+  if(!colors) return style;
+  const result = Object.assign({},style)
+  for(const key in result ){
+    if(result[key] in colors){
+      result[key] = colors[result[key]];
+    }
+  }
+  return result;
+}
+
+const genStyles = (styleStuff, args,colors) =>{
+  const userResult = replacedStyleFn(styleStuff,args);
+  const swapedColor = replaceColors(colors,userResult);
+  const venderSpecificPrefixes = prefixer.prefix(swapedColor);
+
+  return venderSpecificPrefixes;
+}
 
 function wrapStyles(_styles,options,styleCSS){
-  //debugger;
-  console.debug(" FISRT wrapStyles")
-  options = options || userSetOptions;
+
+  options = Object.assign({},userSetOptions,options);
   const radium = !!options.radium;
   const caching = !!options.caching;
-  styleCSS = _styles.style || styleCSS
+  const colors = options.colors;
+  styleCSS = _styles.base || styleCSS
   const replacedStyle = {}
-  if(_styles.style)
-    replacedStyle.style = styleCSS;
+  if(_styles.base)
+    replacedStyle.base = styleCSS;
 
-  Object.keys(_styles).concat(Object.keys(styleCSS))
+  Object.keys(_styles)
+  .concat(Object.keys(styleCSS))
   .filter((item, pos, a)=> a.indexOf(item) === pos )
-  .filter(styleName => "style" !== styleName)
+  .filter(styleName => "base" !== styleName)
   .forEach((styleName)=>{
 
     const styleFn = _styles[styleName]||(()=>{});
-    let cached = { key:"", value:null }
-    replacedStyle[styleName] = (...args) => { console.count("replaced Style, "+styleName);
-//debugger;
-      if(!caching)
-        return replacedStyleFn({styleCSS:styleCSS[styleName],styleFn,radium},args);
+    const cached = { key:"", value:null }
+    replacedStyle[styleName] = (...args) => {
+      //console.count("replaced Style, "+styleName);
+      const styleStuff = { styleCSS:styleCSS[styleName],styleFn,radium };
+
+      if(!caching){
+        return genStyles(styleStuff,args,colors);
+      }
 
       const key = JSON.stringify(args)
-      if(key === cached.key)
+      if(key === cached.key){
         return cached.value;
-        console.count("replaced BUILD, "+styleName);
+      }
+
+      //console.count("replaced BUILD, "+styleName);
       cached.key = key;
-      cached.value = replacedStyleFn({styleCSS:styleCSS[styleName],styleFn,radium},args);
+      cached.value = genStyles(styleStuff,args,colors);
       return cached.value;
   }
 
@@ -71,15 +103,19 @@ function wrapStyles(_styles,options,styleCSS){
 
 export default wrapStyles
 
-export function withOptions(options){
+function withOptions(options){
   if(!options) throw new Error("Bad options values for wrapStyles:"+JSON.stringify(options))
   return (_styles)=>wrapStyles(_styles,options)
 }
 
-export function setOptions(options){
+function setOptions(options){
   if(!options) throw new Error("Bad options values for wrapStyles:"+JSON.stringify(options))
+  //console.log("Object.assign 1",options)
   Object.assign(userSetOptions,options)
+  //console.log("Object.assign 2",userSetOptions)
 }
+
+export { withOptions, setOptions }
 
 /*
 import {setOptions} from 'PS-utils/wrapStyles'
