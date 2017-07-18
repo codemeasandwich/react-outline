@@ -1,3 +1,4 @@
+import React from 'react'
 //import autoprefixer from 'autoprefixer';
 //import postcssJs      from 'postcss-js';
 //const prefixer = postcssJs.sync([ autoprefixer ]);
@@ -17,11 +18,16 @@ function replacedStyleFn({styleCSS,styleFn,radium},args){
     const processedStyles = 1=== styleFn.length ? styleFn(...args) : styleFn(styleCSS,...args);
     const styleBase = styleCSS && styleCSS.base||styleCSS||{};
     const autoAddStyles = [], firstVal = args[0];
-    if(!!firstVal && "object" === typeof firstVal)
-    Object.keys(firstVal).forEach( cssName => {
-      if(true === firstVal[cssName])
-        autoAddStyles.push(styleCSS[cssName])
-    } )
+    //console.log(args)
+    if(!!firstVal && "object" === typeof firstVal){
+        Object.keys(firstVal)
+              .forEach( cssName => {
+          if(true === firstVal[cssName])
+            autoAddStyles.push(styleCSS[cssName])
+        //  else // to bind style value to output obj
+        //    autoAddStyles.push({cssName:firstVal[cssName]})
+        });
+    }
     if(radium){
       if(processedStyles){
         if(Array.isArray(processedStyles))
@@ -75,8 +81,34 @@ function wrapStyles(_styles,options,styleCSS){
 
     const styleFn = _styles[styleName]||(()=>{});
     const cached = { key:"", value:null }
-    replacedStyle[styleName] = (...args) => {
+    replacedStyle[styleName] = function(...args) {
+      let elemName = args[0];
+      if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
+        elemName = elemName[0] || args[1];
+        const thisStyle = replacedStyle[styleName]();
+      //  console.log(styleName,thisStyle,elemName)
+      //  if(styleName === "button")
+      //  debugger;
+        // return <${elemName} ...props />
+        return props => {
+          const elemProps = Object.assign({},props);
+
+          if(props.style){
+            elemProps.style = replacedStyle[styleName](props.style);
+          } else {
+            elemProps.style = thisStyle;
+          }
+
+          if(options.named)
+            elemProps.name = elemProps.name || styleName;
+          return React.createElement(elemName,elemProps)
+        }//,props.children
+      }
+
       //console.count("replaced Style, "+styleName);
+
+      //console.log(arguments, arguments.caller);
+      //debugger;
       const styleStuff = { styleCSS:styleCSS[styleName],styleFn,radium };
 
       if(!caching){
@@ -156,5 +188,10 @@ console.log("styles.table.cell()",styles.table.cell(),styles.table.cell()===styl
 console.log("styles.table.cell.button()",styles.table.cell.button(),styles.table.cell.button()===styles.table.cell.button())
 console.log("styles.table.cell({error:true})",styles.table.cell({error:true}),styles.table.cell({error:true})===styles.table.cell({error:true}))
 console.log("styles.table.row()",styles.table.row(),styles.table.row()===styles.table.row())
+
+const Cell = styles.table.cell`td`
+const MyButton = styles.table.cell.button`${Button}`
+
+ <Cell colSpan="2" style={{error:true}}>
 
 */
