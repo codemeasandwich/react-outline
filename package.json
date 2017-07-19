@@ -1,6 +1,6 @@
 {
   "name": "react-outline",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "react styling framework to keep your makeup clean",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/codemeasandwich/react-outline#readme",
   "dependencies": {
-    "inline-style-prefixer": "^3.0.6",
-    "react": "^15.6.1"
+    "inline-style-prefixer": "^3.0.6"
   }
 }

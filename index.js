@@ -1,7 +1,4 @@
 import React from 'react'
-//import autoprefixer from 'autoprefixer';
-//import postcssJs      from 'postcss-js';
-//const prefixer = postcssJs.sync([ autoprefixer ]);
 import Prefixer from 'inline-style-prefixer'
 
 const prefixer = new Prefixer()
@@ -93,9 +90,7 @@ function wrapStyles(_styles,options,styleCSS){
       if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
         elemName = elemName[0] || args[1];
         const thisStyle = replacedStyle[styleName]();
-      //  console.log(styleName,thisStyle,elemName)
-      //  if(styleName === "button")
-      //  debugger;
+
         // return <${elemName} ...props />
         return props => {
           const elemProps = Object.assign({},props);
@@ -112,10 +107,6 @@ function wrapStyles(_styles,options,styleCSS){
         }//,props.children
       }
 
-      //console.count("replaced Style, "+styleName);
-
-      //console.log(arguments, arguments.caller);
-      //debugger;
       const styleStuff = { styleCSS:styleCSS[styleName],styleFn,radium };
 
       if(!caching){
@@ -127,7 +118,6 @@ function wrapStyles(_styles,options,styleCSS){
         return cached.value;
       }
 
-      //console.count("replaced BUILD, "+styleName);
       cached.key = key;
       cached.value = genStyles(styleStuff,args,colors);
       return cached.value;
@@ -149,56 +139,7 @@ function withOptions(options){
 
 function setOptions(options){
   if(!options) throw new Error("Bad options values for wrapStyles:"+JSON.stringify(options))
-  //console.log("Object.assign 1",options)
   Object.assign(userSetOptions,options)
-  //console.log("Object.assign 2",userSetOptions)
 }
 
 export { withOptions, setOptions }
-
-/*
-import {setOptions} from 'PS-utils/wrapStyles'
-import {wrapStyles} from 'PS-utils'
-setOptions({caching:true})
-//const wrapStyles = wrapStylesWithOptions({radium:true,caching:true});
-//=====================================================
-//============================================== styles
-//=====================================================
-
-let styles = {
-  style : {
-    screen:{ padding:10 },
-    button:{  backgroundColor:"red"  },
-    table:{
-      style: { width: "100%", height: "100%"},
-      row:{ yourboth:"rowrow" },
-      cell:{
-        style: { padding:10 },
-        error:{ color:"red" , padding:20},
-        button:{ backgroundColor:"blur" }
-     }
-    }
-  }
-};
-
-styles.random = ()=>({foo:"bar"})
-styles.table = ()=> {}
-styles.table.row = ()=>({abc:123})
-styles.table.cell = (style,vals)=> (vals && vals.error)?{font:"bold",color:"blue"}:null
-
-styles = wrapStyles(styles)
-
-console.log("styles.screen()",styles.screen(),styles.screen()===styles.screen())
-console.log("styles.table()",styles.table(),styles.table()===styles.table())
-console.log("styles.random()",styles.random(),styles.random()===styles.random())
-console.log("styles.table.cell()",styles.table.cell(),styles.table.cell()===styles.table.cell())
-console.log("styles.table.cell.button()",styles.table.cell.button(),styles.table.cell.button()===styles.table.cell.button())
-console.log("styles.table.cell({error:true})",styles.table.cell({error:true}),styles.table.cell({error:true})===styles.table.cell({error:true}))
-console.log("styles.table.row()",styles.table.row(),styles.table.row()===styles.table.row())
-
-const Cell = styles.table.cell`td`
-const MyButton = styles.table.cell.button`${Button}`
-
- <Cell colSpan="2" style={{error:true}}>
-
-*/
