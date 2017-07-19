@@ -61,6 +61,13 @@ const genStyles = (styleStuff, args,colors) =>{
 
   return venderSpecificPrefixes;
 }
+function topLevelWrapStyles(_styles,options,styleCSS){
+  const wrappedStyles = wrapStyles(_styles,options,styleCSS);
+        wrappedStyles.colors = wrappedStyles.colors
+                            || options        && options.colors
+                            || userSetOptions && userSetOptions.colors;
+  return wrappedStyles;
+}
 
 function wrapStyles(_styles,options,styleCSS){
 
@@ -133,11 +140,11 @@ function wrapStyles(_styles,options,styleCSS){
   return replacedStyle
 }
 
-export default wrapStyles
+export default topLevelWrapStyles
 
 function withOptions(options){
   if(!options) throw new Error("Bad options values for wrapStyles:"+JSON.stringify(options))
-  return (_styles)=>wrapStyles(_styles,options)
+  return (_styles)=>topLevelWrapStyles(_styles,options)
 }
 
 function setOptions(options){
