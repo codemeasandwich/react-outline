@@ -121,7 +121,7 @@ let styles = {
     }    
 }
 
-styles.content = (numberOfCells) => { height : `${numberOfCells.length*100}px` }
+styles.content = (numberOfCells) => { height : `${numberOfCells*100}px` }
 styles.cell = (style,important) => { fontSize : style.fontSize + (important)?5:-5 }
 
 styles = outline(styles);
@@ -147,6 +147,39 @@ return (<div style={styles.content(data.length)}> {
 
 ```
 
+👌 Dont forget! [Generated element](#you-can-combine-attribute-of-a-style-by-using-a-boolean-flag) will have there `style` prop used as the [style function](#redux-outline-also-support-custom-function-to-have-run-time-control-over-your-styles) argument.
+
+```JS
+
+/*
+ Same as above !!
+*/
+
+styles = outline(styles);
+
+const Group = styles.content`div`
+const Cell = styles.cell`span`
+
+export default () => {
+
+const data = [{name:"foo",important:true},
+              {name:"bar",important:false},
+              {name:"cat"}]
+
+return (<Group style={data.length}> {
+            data.map( cellData => <Cell styles={cellData.important}>{cellData.name}</Cell> )
+        } </Group>)
+}
+
+/*
+<div style={{ backgroundColor:"gray", height : "300px" }}>
+  <span style={{ fontSize : 15 }}> foo </span>
+  <span style={{ fontSize : 5 }}>  bar </span>
+  <span style={{ fontSize : 10 }}> cat </span>
+</div>
+*/
+
+```
 ### Setting the options
 
 There three mechanisms

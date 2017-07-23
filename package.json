@@ -12,8 +12,14 @@
   },
   "keywords": [
     "react",
-    "inline",
-    "styles"
+    "css", 
+    "css-in-js", 
+    "react styling",
+    "styled-components",
+    "prefixer",
+    "inline styles",
+    "autoprefixer",
+    "vendor prefix"
   ],
   "author": "Brian Shannon (http://www.codemeasandwich.com)",
   "license": "Apache-2.0 ",
