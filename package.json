@@ -12,8 +12,8 @@
   },
   "keywords": [
     "react",
-    "css", 
-    "css-in-js", 
+    "css",
+    "css-in-js",
     "react styling",
     "styled-components",
     "prefixer",
@@ -28,6 +28,12 @@
   },
   "homepage": "https://github.com/codemeasandwich/react-outline#readme",
   "dependencies": {
+    "add-px-to-style": "^1.0.0",
+    "hyphenate-style-name": "^1.0.2",
     "inline-style-prefixer": "^3.0.6"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
   }
 }

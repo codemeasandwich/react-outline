@@ -1,5 +1,7 @@
 import React from 'preact'
 import { render } from 'preact'
+import {setOptions} from 'react-outline'
+        setOptions({createElement:React.createElement})
 
 import Ui from './ui/index.jsx';
 
