@@ -2,13 +2,15 @@ import Prefixer from 'inline-style-prefixer'
 import addPx from 'add-px-to-style'
 import hyphenate from 'hyphenate-style-name'
 
+const specialCharacters = "@:";
+
 function separateCssStyle(styles){
 
   let css = {}
   let style = {}
-debugger;
+
   for(const name in styles){
-    if(name[0] === "@" || name[0] === ":")
+    if(specialCharacters.includes(name[0]))
         css[name] = styles[name]
     else
         style[name] = styles[name]
@@ -33,7 +35,7 @@ function object2css(obj) {
   for (i = 0; i < len; i++) {
     let key = keys[i]
     let val = obj[key]
-    result += hyphenate(key) + ':' + addPx(key, val)
+    result += hyphenate(key) + ':' + addPx(key, val) +"; "
   }
 
   return result
@@ -65,7 +67,7 @@ function replacedStyleFn({styleCSS,styleFn,radium},args){
 
 
     for(const stylePropName in styleBase){
-      if(stylePropName[0]==="@" || stylePropName[0]===":")
+      if(specialCharacters.includes(stylePropName[0]))
       delete styleBase[stylePropName];
     }
 
@@ -124,6 +126,10 @@ function topLevelWrapStyles(_styles,options,styleCSS){
 
 function wrapStyles(_styles,options,styleCSS){
 
+  if(Array.isArray(_styles)){
+    _styles = Object.assign({},{base:_styles[0]},_styles[1])
+  }
+
   options = Object.assign({},userSetOptions,options);
   const radium = !!options.radium;
   const caching = !!options.caching;
@@ -147,7 +153,14 @@ function wrapStyles(_styles,options,styleCSS){
         elemName = elemName[0] || args[1];
         let inlineStyle = replacedStyle[styleName]();
 
-        const { css, style } = separateCssStyle(styleCSS[styleName].base||styleCSS[styleName]);
+        const baseStyle = styleCSS[styleName].base || {}
+        for(const propN in styleCSS[styleName]){
+          if(specialCharacters.includes(propN[0])){
+            baseStyle[propN] = styleCSS[styleName][propN]
+          }
+        }
+
+        const { css, style } = separateCssStyle(baseStyle);
         /*
         const cssPropNames = Object.keys(styleCSS[styleName])
                                    .filter(stylePropName => stylePropName[0] === "@" ||  stylePropName[0] === ":");
@@ -156,7 +169,7 @@ function wrapStyles(_styles,options,styleCSS){
 
         //if(0 < cssPropNames.length){
         if(css){
-debugger;
+
           randomClassName = "react-outline-"+makeid();
 
           classes[randomClassName] = (style)?`.${randomClassName}{${ object2css(style) }}`:""
@@ -192,7 +205,7 @@ debugger;
             if("" === elemProps.className)
             delete elemProps.className;
 
-          return userSetOptions.createElement(elemName,elemProps)
+          return userSetOptions.createElement(elemName||styleName,elemProps)
         }//,props.children
 
       } // elem gen
