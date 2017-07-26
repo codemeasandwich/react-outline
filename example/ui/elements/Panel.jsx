@@ -2,13 +2,13 @@ import outline from 'react-outline'
 import React  from "preact"
 const css = {
     article:{
-      base:{
-        background:"linear-gradient(to bottom, rgb(26,154,218) 0%,rgb(13,131,190) 100%)",
-        padding: "10px"
-      },
-      ":hover":{
-        background:"linear-gradient(to bottom, rgb(24, 142, 202) 0%,rgb(12, 118, 171) 100%)"
-      }
+         marginBottom: "20px",
+         backgroundColor: "#fff",
+         border: "1px solid transparent",
+         borderRadius: "5px",
+         padding:"15px",
+         boxShadow: "0 1px 1px rgba(0, 0, 0, 0.05)",
+         width: "25%"
     }
 }
 
@@ -16,4 +16,4 @@ const styles = outline([css]);
 
 const Panel = styles.article``
 
-export default (props) => <Panel>{props.text}</Panel>
+export default (props) => <Panel>{props.children}</Panel>

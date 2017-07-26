@@ -248,9 +248,10 @@ function setOptions(options){
   Object.assign(userSetOptions,options)
 }
 
-function Styles(){
- const css = Object.keys(classes).map(className => classes[className] ).join(" ");
-  console.log(css)
+function Styles(props){
+ let css = Object.keys(classes).map(className => classes[className] ).join(" ");
+  css += props.children || "";
+  css = css.replace(/\n/g, ' ').replace(/  +/g, ' ');
   return userSetOptions.createElement("style",{},css)
 }
 /*
