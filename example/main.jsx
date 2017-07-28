@@ -1,5 +1,5 @@
-import React from 'preact'
-import { render } from 'preact'
+import React from 'react'
+import { render } from 'react-dom'
 import {setOptions} from 'react-outline'
         setOptions({createElement:React.createElement})
 

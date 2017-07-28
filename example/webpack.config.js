@@ -23,7 +23,7 @@ var config = {
   ],
   resolve:{
     alias:{
-      'react-outline':__dirname+'/../index.js',
+      'react-outline':__dirname+'/../index.js'
     }
   },
   module:{

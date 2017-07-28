@@ -1,4 +1,4 @@
-import React  from "preact"
+import React  from "react"
 import outline, { Styles } from "react-outline"
 
 import Panel from "./elements/Panel.jsx"

@@ -1,4 +1,4 @@
-import React from 'preact'
+import React from 'react'
 import outline from 'react-outline'
 
 let styles = {

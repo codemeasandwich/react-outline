@@ -1,5 +1,5 @@
 import outline from 'react-outline'
-import React  from "preact"
+import React  from "react"
 const css = {
     article:{
       base:{
