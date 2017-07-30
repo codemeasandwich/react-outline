@@ -1,6 +1,6 @@
 {
   "name": "react-outline",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "react styling framework to keep your makeup clean",
   "main": "index.js",
   "scripts": {
