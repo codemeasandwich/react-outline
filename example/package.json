@@ -4,13 +4,8 @@
   "description": "Example: a utility of managing your inline style",
   "main": "main.jsx",
   "scripts": {
-    "start": "webpack-dev-server",
-    "prod": "npm test && webpack --env=prod --progress --profile --colors",
-    "build": "webpack --env=prod --progress --profile --colors",
-    "test": "jest --no-cache",
-    "test:watch": "jest -- --watch",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "start": "start-storybook -p 6006",
+    "build": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -42,6 +37,8 @@
     "webpack-dev-server": "^2.4.5"
   },
   "devDependencies": {
+    "@kadira/storybook": "^2.21.0",
+    "@storybook/addon-info": "^3.2.0",
     "babel-jest": "^20.0.3",
     "babel-plugin-module-resolver": "^2.7.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -50,7 +47,6 @@
     "enzyme": "^2.8.2",
     "jest": "^20.0.4",
     "react-addons-test-utils": "^15.5.1",
-    "webpack-subresource-integrity": "^1.0.1",
-    "@kadira/storybook": "^2.21.0"
+    "webpack-subresource-integrity": "^1.0.1"
   }
 }
