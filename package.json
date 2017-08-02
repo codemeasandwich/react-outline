@@ -2,9 +2,9 @@
   "name": "react-outline",
   "version": "1.2.0",
   "description": "react styling framework to keep your makeup clean",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel ./index.js --presets babel-preset-es2015 --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,8 @@
     "inline-style-prefixer": "^3.0.6"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1"
   }
