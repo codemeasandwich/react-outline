@@ -118,6 +118,20 @@ const genStyles = (styleStuff, args,colors) =>{
   return venderSpecificPrefixes;
 }
 function topLevelWrapStyles(_styles,options,styleCSS){
+
+    if(Array.isArray(_styles)){
+      _styles = Object.assign({},{base:_styles[0]},_styles[1])
+    } else if(! _styles.base){
+    const styleFunctions = {};
+
+    for(const stylePropName in options){
+      if("function" === typeof options[stylePropName])
+        styleFunctions[stylePropName] = options[stylePropName];
+    }
+
+    _styles = Object.assign({},{base:_styles},styleFunctions)
+  }
+
   const wrappedStyles = wrapStyles(_styles,options,styleCSS);
         wrappedStyles.colors = wrappedStyles.colors
                             || options        && options.colors
@@ -127,9 +141,6 @@ function topLevelWrapStyles(_styles,options,styleCSS){
 
 function wrapStyles(_styles,options,styleCSS){
 
-  if(Array.isArray(_styles)){
-    _styles = Object.assign({},{base:_styles[0]},_styles[1])
-  }
 
   options = Object.assign({},userSetOptions,options);
   const radium = !!options.radium;

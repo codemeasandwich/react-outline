@@ -10,6 +10,7 @@ Thumbs.db
 # Dependency directory
 node_modules
 example/node_modules
+example/storybook-static
 example/dist
 
 # Linter
@@ -21,7 +22,6 @@ linters/
 # compiled output
 /build
 /Release
-/dist
 /dll
 .tmp
 documentation/*.html
