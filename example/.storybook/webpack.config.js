@@ -1,6 +1,8 @@
-
+var path = require("path");
     module.exports = {
-      externals:{
-        'react-outline':__dirname+'/../../index.js'
+      resolve:{
+        alias:{
+          'react-outline$':path.join(__dirname, "../../dist/index.js"),
+        }
       }
     };

@@ -1,14 +1,24 @@
 import React from 'react';
 import outline from 'react-outline'
 import { Styles, setOptions} from 'react-outline'
+    setOptions({caching:true,named:true, createElement:React.createElement})
 
-import * as x from 'react-outline'
-    console.log("outline",outline)
-    console.log("default",outline.default)
-    console.log("Styles",Styles)
-    console.log("setOptions",setOptions)
-        console.log("x",x)
 
+const css = {
+    article:{
+      base:{
+        background:"linear-gradient(to bottom, rgb(26,154,218) 0%,rgb(13,131,190) 100%)",
+        padding: "10px"
+      },
+      ":hover":{
+        background:"linear-gradient(to bottom, rgb(24, 142, 202) 0%,rgb(12, 118, 171) 100%)"
+      }
+    }
+}
+
+const styles = outline([css]);
+
+const Panel = styles.article``
 
 export default class Welcome extends React.Component {
   showApp(e) {
@@ -18,8 +28,17 @@ export default class Welcome extends React.Component {
 
   render() {
     return (<div>
-ddss
-        <h1>Welcome to react-outline</h1>
+      <Styles>{`
+
+      *{
+        font-family: arial,sans-serif;
+      }
+
+      `}</Styles>
+        <span style={styles.article()}>zzyy</span>
+        <Panel>ddss</Panel>
+        <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/>
+        <h1>React-outline is a utility of managing your inline style</h1>
         <h2>
           react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling
         </h2>
@@ -35,6 +54,10 @@ ddss
         <li>Dynamically add vendor prefixes</li>
         <li>Cache calculated style</li>
         </ul>
+        <p> ... </p>
+        <p> ... </p>
+        <p> ... </p>
+        <p> ... </p>
         <p>
           Weve added some basic stories inside the <code >src/stories</code> directory.
           <br/>
