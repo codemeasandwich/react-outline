@@ -2,7 +2,7 @@ import Prefixer from 'inline-style-prefixer'
 import addPx from 'add-px-to-style'
 import hyphenate from 'hyphenate-style-name'
 
-const specialCharacters = "@:";
+const specialCharacters = "@:";//['@',':'].join("");
 
 function separateCssStyle(styles){
 
@@ -50,11 +50,12 @@ function hasKids(obj){
     return true
   }
 }
-function makeid(side = 10) {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < side; i++)
+const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+function makeid(side = 10) {
+  let text = "";
+
+  for (let i = 0; i < side; i++)
     text += possible.charAt(~~(Math.random() * possible.length));
 
   return text;
@@ -150,6 +151,7 @@ function wrapStyles(_styles,options,styleCSS){
     replacedStyle[styleName] = function(...args) {
       let elemName = args[0];
       if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
+
         elemName = elemName[0] || args[1];
         let inlineStyle = replacedStyle[styleName]();
 
@@ -184,7 +186,7 @@ function wrapStyles(_styles,options,styleCSS){
                 return cssString
           } ,classes[randomClassName] )
 
-          inlineStyle = "";
+          inlineStyle = {};
         }
 
         // return <${elemName} ...props />
@@ -233,7 +235,6 @@ function wrapStyles(_styles,options,styleCSS){
   return replacedStyle
 }
 
-export default topLevelWrapStyles
 
 function withOptions(options){
   if(!options) throw new Error("Bad options values for react-outline:"+JSON.stringify(options))
@@ -250,8 +251,8 @@ function setOptions(options){
 
 function Styles(props){
  let css = Object.keys(classes).map(className => classes[className] ).join(" ");
-  css += props.children || "";
-  css = css.replace(/\n/g, ' ').replace(/  +/g, ' ');
+  css += props.children || undefined;
+  css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
   return userSetOptions.createElement("style",{},css)
 }
 /*
@@ -267,4 +268,5 @@ function createElement(...args){
 
 }*/
 
+export default topLevelWrapStyles
 export { withOptions, setOptions, Styles }
