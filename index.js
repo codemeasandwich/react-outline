@@ -61,11 +61,10 @@ function makeid(side = 10) {
   return text;
 }
 
-function replacedStyleFn({styleCSS,styleFn,radium},args){
+function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
 
     const processedStyles = 1=== styleFn.length ? styleFn(...args) : styleFn(styleCSS,...args);
     const styleBase = Object.assign({},styleCSS && styleCSS.base||styleCSS||{})
-
 
     for(const stylePropName in styleBase){
       if(specialCharacters.includes(stylePropName[0]))
@@ -83,7 +82,7 @@ function replacedStyleFn({styleCSS,styleFn,radium},args){
         //    autoAddStyles.push({cssName:firstVal[cssName]})
         });
     }
-    if(radium){
+/*    if(radium){
       if(processedStyles){
         if(Array.isArray(processedStyles))
           return [styleBase,...autoAddStyles,...processedStyles];
@@ -92,6 +91,7 @@ function replacedStyleFn({styleCSS,styleFn,radium},args){
       } // END if(processedStyles)
       return styleBase
     } // END if(radium)
+    */
     return Object.assign({},styleBase,...autoAddStyles,processedStyles);
 }
 
@@ -132,6 +132,8 @@ function topLevelWrapStyles(_styles,options,styleCSS){
     _styles = Object.assign({},{base:_styles},styleFunctions)
   }
 
+  //_styles = deepFreeze(_styles)
+
   const wrappedStyles = wrapStyles(_styles,options,styleCSS);
         wrappedStyles.colors = wrappedStyles.colors
                             || options        && options.colors
@@ -143,7 +145,7 @@ function wrapStyles(_styles,options,styleCSS){
 
 
   options = Object.assign({},userSetOptions,options);
-  const radium = !!options.radium;
+//  const radium = !!options.radium;
   const caching = !!options.caching;
   const colors = options.colors;
   styleCSS = _styles.base || styleCSS
@@ -164,7 +166,7 @@ function wrapStyles(_styles,options,styleCSS){
       if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
 
         elemName = elemName[0] || args[1];
-      //  let inlineStyle = replacedStyle[styleName]();
+        let inlineStyle = replacedStyle[styleName]();
 
         const baseStyle = styleCSS[styleName].base || {}
         for(const propN in styleCSS[styleName]){
@@ -190,14 +192,14 @@ function wrapStyles(_styles,options,styleCSS){
           classes[randomClassName] = Object.keys(css).reduce( (cssString,propName) => {
             const styleContent = object2css(styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
             if(propName[0] === "@")
-                return ` ${propName}{ .${randomClassName}{ ${ styleContent } } } ` + cssString
+                return cssString + ` ${propName}{ .${randomClassName}{ ${ styleContent } } } `
             else if(propName[0] === ":")
                 return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
             else
                 return cssString
           } ,classes[randomClassName] )
 
-      //    inlineStyle = {};
+         inlineStyle = {};
         }
 
         // return <${elemName} ...props />
@@ -211,13 +213,13 @@ function wrapStyles(_styles,options,styleCSS){
         if(0 < passedTrueProps.length)
         passedTrueProps = passedTrueProps.reduce((props, name) => Object.assign(props,{[name]:true}) ,{})
         else
-        passedTrueProps = {}
+        passedTrueProps = null
 
-        //  if(props.style){
+          if(passedTrueProps || props.style){
             elemProps.style = replacedStyle[styleName](Object.assign({},passedTrueProps, props.style));
-        //  } else {
-        //    elemProps.style = inlineStyle;
-        //  }
+          } else {
+            elemProps.style = inlineStyle;
+          }
 
           if(options.named)
             elemProps.name = elemProps.name || styleName;
@@ -232,7 +234,7 @@ function wrapStyles(_styles,options,styleCSS){
 
       } // elem gen
 
-      const styleStuff = { styleCSS:styleCSS[styleName],styleFn,radium };
+      const styleStuff = { styleCSS:styleCSS[styleName],styleFn/*,radium*/ };
 
       if(!caching){
         return genStyles(styleStuff,args,colors);

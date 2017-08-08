@@ -33,9 +33,21 @@ for(const dir in tree){
   const story = storiesOf(dir, module);
   files.forEach( data =>{
     const options = data.options || {}
-    options.text = `~~~js
+    options.text  = (data.info)?`**${data.info}**
+
+---
+` : ""
+    options.text += `~~~js
 ${htmlEscape(data.source)}
       ~~~`
+    if(data.note){
+      options.text += `
+---
+*${data.note}*
+
+---
+`
+    }
     story.add(data.title,withInfo(options)( () => data.element ))
   })
 }
