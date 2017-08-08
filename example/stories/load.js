@@ -8,6 +8,10 @@ import Basic2 from './Basics/UsingTheTagCreater';
 import sourceBasic3 from 'raw-loader!./Basics/ImpliedTags.js?sourceMap';
 import Basic3 from './Basics/ImpliedTags';
 
+import sourceBasic4 from 'raw-loader!./Basics/WrappingAnExistingElement.js?sourceMap';
+import Basic4 from './Basics/WrappingAnExistingElement';
+
+
 import sourceCombine from 'raw-loader!./CombineStyles/CreatingAndApplyingAStyle.js?sourceMap';
 import Combine from './CombineStyles/CreatingAndApplyingAStyle';
 
@@ -53,7 +57,13 @@ const tree = {
       title:'Generate an implied named element',
       source:sourceBasic3,  element:Basic3,
       options: {propTables: false, source: false }
-    }
+    },
+    {
+      title:'Wrapping an existing element',
+      source:sourceBasic4,  element:Basic4,
+      options: {propTables: false, source: false }
+    },
+
   ],
   "Combine styles":[
     {
