@@ -14,14 +14,11 @@ function htmlEscape(str) {
 
 // addon-info
 setDefaults({
-  inline: true,
-  maxPropsIntoLine: 1,
-  maxPropObjectKeys: 10,
-  maxPropArrayLength: 10,
-  maxPropStringLength: 100,
+  inline: true
 });
 
-import Basic from './Basic';
+import tree from './load';
+
 import Button from './Button';
 import Welcome from './Welcome';
 
@@ -29,13 +26,20 @@ storiesOf('Welcome', module)
   .add('to Storybook', () => (
     <Welcome showApp={linkTo('Button')}/>
   ));
-import source from 'raw-loader!./Basic.js?sourceMap';
 
 
-storiesOf('HelloWorld', module)
-  .add('Basic', withInfo(`~~~js
-${htmlEscape(source)}
-    ~~~`)(() => Basic));
+for(const dir in tree){
+  const files = tree[dir];
+  const story = storiesOf(dir, module);
+  files.forEach( data =>{
+    const options = data.options || {}
+    options.text = `~~~js
+${htmlEscape(data.source)}
+      ~~~`
+    story.add(data.title,withInfo(options)( () => data.element ))
+  })
+}
+
 
 storiesOf('Button', module)
  .add('with some emoji',

@@ -8,6 +8,6 @@ let styles = {
 }
 styles = outline(styles);
 
-const BasicElem = <div style={styles.title()}>basic</div>
+const Title = styles.title`div`
 
-export default BasicElem
+export default <Title>basic</Title>
