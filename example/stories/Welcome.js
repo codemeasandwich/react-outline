@@ -3,7 +3,6 @@ import outline from 'react-outline'
 import { Styles, setOptions} from 'react-outline'
     setOptions({caching:true,named:true, createElement:React.createElement})
 
-
 const css = {
     article:{
       base:{
@@ -25,7 +24,7 @@ export default class Welcome extends React.Component {
     e.preventDefault();
     if(this.props.showApp) this.props.showApp();
   }
-
+//   <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/>
   render() {
     return (<div>
       <Styles>{`
@@ -37,7 +36,7 @@ export default class Welcome extends React.Component {
       `}</Styles>
         <span style={styles.article()}>zzyy</span>
         <Panel>ddss</Panel>
-        <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/>
+
         <h1>React-outline is a utility of managing your inline style</h1>
         <h2>
           react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling
@@ -58,6 +57,7 @@ export default class Welcome extends React.Component {
         <p> ... </p>
         <p> ... </p>
         <p> ... </p>
+
         <p>
           Weve added some basic stories inside the <code >src/stories</code> directory.
           <br/>
