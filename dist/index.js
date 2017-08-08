@@ -21,6 +21,8 @@ var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var specialCharacters = "@:"; //['@',':'].join("");
@@ -178,7 +180,7 @@ function wrapStyles(_styles, options, styleCSS) {
       if (Array.isArray(elemName) && elemName.hasOwnProperty("raw")) {
 
         elemName = elemName[0] || args[1];
-        var inlineStyle = replacedStyle[styleName]();
+        //  let inlineStyle = replacedStyle[styleName]();
 
         var baseStyle = styleCSS[styleName].base || {};
         for (var propN in styleCSS[styleName]) {
@@ -210,18 +212,27 @@ function wrapStyles(_styles, options, styleCSS) {
             if (propName[0] === "@") return ' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ' + cssString;else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else return cssString;
           }, classes[randomClassName]);
 
-          inlineStyle = {};
+          //    inlineStyle = {};
         }
 
         // return <${elemName} ...props />
         return function (props) {
           var elemProps = Object.assign({}, props);
+          //  debugger;
 
-          if (props.style) {
-            elemProps.style = replacedStyle[styleName](props.style);
-          } else {
-            elemProps.style = inlineStyle;
-          }
+
+          var passedTrueProps = Object.keys(props).filter(function (name) {
+            return props[name] === true && Object.keys(styleCSS[styleName]).includes(name);
+          });
+          if (0 < passedTrueProps.length) passedTrueProps = passedTrueProps.reduce(function (props, name) {
+            return Object.assign(props, _defineProperty({}, name, true));
+          }, {});else passedTrueProps = {};
+
+          //  if(props.style){
+          elemProps.style = replacedStyle[styleName](Object.assign({}, passedTrueProps, props.style));
+          //  } else {
+          //    elemProps.style = inlineStyle;
+          //  }
 
           if (options.named) elemProps.name = elemProps.name || styleName;
 
@@ -229,7 +240,7 @@ function wrapStyles(_styles, options, styleCSS) {
           elemProps.className += randomClassName || "";
           if ("" === elemProps.className) delete elemProps.className;
 
-          return userSetOptions.createElement(elemName || styleName, elemProps);
+          return userSetOptions.createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
         }; //,props.children
       } // elem gen
 

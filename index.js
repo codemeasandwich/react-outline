@@ -164,7 +164,7 @@ function wrapStyles(_styles,options,styleCSS){
       if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
 
         elemName = elemName[0] || args[1];
-        let inlineStyle = replacedStyle[styleName]();
+      //  let inlineStyle = replacedStyle[styleName]();
 
         const baseStyle = styleCSS[styleName].base || {}
         for(const propN in styleCSS[styleName]){
@@ -197,18 +197,27 @@ function wrapStyles(_styles,options,styleCSS){
                 return cssString
           } ,classes[randomClassName] )
 
-          inlineStyle = {};
+      //    inlineStyle = {};
         }
 
         // return <${elemName} ...props />
         return props => {
           const elemProps = Object.assign({},props);
+        //  debugger;
 
-          if(props.style){
-            elemProps.style = replacedStyle[styleName](props.style);
-          } else {
-            elemProps.style = inlineStyle;
-          }
+
+        let passedTrueProps = Object.keys(props)
+                                    .filter( name => props[name] === true && Object.keys(styleCSS[styleName]).includes(name) )
+        if(0 < passedTrueProps.length)
+        passedTrueProps = passedTrueProps.reduce((props, name) => Object.assign(props,{[name]:true}) ,{})
+        else
+        passedTrueProps = {}
+
+        //  if(props.style){
+            elemProps.style = replacedStyle[styleName](Object.assign({},passedTrueProps, props.style));
+        //  } else {
+        //    elemProps.style = inlineStyle;
+        //  }
 
           if(options.named)
             elemProps.name = elemProps.name || styleName;
@@ -218,7 +227,7 @@ function wrapStyles(_styles,options,styleCSS){
             if("" === elemProps.className)
             delete elemProps.className;
 
-          return userSetOptions.createElement(elemName||styleName,elemProps)
+          return userSetOptions.createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
         }//,props.children
 
       } // elem gen
