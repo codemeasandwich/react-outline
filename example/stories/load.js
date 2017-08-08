@@ -35,6 +35,9 @@ import Css from './CSSHelpers/Hover';
 import sourceCss2 from 'raw-loader!./CSSHelpers/MediaQuery.js?sourceMap';
 import Css2 from './CSSHelpers/MediaQuery';
 
+import sourceCss3 from 'raw-loader!./CSSHelpers/CssSource.js?sourceMap';
+import Css3 from './CSSHelpers/CssSource';
+
 const tree = {
   Basics:[
     {
@@ -100,6 +103,10 @@ const tree = {
        info: 'Resize your screen to less then 600px',
        source:sourceCss2,   element:Css2,
        options: {propTables: false, source: false }
+    },
+    {
+       title:'Css Source',
+       source:sourceCss3,   element:Css3
     }
   ]
 }

@@ -19,7 +19,7 @@ setDefaults({
 
 import tree from './load';
 
-import Button from './Button';
+//import Button from './Button';
 import Welcome from './Welcome';
 
 storiesOf('Welcome', module)
@@ -52,8 +52,9 @@ ${htmlEscape(data.source)}
   })
 }
 
-
+/*
 storiesOf('Button', module)
  .add('with some emoji',
   withInfo('happy happy joy joy')(() => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>,{ source: true, inline: true } ))
  .add('foo bar',() => <Button onClick={action('bar')}>foo</Button> )
+*/

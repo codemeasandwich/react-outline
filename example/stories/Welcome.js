@@ -24,7 +24,7 @@ export default class Welcome extends React.Component {
     e.preventDefault();
     if(this.props.showApp) this.props.showApp();
   }
-//   <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/>
+
   render() {
     return (<div>
       <Styles>{`
@@ -34,9 +34,8 @@ export default class Welcome extends React.Component {
       }
 
       `}</Styles>
-        <span style={styles.article()}>zzyy</span>
-        <Panel>ddss</Panel>
 
+      <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/>
         <h1>React-outline is a utility of managing your inline style</h1>
         <h2>
           react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling
@@ -53,35 +52,40 @@ export default class Welcome extends React.Component {
         <li>Dynamically add vendor prefixes</li>
         <li>Cache calculated style</li>
         </ul>
-        <p> ... </p>
-        <p> ... </p>
-        <p> ... </p>
-        <p> ... </p>
 
-        <p>
-          Weve added some basic stories inside the <code >src/stories</code> directory.
-          <br/>
-          A story is a single state of one or more UI components. You can have as many stories as you want.
-          <br/>
-          (Basically a story is like a visual test case.)
-        </p>
-        <p>
-          See these sample <a  href='#' onClick={this.showApp.bind(this)}>stories</a> for a component called <code >Button</code>.
-        </p>
-        <p>
-          Just like that, you can add your own components as stories.
-          <br />
-          You can also edit those components and see changes right away.
-          <br />
-          (Try editing the <code >Button</code> component
-          located at <code >src/stories/Button.js</code>.)
-        </p>
-        <p>
-          This is just one thing you can do with Storybook.
-          <br/>
-          Have a look at the <a  href="https://github.com/kadirahq/react-storybook" target="_blank">React Storybook</a> repo for more information.
-        </p>
       </div>
     );
   }
 }
+
+/*
+<p> ... </p>
+<p> ... </p>
+<p> ... </p>
+<p> ... </p>
+
+<p>
+  Weve added some basic stories inside the <code >src/stories</code> directory.
+  <br/>
+  A story is a single state of one or more UI components. You can have as many stories as you want.
+  <br/>
+  (Basically a story is like a visual test case.)
+</p>
+<p>
+  See these sample <a  href='#' onClick={this.showApp.bind(this)}>stories</a> for a component called <code >Button</code>.
+</p>
+<p>
+  Just like that, you can add your own components as stories.
+  <br />
+  You can also edit those components and see changes right away.
+  <br />
+  (Try editing the <code >Button</code> component
+  located at <code >src/stories/Button.js</code>.)
+</p>
+<p>
+  This is just one thing you can do with Storybook.
+  <br/>
+  Have a look at the <a  href="https://github.com/kadirahq/react-storybook" target="_blank">React Storybook</a> repo for more information.
+</p>
+
+*/
