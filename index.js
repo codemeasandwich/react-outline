@@ -210,11 +210,17 @@ function wrapStyles(_styles,options,styleCSS){
 
         let passedTrueProps = Object.keys(props)
                                     .filter( name => props[name] === true && Object.keys(styleCSS[styleName]).includes(name) )
-        if(0 < passedTrueProps.length)
-        passedTrueProps = passedTrueProps.reduce((props, name) => Object.assign(props,{[name]:true}) ,{})
-        else
-        passedTrueProps = null
-
+        if(0 < passedTrueProps.length){
+          passedTrueProps = passedTrueProps.reduce((styleProps, name) => {
+            // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
+            if("function" !== typeof elemName && "disabled" !== name){
+              delete elemProps[name]
+            }
+            return Object.assign(styleProps,{[name]:true})
+          },{})
+        } else {
+          passedTrueProps = null
+        }
           if(passedTrueProps || props.style){
             elemProps.style = replacedStyle[styleName](Object.assign({},passedTrueProps, props.style));
           } else {
