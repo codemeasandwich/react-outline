@@ -13,6 +13,7 @@ Feathers:
 * Support a UI Color Palette
 * Dynamically add vendor prefixes
 * Cache calculated style
+* Named elements (Generate element mapped to name prop in DOM)
 
 Examples
 1. [Creating and applying a style](#creating-and-applying-a-style--basic-example-)
@@ -306,3 +307,18 @@ const MyButton = styles.table.cell.button`${Button}`
 
  <Cell colSpan="2" style={{error:true}}>
 ```
+
+## Contributing
+
+Feature requests can be made using [Github issues](https://github.com/codemeasandwich/react-outline/issues)
+
+Pull requests are totally encouraged and you are welcome to contribute to the development of `react-outline`. Please do raise an issue before making a pull request so as to determine if a particular feature is already being worked on or is currently out of the scope of this project.
+
+1. [Fork react-outline](https://github.com/codemeasandwich/react-outline/fork)
+2. Create a feature branch (git checkout -b my-new-fature)
+3. Write tests
+4. Ensure the code the covered
+3. Add story to the example storybook
+5. Commit your changes
+6. Push to your branch
+7. Make a pull request
