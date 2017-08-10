@@ -168,7 +168,7 @@ function wrapStyles(_styles,options,styleCSS){
         elemName = elemName[0] || args[1];
         let inlineStyle = replacedStyle[styleName]();
 
-        const baseStyle = styleCSS[styleName].base || {}
+        const baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {}
         for(const propN in styleCSS[styleName]){
           if(specialCharacters.includes(propN[0])){
             baseStyle[propN] = styleCSS[styleName][propN]
