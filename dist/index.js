@@ -19,6 +19,10 @@ var _hyphenateStyleName = require('hyphenate-style-name');
 
 var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -251,7 +255,7 @@ function wrapStyles(_styles, options, styleCSS) {
           elemProps.className += randomClassName || "";
           if ("" === elemProps.className) delete elemProps.className;
 
-          return userSetOptions.createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
+          return createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
         }; //,props.children
       } // elem gen
 
@@ -300,20 +304,18 @@ function Styles(props) {
   }).join(" ");
   css += props.children || undefined;
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return userSetOptions.createElement("style", {}, css);
+  return createElement("style", {}, css);
 }
-/*
+
 // wrap createElement
-function createElement(...args){
+function createElement() {
 
-  if(userSetOptions.createElement){
-    return userSetOptions.createElement(...args)
+  if (userSetOptions.createElement) {
+    return userSetOptions.createElement.apply(userSetOptions, arguments);
   } else {
-    let react = require("react") || require("preact");
-    return react.createElement(...args)
+    return _react2.default.createElement.apply(_react2.default, arguments);
   }
-
-}*/
+}
 
 exports.default = topLevelWrapStyles;
 exports.withOptions = withOptions;

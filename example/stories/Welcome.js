@@ -1,7 +1,6 @@
 import React from 'react';
 import outline from 'react-outline'
 import { Styles, setOptions} from 'react-outline'
-    setOptions({caching:true,named:true, createElement:React.createElement})
 
 const css = {
     article:{
