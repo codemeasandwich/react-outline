@@ -3,7 +3,7 @@ import outline from 'react-outline'
 
 let styles = {
     base : {
-      title:{ fontSize: "25px" }
+      title:{ backgroundColor: "red" }
     }
 }
 styles = outline(styles);

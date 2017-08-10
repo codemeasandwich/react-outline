@@ -34,8 +34,8 @@ export default class Welcome extends React.Component {
       }
 
       `}</Styles>
-
-      <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/>
+<a href="https://www.npmjs.com/package/react-outline">
+      <img alt="react-outline" title="react-outline logo" src="https://s3-eu-west-1.amazonaws.com/files.codemeasandwich.com/react-outline-logo2.png"/></a>
         <h1>React-outline is a utility of managing your inline style</h1>
         <h2>
           react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling

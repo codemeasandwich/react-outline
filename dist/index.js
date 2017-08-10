@@ -23,8 +23,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 var specialCharacters = "@:"; //['@',':'].join("");
 
 function separateCssStyle(styles) {
@@ -85,7 +83,7 @@ function replacedStyleFn(_ref, args) {
       styleFn = _ref.styleFn;
 
 
-  var processedStyles = 1 === styleFn.length ? styleFn.apply(undefined, _toConsumableArray(args)) : styleFn.apply(undefined, [styleCSS].concat(_toConsumableArray(args)));
+  var processedStyles = 1 === styleFn.length ? styleFn(args[0]) : styleFn(styleCSS, args[0]);
   var styleBase = Object.assign({}, styleCSS && styleCSS.base || styleCSS || {});
 
   for (var stylePropName in styleBase) {
@@ -93,7 +91,7 @@ function replacedStyleFn(_ref, args) {
   }
 
   var autoAddStyles = [],
-      firstVal = args[0];
+      firstVal = args[1] || args[0];
   //console.log(args)
   if (!!firstVal && "object" === (typeof firstVal === 'undefined' ? 'undefined' : _typeof(firstVal))) {
     Object.keys(firstVal).forEach(function (cssName) {
@@ -187,7 +185,7 @@ function wrapStyles(_styles, options, styleCSS) {
         elemName = elemName[0] || args[1];
         var inlineStyle = replacedStyle[styleName]();
 
-        var baseStyle = styleCSS[styleName].base || {};
+        var baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {};
         for (var propN in styleCSS[styleName]) {
           if (specialCharacters.includes(propN[0])) {
             baseStyle[propN] = styleCSS[styleName][propN];
@@ -229,12 +227,20 @@ function wrapStyles(_styles, options, styleCSS) {
           var passedTrueProps = Object.keys(props).filter(function (name) {
             return props[name] === true && Object.keys(styleCSS[styleName]).includes(name);
           });
-          if (0 < passedTrueProps.length) passedTrueProps = passedTrueProps.reduce(function (props, name) {
-            return Object.assign(props, _defineProperty({}, name, true));
-          }, {});else passedTrueProps = null;
-
-          if (passedTrueProps || props.style) {
-            elemProps.style = replacedStyle[styleName](Object.assign({}, passedTrueProps, props.style));
+          if (0 < passedTrueProps.length) {
+            passedTrueProps = passedTrueProps.reduce(function (styleProps, name) {
+              // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
+              if ("function" !== typeof elemName && "disabled" !== name) {
+                delete elemProps[name];
+              }
+              return Object.assign(styleProps, _defineProperty({}, name, true));
+            }, {});
+          } else {
+            passedTrueProps = null;
+          }
+          if (passedTrueProps || props.hasOwnProperty("style")) {
+            if (props.style instanceof Object) passedTrueProps = Object.assign({}, props.style, passedTrueProps);
+            elemProps.style = replacedStyle[styleName](props.style, passedTrueProps);
           } else {
             elemProps.style = inlineStyle;
           }
@@ -249,13 +255,14 @@ function wrapStyles(_styles, options, styleCSS) {
         }; //,props.children
       } // elem gen
 
+
       var styleStuff = { styleCSS: styleCSS[styleName], styleFn: styleFn /*,radium*/ };
 
       if (!caching) {
         return genStyles(styleStuff, args, colors);
       }
 
-      var key = JSON.stringify(args);
+      var key = "" + JSON.stringify(args[0]) + JSON.stringify(args[1]);
       if (key === cached.key) {
         return cached.value;
       }
