@@ -63,7 +63,7 @@ function makeid(side = 10) {
 
 function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
 
-    const processedStyles = 1=== styleFn.length ? styleFn(...args) : styleFn(styleCSS,...args);
+    const processedStyles = 1=== styleFn.length ? styleFn(args[0]) : styleFn(styleCSS,args[0]);
     const styleBase = Object.assign({},styleCSS && styleCSS.base||styleCSS||{})
 
     for(const stylePropName in styleBase){
@@ -71,7 +71,7 @@ function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
       delete styleBase[stylePropName];
     }
 
-    const autoAddStyles = [], firstVal = args[0];
+    const autoAddStyles = [], firstVal = args[1] || args[0];
     //console.log(args)
     if(!!firstVal && "object" === typeof firstVal){
         Object.keys(firstVal)
@@ -221,8 +221,10 @@ function wrapStyles(_styles,options,styleCSS){
         } else {
           passedTrueProps = null
         }
-          if(passedTrueProps || props.style){
-            elemProps.style = replacedStyle[styleName](Object.assign({},passedTrueProps, props.style));
+          if(passedTrueProps || props.hasOwnProperty("style")){
+            if(props.style instanceof Object)
+                passedTrueProps = Object.assign({},props.style,passedTrueProps);
+            elemProps.style = replacedStyle[styleName](props.style,passedTrueProps);
           } else {
             elemProps.style = inlineStyle;
           }
@@ -233,12 +235,13 @@ function wrapStyles(_styles,options,styleCSS){
             elemProps.className  = elemProps.className || ""
             elemProps.className += randomClassName     || ""
             if("" === elemProps.className)
-            delete elemProps.className;
+                delete elemProps.className;
 
           return userSetOptions.createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
         }//,props.children
 
       } // elem gen
+
 
       const styleStuff = { styleCSS:styleCSS[styleName],styleFn/*,radium*/ };
 
@@ -246,7 +249,7 @@ function wrapStyles(_styles,options,styleCSS){
         return genStyles(styleStuff,args,colors);
       }
 
-      const key = JSON.stringify(args)
+      const key = ""+JSON.stringify(args[0])+JSON.stringify(args[1])
       if(key === cached.key){
         return cached.value;
       }
