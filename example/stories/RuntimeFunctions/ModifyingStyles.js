@@ -13,8 +13,6 @@ let styles = {
 }
 window.x = styles
 styles.cell = (style,important) => {
-  console.log(style,important)
-
   return ({ fontSize : style.fontSize + ((important)?5:-5) })
 }
 

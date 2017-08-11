@@ -42,6 +42,9 @@ import Css2 from './CSSHelpers/MediaQuery';
 import sourceCss3 from 'raw-loader!./CSSHelpers/CssSource.js?sourceMap';
 import Css3 from './CSSHelpers/CssSource';
 
+import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
+import Animate from './Animate/basic';
+
 const tree = {
   Basics:[
     {
@@ -67,11 +70,11 @@ const tree = {
   ],
   "Combine styles":[
     {
-      title:'In a generated element',
+      title:'Using the style function',
       source:sourceCombine,   element:Combine
     },
     {
-      title:'Using the style function',
+      title:'In a generated element',
       source:sourceCombine2,   element:Combine2,
       options: {propTables: false, source: false }
     },
@@ -116,8 +119,17 @@ const tree = {
     },
     {
        title:'Css Source',
-       source:sourceCss3,   element:Css3
+       source:sourceCss3,   element:Css3,
+       options: {propTables: false }
     }
+  ]
+  ,"animate":[
+    {
+       title:'Animate.css',
+       info: "Using [ReactCSSTransitionGroup](https://www.npmjs.com/package/react-addons-css-transition-group) and daneden's [animate.css](https://daneden.github.io/animate.css/)",
+       source:sourceAnimate,   element:Animate,
+       options: {propTables: false, source: false }
+    },
   ]
 }
 

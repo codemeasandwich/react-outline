@@ -43,7 +43,7 @@ ${htmlEscape(data.source)}
     if(data.note){
       options.text += `
 ---
-*${data.note}*
+${data.note}
 
 ---
 `
