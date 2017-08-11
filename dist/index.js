@@ -19,11 +19,13 @@ var _hyphenateStyleName = require('hyphenate-style-name');
 
 var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var specialCharacters = "@:"; //['@',':'].join("");
 
@@ -85,7 +87,7 @@ function replacedStyleFn(_ref, args) {
       styleFn = _ref.styleFn;
 
 
-  var processedStyles = 1 === styleFn.length ? styleFn.apply(undefined, _toConsumableArray(args)) : styleFn.apply(undefined, [styleCSS].concat(_toConsumableArray(args)));
+  var processedStyles = 1 === styleFn.length ? styleFn(args[0]) : styleFn(styleCSS, args[0]);
   var styleBase = Object.assign({}, styleCSS && styleCSS.base || styleCSS || {});
 
   for (var stylePropName in styleBase) {
@@ -93,7 +95,7 @@ function replacedStyleFn(_ref, args) {
   }
 
   var autoAddStyles = [],
-      firstVal = args[0];
+      firstVal = args[1] || args[0];
   //console.log(args)
   if (!!firstVal && "object" === (typeof firstVal === 'undefined' ? 'undefined' : _typeof(firstVal))) {
     Object.keys(firstVal).forEach(function (cssName) {
@@ -187,7 +189,7 @@ function wrapStyles(_styles, options, styleCSS) {
         elemName = elemName[0] || args[1];
         var inlineStyle = replacedStyle[styleName]();
 
-        var baseStyle = styleCSS[styleName].base || {};
+        var baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {};
         for (var propN in styleCSS[styleName]) {
           if (specialCharacters.includes(propN[0])) {
             baseStyle[propN] = styleCSS[styleName][propN];
@@ -229,12 +231,20 @@ function wrapStyles(_styles, options, styleCSS) {
           var passedTrueProps = Object.keys(props).filter(function (name) {
             return props[name] === true && Object.keys(styleCSS[styleName]).includes(name);
           });
-          if (0 < passedTrueProps.length) passedTrueProps = passedTrueProps.reduce(function (props, name) {
-            return Object.assign(props, _defineProperty({}, name, true));
-          }, {});else passedTrueProps = null;
-
-          if (passedTrueProps || props.style) {
-            elemProps.style = replacedStyle[styleName](Object.assign({}, passedTrueProps, props.style));
+          if (0 < passedTrueProps.length) {
+            passedTrueProps = passedTrueProps.reduce(function (styleProps, name) {
+              // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
+              if ("function" !== typeof elemName && "disabled" !== name) {
+                delete elemProps[name];
+              }
+              return Object.assign(styleProps, _defineProperty({}, name, true));
+            }, {});
+          } else {
+            passedTrueProps = null;
+          }
+          if (passedTrueProps || props.hasOwnProperty("style")) {
+            if (props.style instanceof Object) passedTrueProps = Object.assign({}, props.style, passedTrueProps);
+            elemProps.style = replacedStyle[styleName](props.style, passedTrueProps);
           } else {
             elemProps.style = inlineStyle;
           }
@@ -245,9 +255,10 @@ function wrapStyles(_styles, options, styleCSS) {
           elemProps.className += randomClassName || "";
           if ("" === elemProps.className) delete elemProps.className;
 
-          return userSetOptions.createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
+          return createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
         }; //,props.children
       } // elem gen
+
 
       var styleStuff = { styleCSS: styleCSS[styleName], styleFn: styleFn /*,radium*/ };
 
@@ -255,7 +266,7 @@ function wrapStyles(_styles, options, styleCSS) {
         return genStyles(styleStuff, args, colors);
       }
 
-      var key = JSON.stringify(args);
+      var key = "" + JSON.stringify(args[0]) + JSON.stringify(args[1]);
       if (key === cached.key) {
         return cached.value;
       }
@@ -293,20 +304,18 @@ function Styles(props) {
   }).join(" ");
   css += props.children || undefined;
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return userSetOptions.createElement("style", {}, css);
+  return createElement("style", {}, css);
 }
-/*
+
 // wrap createElement
-function createElement(...args){
+function createElement() {
 
-  if(userSetOptions.createElement){
-    return userSetOptions.createElement(...args)
+  if (userSetOptions.createElement) {
+    return userSetOptions.createElement.apply(userSetOptions, arguments);
   } else {
-    let react = require("react") || require("preact");
-    return react.createElement(...args)
+    return _react2.default.createElement.apply(_react2.default, arguments);
   }
-
-}*/
+}
 
 exports.default = topLevelWrapStyles;
 exports.withOptions = withOptions;

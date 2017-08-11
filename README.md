@@ -6,6 +6,10 @@
 
 react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling.
 
+[![npm version](https://badge.fury.io/js/react-outline.svg)](https://badge.fury.io/js/react-outline)
+
+
+
 Feathers:
 * Cleaner JSX markup (without the styles)
 * Easy creation of standered and custom element combining styles into the element
@@ -14,6 +18,8 @@ Feathers:
 * Dynamically add vendor prefixes
 * Cache calculated style
 * Named elements (Generate element mapped to name prop in DOM)
+
+# [Live Demo](https://s3.amazonaws.com/react-outline/index.html?down=0) / [Demo Source](https://github.com/codemeasandwich/react-outline/tree/master/example)
 
 Examples
 1. [Creating and applying a style](#creating-and-applying-a-style--basic-example-)

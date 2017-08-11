@@ -57,15 +57,15 @@ const tree = {
       options: {propTables: false, source: false }
     },
     {
-      title:'Generate an implied named element',
-      source:sourceBasic3,  element:Basic3,
-      options: {propTables: false, source: false }
-    },
-    {
       title:'Wrapping an existing element',
       source:sourceBasic4,  element:Basic4,
       options: {propTables: false, source: false }
     },
+    {
+      title:'Generate an implied named element',
+      source:sourceBasic3,  element:Basic3,
+      options: {propTables: false, source: false }
+    }
 
   ],
   "Combine styles":[

@@ -1,6 +1,7 @@
 import Prefixer from 'inline-style-prefixer'
 import addPx from 'add-px-to-style'
 import hyphenate from 'hyphenate-style-name'
+import React from 'react'
 
 const specialCharacters = "@:";//['@',':'].join("");
 
@@ -237,7 +238,7 @@ function wrapStyles(_styles,options,styleCSS){
             if("" === elemProps.className)
                 delete elemProps.className;
 
-          return userSetOptions.createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
+          return createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
         }//,props.children
 
       } // elem gen
@@ -284,20 +285,19 @@ function Styles(props){
  let css = Object.keys(classes).map(className => classes[className] ).join(" ");
   css += props.children || undefined;
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return userSetOptions.createElement("style",{},css)
+  return createElement("style",{},css)
 }
-/*
+
 // wrap createElement
 function createElement(...args){
 
   if(userSetOptions.createElement){
     return userSetOptions.createElement(...args)
   } else {
-    let react = require("react") || require("preact");
-    return react.createElement(...args)
+    return React.createElement(...args)
   }
 
-}*/
+}
 
 export default topLevelWrapStyles
 export { withOptions, setOptions, Styles }
