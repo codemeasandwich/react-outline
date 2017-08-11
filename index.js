@@ -96,7 +96,7 @@ function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
     return Object.assign({},styleBase,...autoAddStyles,processedStyles);
 }
 
-const userSetOptions = {/* prefix:getVendorPrefix()*/ }
+const userSetOptions = { named:true/* prefix:getVendorPrefix()*/ }
 
 const replaceColors = (colors,style) =>{
 
