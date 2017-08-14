@@ -6,6 +6,7 @@
   "scripts": {
     "build": "babel ./index.js --presets babel-preset-es2015 --plugins transform-object-rest-spread --out-dir dist",
     "test": "jest --no-cache ",
+    "test:update": "npm test -- --updateSnapshot",
     "test:cover": "npm test -- --coverage --no-cache",
     "test:watch": "npm test -- --watch"
   },
@@ -44,7 +45,6 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "jest": "^20.0.4",
-    "jest-css-modules": "^1.1.0",
     "raw-loader": "^0.5.1",
     "react-test-renderer": "^15.6.1"
   },

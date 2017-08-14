@@ -41,13 +41,20 @@
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
     "@storybook/addon-info": "^3.2.0",
+    "babel-jest": "^20.0.3",
+    "babel-macros": "^0.5.2",
     "babel-plugin-module-resolver": "^2.7.1",
+    "babel-plugin-preval": "^1.4.3",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "css-loader": "^0.28.4",
+    "enzyme": "^2.8.2",
+    "jest": "^20.0.4",
+    "preval.macro": "^1.0.1",
     "raw-loader": "^0.5.1",
+    "react-addons-test-utils": "^15.5.1",
     "style-loader": "^0.18.2",
     "webpack-subresource-integrity": "^1.0.1"
   }

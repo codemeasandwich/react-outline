@@ -2,6 +2,7 @@
 
 exports[`Basics Generate a element from a style 1`] = `
 <div
+  name="title"
   style={
     Object {
       "backgroundColor": "red",
@@ -14,6 +15,7 @@ exports[`Basics Generate a element from a style 1`] = `
 
 exports[`Basics Generate an implied named element 1`] = `
 <table
+  name="table"
   style={
     Object {
       "borderCollapse": "collapse",
@@ -22,6 +24,7 @@ exports[`Basics Generate an implied named element 1`] = `
   }
 >
   <tr
+    name="tr"
     style={
       Object {
         "borderBottom": "thick solid red",
@@ -29,6 +32,7 @@ exports[`Basics Generate an implied named element 1`] = `
     }
   >
     <td
+      name="td"
       style={
         Object {
           "border": "1px solid #dddddd",
@@ -39,6 +43,7 @@ exports[`Basics Generate an implied named element 1`] = `
       Maria Anders
     </td>
     <td
+      name="td"
       style={
         Object {
           "border": "1px solid #dddddd",
@@ -50,6 +55,7 @@ exports[`Basics Generate an implied named element 1`] = `
     </td>
   </tr>
   <tr
+    name="tr"
     style={
       Object {
         "borderBottom": "thick solid red",
@@ -57,6 +63,7 @@ exports[`Basics Generate an implied named element 1`] = `
     }
   >
     <td
+      name="td"
       style={
         Object {
           "border": "1px solid #dddddd",
@@ -67,6 +74,7 @@ exports[`Basics Generate an implied named element 1`] = `
       Francisco Chang
     </td>
     <td
+      name="td"
       style={
         Object {
           "border": "1px solid #dddddd",
@@ -78,6 +86,7 @@ exports[`Basics Generate an implied named element 1`] = `
     </td>
   </tr>
   <tr
+    name="tr"
     style={
       Object {
         "borderBottom": "thick solid red",
@@ -85,6 +94,7 @@ exports[`Basics Generate an implied named element 1`] = `
     }
   >
     <td
+      name="td"
       style={
         Object {
           "border": "1px solid #dddddd",
@@ -95,6 +105,7 @@ exports[`Basics Generate an implied named element 1`] = `
       Roland Mendel
     </td>
     <td
+      name="td"
       style={
         Object {
           "border": "1px solid #dddddd",
@@ -141,6 +152,7 @@ exports[`CSS Helpers Media Query 1`] = `
   </style>
   <div
     className="react-outline-"
+    name="title"
     style={Object {}}
   >
     basic
@@ -155,6 +167,7 @@ exports[`CSS Helpers Mouse hover 1`] = `
   </style>
   <div
     className="react-outline-"
+    name="title"
     style={Object {}}
   >
     basic
@@ -164,6 +177,7 @@ exports[`CSS Helpers Mouse hover 1`] = `
 
 exports[`Combine styles In a generated element 1`] = `
 <div
+  name="title"
   style={
     Object {
       "color": "#f00",
@@ -177,6 +191,7 @@ exports[`Combine styles In a generated element 1`] = `
 
 exports[`Combine styles Using a prop flag 1`] = `
 <div
+  name="title"
   style={
     Object {
       "color": "#f00",
@@ -190,6 +205,7 @@ exports[`Combine styles Using a prop flag 1`] = `
 
 exports[`Style Functions Function with generated elements 1`] = `
 <div
+  name="content"
   style={
     Object {
       "backgroundColor": "red",
@@ -199,6 +215,7 @@ exports[`Style Functions Function with generated elements 1`] = `
 >
    
   <span
+    name="cell"
     style={
       Object {
         "fontSize": -5,
@@ -209,6 +226,7 @@ exports[`Style Functions Function with generated elements 1`] = `
     foo
   </span>
   <span
+    name="cell"
     style={
       Object {
         "fontSize": -5,
@@ -219,6 +237,7 @@ exports[`Style Functions Function with generated elements 1`] = `
     bar
   </span>
   <span
+    name="cell"
     style={
       Object {
         "fontSize": -5,
@@ -249,6 +268,7 @@ exports[`animate Animate.css 1`] = `
     value="Add"
   />
   <ul
+    name="list"
     style={
       Object {
         "listStyleType": "none",
