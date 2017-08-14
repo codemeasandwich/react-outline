@@ -1,47 +1,97 @@
+import preval from 'preval.macro'
 
-import sourceBasic from 'raw-loader!./Basics/CreatingAndApplyingAStyle.js?sourceMap';
+const sourceBasic = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/Basics/CreatingAndApplyingAStyle.js', 'utf8')
+`
+
+//import sourceBasic from 'raw-loader!./Basics/CreatingAndApplyingAStyle.js', 'utf8')
+
 import Basic from './Basics/CreatingAndApplyingAStyle';
 
-import sourceBasic2 from 'raw-loader!./Basics/UsingTheTagCreater.js?sourceMap';
+const sourceBasic2 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/Basics/UsingTheTagCreater.js', 'utf8')
+`
 import Basic2 from './Basics/UsingTheTagCreater';
 
-import sourceBasic3 from 'raw-loader!./Basics/ImpliedTags.js?sourceMap';
+const sourceBasic3 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/Basics/ImpliedTags.js', 'utf8')
+`
 import Basic3 from './Basics/ImpliedTags';
 
-import sourceBasic4 from 'raw-loader!./Basics/WrappingAnExistingElement.js?sourceMap';
+const sourceBasic4 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/Basics/WrappingAnExistingElement.js', 'utf8')
+`
 import Basic4 from './Basics/WrappingAnExistingElement';
 
-import sourceCombine from 'raw-loader!./CombineStyles/CreatingAndApplyingAStyle.js?sourceMap';
+
+const sourceCombine = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/CombineStyles/CreatingAndApplyingAStyle.js', 'utf8')
+`
 import Combine from './CombineStyles/CreatingAndApplyingAStyle';
 
-import sourceCombine2 from 'raw-loader!./CombineStyles/UsingTheTagCreater.js?sourceMap';
+const sourceCombine2 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/CombineStyles/UsingTheTagCreater.js', 'utf8')
+`
 import Combine2 from './CombineStyles/UsingTheTagCreater';
 
-import sourceCombine3 from 'raw-loader!./CombineStyles/UsingAPropFlag.js?sourceMap';
+const sourceCombine3 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/CombineStyles/UsingAPropFlag.js', 'utf8')
+`
 import Combine3 from './CombineStyles/UsingAPropFlag';
 
-import sourceLogic from 'raw-loader!./RuntimeFunctions/DynamicStyles.js?sourceMap';
+const sourceLogic = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/RuntimeFunctions/DynamicStyles.js', 'utf8')
+`
 import Logic from './RuntimeFunctions/DynamicStyles';
 
-import sourceLogic2 from 'raw-loader!./RuntimeFunctions/ModifyingStyles.js?sourceMap';
+const sourceLogic2 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/RuntimeFunctions/ModifyingStyles.js', 'utf8')
+`
 import Logic2 from './RuntimeFunctions/ModifyingStyles';
 
-import sourceLogic3 from 'raw-loader!./RuntimeFunctions/FunctionWithOutStyle.js?sourceMap';
+const sourceLogic3 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/RuntimeFunctions/FunctionWithOutStyle.js', 'utf8')
+`
 import Logic3 from './RuntimeFunctions/FunctionWithOutStyle';
 
-import sourceLogic4 from 'raw-loader!./RuntimeFunctions/WithGeneratedElements.js?sourceMap';
+const sourceLogic4 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/RuntimeFunctions/WithGeneratedElements.js', 'utf8')
+`
 import Logic4 from './RuntimeFunctions/WithGeneratedElements';
 
-import sourceCss from 'raw-loader!./CSSHelpers/Hover.js?sourceMap';
+const sourceCss = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/CSSHelpers/Hover.js', 'utf8')
+`
 import Css from './CSSHelpers/Hover';
 
-import sourceCss2 from 'raw-loader!./CSSHelpers/MediaQuery.js?sourceMap';
+const sourceCss2 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/CSSHelpers/MediaQuery.js', 'utf8')
+`
 import Css2 from './CSSHelpers/MediaQuery';
 
-import sourceCss3 from 'raw-loader!./CSSHelpers/CssSource.js?sourceMap';
+const sourceCss3 = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/CSSHelpers/CssSource.js', 'utf8')
+`
 import Css3 from './CSSHelpers/CssSource';
 
-import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
+const sourceAnimate = preval`
+  const fs = require('fs')
+  module.exports = fs.readFileSync(__dirname + '/Animate/basic.js', 'utf8')
+`
 import Animate from './Animate/basic';
 
 const tree = {
@@ -127,7 +177,7 @@ const tree = {
        title:'Animate.css',
        info: "Using [ReactCSSTransitionGroup](https://www.npmjs.com/package/react-addons-css-transition-group) and daneden's [animate.css](https://daneden.github.io/animate.css/)",
        source:sourceAnimate,   element:Animate,
-       options: {propTables: false, source: false }
+       options: {propTables: false, source: false, test:false }
     },
   ]
 }

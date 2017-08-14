@@ -186,7 +186,10 @@ function wrapStyles(_styles,options,styleCSS){
         //if(0 < cssPropNames.length){
         if(css){
 
-          randomClassName = "react-outline-"+makeid();
+          randomClassName = "react-outline-"
+
+          if(!global.__TEST__)
+              randomClassName += "makeid()";
 
           classes[randomClassName] = (style)?`.${randomClassName}{${ object2css(style) }}`:""
 
