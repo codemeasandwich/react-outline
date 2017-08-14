@@ -17,7 +17,7 @@ styles = outline(styles);
 const List = styles.list`ul`
 const Item = styles.item`li`
 
-class X extends React.Component {
+class Panel extends React.Component {
   constructor(props) {
     super(props);
     this.add = this.add.bind(this);
@@ -70,4 +70,4 @@ class X extends React.Component {
   }
 }
 
-export default <X/>
+export default <Panel/>

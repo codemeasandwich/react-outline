@@ -41,6 +41,9 @@ import Css2 from './CSSHelpers/MediaQuery';
 import sourceCss3 from 'raw-loader!./CSSHelpers/CssSource.js?sourceMap';
 import Css3 from './CSSHelpers/CssSource';
 
+import sourceCss4 from 'raw-loader!./CSSHelpers/VendorPrefix.js?sourceMap';
+import Css4 from './CSSHelpers/VendorPrefix';
+
 import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
 import Animate from './Animate/basic';
 
@@ -120,6 +123,11 @@ const tree = {
        title:'Css Source',
        source:sourceCss3,   element:Css3,
        options: {propTables: false }
+    },
+    {
+       title:'Vendor Auto-Prefix',
+       info:"CSS vendor prefixes, also sometime known as or CSS browser prefixes, are a way for browser makers to add support for new CSS features before those features are fully supported in all browsers. It will only add prefixes if a property still needs them",
+       source:sourceCss4,   element:Css4
     }
   ]
   ,"animate":[

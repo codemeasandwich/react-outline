@@ -4,14 +4,14 @@ import outline from 'react-outline'
 let styles = {
     base : {
       content:{
-        backgroundColor:"gray"
+        backgroundColor:"lightgray"
       },
       cell:{
         fontSize:10
       }
     }
 }
-window.x = styles
+
 styles.cell = (style,important) => {
   return ({ fontSize : style.fontSize + ((important)?5:-5) })
 }
@@ -20,9 +20,9 @@ styles = outline(styles);
 
 const data = [{name:"foo",important:true},
               {name:"bar",important:false},
-              {name:"bar",important:false},
-              {name:"bar",important:false},
-              {name:"cat"}]
+              {name:"baz",important:true},
+              {name:"qux",important:false},
+              {name:"quux"}]
 
 const LogicStyled = <div style={styles.content(data.length)}> {
 

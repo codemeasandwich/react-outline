@@ -117,7 +117,7 @@ function replacedStyleFn(_ref, args) {
   return Object.assign.apply(Object, [{}, styleBase].concat(autoAddStyles, [processedStyles]));
 }
 
-var userSetOptions = {/* prefix:getVendorPrefix()*/};
+var userSetOptions = { named: true /* prefix:getVendorPrefix()*/ };
 
 var replaceColors = function replaceColors(colors, style) {
 
