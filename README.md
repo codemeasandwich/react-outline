@@ -7,6 +7,8 @@
 react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling.
 
 [![npm version](https://badge.fury.io/js/react-outline.svg)](https://badge.fury.io/js/react-outline)
+[![Build Status](https://travis-ci.org/codemeasandwich/react-outline.svg?branch=master)](https://travis-ci.org/codemeasandwich/react-outline)
+[![Coverage Status](https://coveralls.io/repos/github/codemeasandwich/react-outline/badge.svg?branch=master)](https://coveralls.io/github/codemeasandwich/react-outline?branch=master)
 
 
 
