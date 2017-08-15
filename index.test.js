@@ -1,5 +1,4 @@
 import React from 'react';
-import outline from './index';
 import renderer from 'react-test-renderer';
 import load from './example/stories/load'
 

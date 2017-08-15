@@ -54,12 +54,14 @@
     "moduleNameMapper": {
       "\\.(css|jpg|png)$": "<rootDir>/empty-module.js",
       "^raw-loader": "<rootDir>/empty-module.js",
+      "react-outline": "<rootDir>/index.js",
 
       "^react-addons-css-transition-group$": "<rootDir>/empty-module.js"
     },
     "testPathIgnorePatterns": [
       "/node_modules/"
     ],
+    "collectCoverageFrom": ["index.js"],
     "verbose": true
   }
 }
