@@ -26,8 +26,8 @@ const data = [{name:"foo",important:true},
 
 const LogicStyled = <div style={styles.content(data.length)}> {
 
-            data.map( cellData => (
-              <span style={styles.cell(cellData.important)}>{
+            data.map( (cellData,i) => (
+              <span key={i} style={styles.cell(cellData.important)}>{
                 cellData.name
               }</span>) )
 

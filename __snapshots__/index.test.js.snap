@@ -250,32 +250,3 @@ exports[`Style Functions Function with generated elements 1`] = `
    
 </div>
 `;
-
-exports[`animate Animate.css 1`] = `
-<div>
-  <style>
-     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }undefined
-  </style>
-  <input
-    onChange={[Function]}
-    placeholder="Type something here"
-    type="text"
-    value=""
-  />
-  <input
-    onClick={[Function]}
-    type="button"
-    value="Add"
-  />
-  <ul
-    name="list"
-    style={
-      Object {
-        "listStyleType": "none",
-      }
-    }
-  >
-    <span />
-  </ul>
-</div>
-`;

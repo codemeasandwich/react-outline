@@ -135,7 +135,7 @@ const tree = {
        title:'Animate.css',
        info: "Using [ReactCSSTransitionGroup](https://www.npmjs.com/package/react-addons-css-transition-group) and daneden's [animate.css](https://daneden.github.io/animate.css/)",
        source:sourceAnimate,   element:Animate,
-       options: {propTables: false, source: false }
+       options: {propTables: false, source: false, test:false }
     },
   ]
 }

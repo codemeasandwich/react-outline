@@ -28,8 +28,8 @@ const Cell  = styles.cell`span`
 
 const LogicStyled = <Group style={data.length}> {
 
-            data.map( cellData => (
-              <Cell styles={cellData.important}>{
+            data.map( (cellData,i) => (
+              <Cell key={i} styles={cellData.important}>{
                 cellData.name
               }</Cell>) )
 

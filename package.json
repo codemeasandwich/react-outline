@@ -43,7 +43,6 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
     "jest": "^20.0.4",
     "raw-loader": "^0.5.1",
     "react-test-renderer": "^15.6.1"
@@ -54,9 +53,11 @@
     },
     "moduleNameMapper": {
       "\\.(css|jpg|png)$": "<rootDir>/empty-module.js",
-      "^raw-loader": "<rootDir>/empty-module.js"
+      "^raw-loader": "<rootDir>/empty-module.js",
+
+      "^react-addons-css-transition-group$": "<rootDir>/empty-module.js"
     },
-   "testPathIgnorePatterns": [
+    "testPathIgnorePatterns": [
       "/node_modules/"
     ],
     "verbose": true
