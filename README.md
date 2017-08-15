@@ -11,7 +11,6 @@ react-outline was designed to more easly manage inline styles and better support
 [![Coverage Status](https://coveralls.io/repos/github/codemeasandwich/react-outline/badge.svg?branch=master)](https://coveralls.io/github/codemeasandwich/react-outline?branch=master)
 
 
-
 Feathers:
 * Cleaner JSX markup (without the styles)
 * Easy creation of standered and custom element combining styles into the element
@@ -34,10 +33,9 @@ Examples
     1. [setOptions](#-setOptions--function)
     2. [withOptions](#-withOptions--function)
 6. [Using the options](#using-the-options)
-    1. [radium](#radium)
-    2. [caching](#caching)
-    3. [colors](#colors)
-    4. [named](#named)
+    1. [caching](#caching)
+    2. [colors](#colors)
+    3. [named](#named)
 7. [A 'kitchen sink' example](#a--kitchen-sink--example)
 
 ### Creating and applying a style (Basic example)
@@ -210,10 +208,6 @@ const outline = withOptions({caching:true,named:true})
 ```
 
 ### Using the options
-#### radium
->  **Will return the style in an array format compatible with [radium](https://www.npmjs.com/package/radium)**    
-> default to : `false`    
-> use: `{radium : true} ` (boolean)
 
 #### caching
 
@@ -251,7 +245,7 @@ export default <div style={styles.foo}/>
 #### named
 
 >  **Helpful for debugging. Will add a `name` attribute Dom element if you use a [generated element](#you-can-combine-attribute-of-a-style-by-using-a-boolean-flag)**   
->  default to: `false`    
+>  default to: `true`    
 > use: ` {named : true} ` (boolean)
 
 ##### Using the named option
@@ -276,45 +270,7 @@ export default Page                   // export the elemet
 */
 ```
 
-## A 'kitchen sink' example
 
-```JS
-
-import outline, {setOptions} from 'react-outline'
-setOptions({caching:true, named:true })
-
-//=====================================================
-//============================================== styles
-//=====================================================
-
-let styles = {
-  style : {
-    Body:{ padding:10 },
-    button:{  backgroundColor:"red"  },
-    table:{
-      style: { width: "100%", height: "100%"},
-      row:{ yourboth:"rowrow" },
-      cell:{
-        style: { padding:10 },
-        error:{ color:"red" , padding:20},
-        button:{ backgroundColor:"blur" }
-     }
-    }
-  }
-};
-
-styles.random = ()=>({foo:"bar"})
-styles.table = ()=> {}
-styles.table.row = ()=>({abc:123})
-styles.table.cell = (style,vals)=> (vals && vals.error)?{font:"bold",color:"blue"}:null
-
-styles = wrapStyles(styles)
-
-const Cell = styles.table.cell`td`
-const MyButton = styles.table.cell.button`${Button}`
-
- <Cell colSpan="2" style={{error:true}}>
-```
 
 ## Contributing
 
