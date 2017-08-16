@@ -161,7 +161,7 @@ function wrapStyles(_styles,options,styleCSS){
   .forEach((styleName)=>{
 
     const styleFn = _styles[styleName]||(()=>{});
-    const cached = { key:"", value:null, source:[] }
+    const cached = { key:null, value:null, source:[] }
     replacedStyle[styleName] = function(...args) {
       let elemName = args[0];
       if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
@@ -252,11 +252,11 @@ function wrapStyles(_styles,options,styleCSS){
       if(!caching){
         return genStyles(styleStuff,args,colors);
       }
-
-      if(cached.source[0] === args[0] && cached.source[0] === args[1]){
+      // quick test
+      if(cached.value && cached.source[0] === args[0] && cached.source[0] === args[1]){
         return cached.value;
       }
-
+      // deep test
       const key = ""+JSON.stringify(args[0])+JSON.stringify(args[1])
       if(key === cached.key){
         return cached.value;
