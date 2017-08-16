@@ -177,7 +177,7 @@ function wrapStyles(_styles, options, styleCSS) {
   }).forEach(function (styleName) {
 
     var styleFn = _styles[styleName] || function () {};
-    var cached = { key: "", value: null, source: [] };
+    var cached = { key: null, value: null, source: [] };
     replacedStyle[styleName] = function () {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
@@ -267,11 +267,11 @@ function wrapStyles(_styles, options, styleCSS) {
       if (!caching) {
         return genStyles(styleStuff, args, colors);
       }
-
-      if (cached.source[0] === args[0] && cached.source[0] === args[1]) {
+      // quick test
+      if (cached.value && cached.source[0] === args[0] && cached.source[0] === args[1]) {
         return cached.value;
       }
-
+      // deep test
       var key = "" + JSON.stringify(args[0]) + JSON.stringify(args[1]);
       if (key === cached.key) {
         return cached.value;
