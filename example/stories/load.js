@@ -14,9 +14,11 @@ import Basic4 from './Basics/WrappingAnExistingElement';
 import sourceBasic5 from 'raw-loader!./Basics/ReusingElements.js?sourceMap';
 import Basic5 from './Basics/ReusingElements';
 
-import sourceBasic6 from 'raw-loader!./Basics/PassingStyleAndFuntionAsArray.js?sourceMap';
-import Basic6 from './Basics/PassingStyleAndFuntionAsArray';
+import sourceBasic6 from 'raw-loader!./Basics/PassingStyleAndFuntion.js?sourceMap';
+import Basic6 from './Basics/PassingStyleAndFuntion';
 
+import sourceBasic7 from 'raw-loader!./Basics/PassingStyleAndFuntionAsArray.js?sourceMap';
+import Basic7 from './Basics/PassingStyleAndFuntionAsArray';
 
 import sourceCombine from 'raw-loader!./CombineStyles/CreatingAndApplyingAStyle.js?sourceMap';
 import Combine from './CombineStyles/CreatingAndApplyingAStyle';
@@ -81,8 +83,14 @@ const tree = {
       options: {propTables: false, source: false }
     },
     {
-      title:'Passing Style and Funtion as Array',
+      title:'Passing Style and Funtion as arguments',
       source:sourceBasic6,  element:Basic6,
+      options: {propTables: false, source: false }
+    },
+    {
+      title:'⚠ Passing Style and Funtion as Array',
+      info:'⚠ This feature is deprecated and will be removed in a later version ⚠',
+      source:sourceBasic7,  element:Basic7,
       options: {propTables: false, source: false }
     }
 

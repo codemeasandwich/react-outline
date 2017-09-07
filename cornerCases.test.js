@@ -1,7 +1,7 @@
 
 import React from 'react';
 import faker from 'faker';
-import outline, { withOptions } from "react-outline"
+import outline, { withOptions, setOptions } from "react-outline"
 import { Styles } from 'react-outline'
 import { shallow, mount, render } from 'enzyme';
 
@@ -110,6 +110,18 @@ describe('In production mode', () => {
       beforeAll(() => global.__TEST__ = false);
       afterAll( () => global.__TEST__ = true);
 
+      it('should throw if no style values are passed', () => {
+        expect(() => {
+          styles = outline();
+        }).toThrow();
+      })
+
+      it('should throw if a style value is not object or function', () => {
+        expect(() => {
+          styles = outline({[classNameGen()]:classNameGen()}); // random name with random value
+        }).toThrow();
+      })
+
       it('generated elements using CSS features need a unique class', () => {
 
         const titleN = classNameGen();
@@ -129,4 +141,44 @@ describe('In production mode', () => {
             const elem = shallow(<Title/>);
             expect(elem.prop("className")).toMatch(/^react-outline-[a-zA-Z0-9]{10}$/)
       })
+
+      it('should run style function once if cased and same input', () => {
+          let callCount = 0;
+          let styles = {
+            crazyElem : (x)=> callCount++
+          };
+          styles = outline(styles,{caching:true}); // random name with random value
+
+          styles.crazyElem(5);
+          styles.crazyElem(5);
+
+          expect(callCount).toEqual(1);
+      })
+/*
+      it('should skip unknown css props', () => {
+          let styles = {
+            niceElem : {
+                base  :{color:"black" },
+              ":hover":{color:"gray"},
+              "~touch":{color:"boo!"}
+            }
+          };
+          styles = outline(styles); // random name with random value
+      })*/
+})
+
+describe('Check setOptions', () => {
+
+    it('should throw no options are passed', () => {
+      expect(() => {
+        setOptions();
+      }).toThrow();
+    })
+
+    it('should allow dev to set custom colours', () => {
+      const colors = {crazyRed:"RED!"};
+      expect(outline.colors).toBeUndefined();
+      setOptions({colors:{crazyRed:"RED!"}});
+      expect(outline.colors).toEqual(colors);
+    })
 })

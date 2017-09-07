@@ -119,13 +119,12 @@ exports[`Basics Generate an implied named element 1`] = `
 </table>
 `;
 
-exports[`Basics Passing Style and Funtion as Array 1`] = `
+exports[`Basics Passing Style and Funtion as arguments 1`] = `
 <div
   name="title"
   style={
     Object {
       "backgroundColor": "red",
-      "color": "white",
     }
   }
 >
@@ -167,6 +166,20 @@ exports[`Basics Wrapping an existing element 1`] = `
   }
 >
   Hello, 
+  basic
+</div>
+`;
+
+exports[`Basics ⚠ Passing Style and Funtion as Array 1`] = `
+<div
+  name="title"
+  style={
+    Object {
+      "backgroundColor": "red",
+      "color": "white",
+    }
+  }
+>
   basic
 </div>
 `;

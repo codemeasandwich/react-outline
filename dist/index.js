@@ -48,7 +48,7 @@ function separateCssStyle(styles) {
 // Convert a JS object to CSS string. Similar to React's output of CSS, extracted into a module.
 function object2css(obj) {
   var keys = Object.keys(obj);
-  if (!keys.length) return '';
+  //if (!keys.length) return ''
   var i = void 0,
       len = keys.length;
   var result = '';
@@ -90,11 +90,12 @@ function replacedStyleFn(_ref, args) {
   var processedStyles = 1 === styleFn.length ? styleFn(args[0]) : styleFn(styleCSS, args[0]);
 
   var styleBase = Object.assign({}, styleCSS && styleCSS.base || styleCSS || {});
-
-  for (var stylePropName in styleBase) {
-    if (specialCharacters.includes(stylePropName[0])) delete styleBase[stylePropName];
-  }
-
+  /*
+      for(const stylePropName in styleBase){
+        if(specialCharacters.includes(stylePropName[0]))
+        delete styleBase[stylePropName];
+      }
+  */
   var autoAddStyles = [],
       firstVal = args[1] || args[0];
   //console.log(args)
@@ -105,16 +106,7 @@ function replacedStyleFn(_ref, args) {
       //    autoAddStyles.push({cssName:firstVal[cssName]})
     });
   }
-  /*    if(radium){
-        if(processedStyles){
-          if(Array.isArray(processedStyles))
-            return [styleBase,...autoAddStyles,...processedStyles];
-          else
-            return [styleBase,...autoAddStyles,processedStyles];
-        } // END if(processedStyles)
-        return styleBase
-      } // END if(radium)
-      */
+
   return Object.assign.apply(Object, [{}, styleBase].concat(autoAddStyles, [processedStyles]));
 }
 
@@ -193,35 +185,6 @@ function topLevelWrapStyles(_styles) {
     _styles = Object.assign({}, { base: base }, fns);
   }
 
-  //++++++++++++++++++++++++++++++++++++++++ { base:{} }
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-  /*
-  
-  debugger;
-      if(Array.isArray(_styles)){
-        _styles = Object.assign({},{base:_styles[0]},_styles[1])
-      } else if(! _styles.base){
-      const styleFunctions = {};
-  
-      for(const stylePropName in options){
-        if("function" === typeof options[stylePropName]
-  
-  
-  
-      || "function" === typeof _styles[stylePropName])
-  
-  
-  
-          styleFunctions[stylePropName] = options[stylePropName];
-      }
-  
-      _styles = Object.assign({},{base:_styles},styleFunctions)
-    }
-  */
-  //_styles = deepFreeze(_styles)
-
   var wrappedStyles = wrapStyles(_styles, options, styleCSS);
   wrappedStyles.colors = wrappedStyles.colors || options && options.colors || userSetOptions && userSetOptions.colors;
   return wrappedStyles;
@@ -263,6 +226,7 @@ function wrapStyles(_styles, options, styleCSS) {
             baseStyle[propN] = styleCSS[styleName][propN];
           }
         }
+        //splict ":" and "@" from all over styles
 
         var _separateCssStyle = separateCssStyle(baseStyle),
             css = _separateCssStyle.css,
@@ -286,7 +250,9 @@ function wrapStyles(_styles, options, styleCSS) {
 
           classes[randomClassName] = Object.keys(css).reduce(function (cssString, propName) {
             var styleContent = object2css(styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
-            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else return cssString;
+            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;
+            //  else // skip unknown prop
+            //      return cssString
           }, classes[randomClassName]);
 
           inlineStyle = {};
@@ -295,8 +261,6 @@ function wrapStyles(_styles, options, styleCSS) {
         // return <${elemName} ...props />
         return function (props) {
           var elemProps = Object.assign({}, props);
-          //  debugger;
-
 
           var passedTrueProps = Object.keys(props).filter(function (name) {
             return props[name] === true && Object.keys(styleCSS[styleName]).includes(name);
@@ -331,30 +295,7 @@ function wrapStyles(_styles, options, styleCSS) {
 
 
       var styleStuff = { styleCSS: styleCSS[styleName], styleFn: styleFn /*,radium*/ };
-      /*
-            if("bazXX" === styleName){
-              console.log("A");
-      
-              console.log("styleName",styleName)
-              console.log("_styles",_styles)
-              console.log("_styles[styleName]",_styles[styleName])
-      
-      
-              console.log(styleName);
-              console.log(styleStuff);
-              console.log(args);
-              console.log(colors);
-              console.log(styleFn);
-              console.log(styleFn());
-              console.log(styleStuff.styleFn,styleStuff.styleFn());
-              console.log(styleStuff.styleCSS,styleStuff.styleCSS());
-      
-              console.log(genStyles(styleStuff,args,colors))
-              console.log("Z");
-              console.log("Z");
-              console.log("Z");
-            }
-      */
+
       if (!caching) {
         return genStyles(styleStuff, args, colors);
       }

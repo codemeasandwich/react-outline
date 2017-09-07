@@ -29,7 +29,7 @@ function separateCssStyle(styles){
 // Convert a JS object to CSS string. Similar to React's output of CSS, extracted into a module.
 function object2css(obj) {
   let keys = Object.keys(obj)
-  if (!keys.length) return ''
+  //if (!keys.length) return ''
   let i, len = keys.length
   let result = ''
 
@@ -67,12 +67,12 @@ function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
     const processedStyles = 1=== styleFn.length ? styleFn(args[0]) : styleFn(styleCSS,args[0]);
 
     const styleBase = Object.assign({},styleCSS && styleCSS.base||styleCSS||{})
-
+/*
     for(const stylePropName in styleBase){
       if(specialCharacters.includes(stylePropName[0]))
       delete styleBase[stylePropName];
     }
-
+*/
     const autoAddStyles = [], firstVal = args[1] || args[0];
     //console.log(args)
     if(!!firstVal && "object" === typeof firstVal){
@@ -201,7 +201,7 @@ function wrapStyles(_styles,options,styleCSS){
             baseStyle[propN] = styleCSS[styleName][propN]
           }
         }
-
+        //splict ":" and "@" from all over styles
         const { css, style } = separateCssStyle(baseStyle);
         /*
         const cssPropNames = Object.keys(styleCSS[styleName])
@@ -225,8 +225,8 @@ function wrapStyles(_styles,options,styleCSS){
                 return cssString + ` ${propName}{ .${randomClassName}{ ${ styleContent } } } `
             else if(propName[0] === ":")
                 return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
-            else
-                return cssString
+          //  else // skip unknown prop
+          //      return cssString
           } ,classes[randomClassName] )
 
          inlineStyle = {};
