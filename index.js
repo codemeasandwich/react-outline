@@ -65,6 +65,7 @@ function makeid(side = 10) {
 function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
 
     const processedStyles = 1=== styleFn.length ? styleFn(args[0]) : styleFn(styleCSS,args[0]);
+
     const styleBase = Object.assign({},styleCSS && styleCSS.base||styleCSS||{})
 
     for(const stylePropName in styleBase){
@@ -83,16 +84,7 @@ function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
         //    autoAddStyles.push({cssName:firstVal[cssName]})
         });
     }
-/*    if(radium){
-      if(processedStyles){
-        if(Array.isArray(processedStyles))
-          return [styleBase,...autoAddStyles,...processedStyles];
-        else
-          return [styleBase,...autoAddStyles,processedStyles];
-      } // END if(processedStyles)
-      return styleBase
-    } // END if(radium)
-    */
+
     return Object.assign({},styleBase,...autoAddStyles,processedStyles);
 }
 
@@ -118,22 +110,55 @@ const genStyles = (styleStuff, args,colors) =>{
 
   return venderSpecificPrefixes;
 }
-function topLevelWrapStyles(_styles,options,styleCSS){
 
-    if(Array.isArray(_styles)){
-      _styles = Object.assign({},{base:_styles[0]},_styles[1])
-    } else if(! _styles.base){
-    const styleFunctions = {};
+//+++++++++++++++++++++++++++++ { base:{}, foo: ()=> }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+function topLevelWrapStyles(_styles,options={},styleCSS={}){
 
-    for(const stylePropName in options){
-      if("function" === typeof options[stylePropName])
-        styleFunctions[stylePropName] = options[stylePropName];
-    }
+if("object" !== typeof _styles){
+  throw new Error("Bad style values: "+JSON.stringify(_styles))
+}
 
-    _styles = Object.assign({},{base:_styles},styleFunctions)
+//+++++++++++++++++++++++++++++++++++++++ [ base, fn ]
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+if(Array.isArray(_styles)){
+
+    _styles = Object.assign({},{base:_styles[0]},_styles[1])
+
+} else if(!("base" in _styles)) {
+
+  const base = {}, fns = {};
+
+//++++++++++++++ { table: {}, header:{} }, fn:{ ()=> }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  let optionsIsFns = true;
+
+  for(const prop in options){
+      if("function" !== typeof options){
+        optionsIsFns = false;
+      }
   }
 
-  //_styles = deepFreeze(_styles)
+  if(optionsIsFns){
+    Object.assign(fns,options)
+  }
+
+  for(const prop in _styles){
+//+++++++++++++++++++++++++++ { table: {}, header:{} }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+      if("object" === typeof _styles[prop]){
+        base[prop] = _styles[prop]
+//++++++++++++++++++++++++++++++++++++++ { foo: ()=> }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+      } else if("function" === typeof _styles[prop]){
+        fns[prop] = _styles[prop]
+      } else {
+        throw new Error("Bad style value: "+JSON.stringify(_styles[prop]))
+      }
+  }
+  _styles = Object.assign({},{base},fns);
+}
 
   const wrappedStyles = wrapStyles(_styles,options,styleCSS);
         wrappedStyles.colors = wrappedStyles.colors
@@ -161,6 +186,7 @@ function wrapStyles(_styles,options,styleCSS){
   .forEach((styleName)=>{
 
     const styleFn = _styles[styleName]||(()=>{});
+
     const cached = { key:null, value:null, source:[] }
     replacedStyle[styleName] = function(...args) {
       let elemName = args[0];
@@ -209,8 +235,6 @@ function wrapStyles(_styles,options,styleCSS){
         // return <${elemName} ...props />
         return props => {
           const elemProps = Object.assign({},props);
-        //  debugger;
-
 
         let passedTrueProps = Object.keys(props)
                                     .filter( name => props[name] === true && Object.keys(styleCSS[styleName]).includes(name) )
@@ -241,7 +265,7 @@ function wrapStyles(_styles,options,styleCSS){
             if("" === elemProps.className)
                 delete elemProps.className;
 
-          return createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
+          return React.createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
         }//,props.children
 
       } // elem gen
@@ -294,18 +318,7 @@ function Styles(props){
  let css = Object.keys(classes).map(className => classes[className] ).join(" ");
   css += props.children || undefined;
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return createElement("style",{},css)
-}
-
-// wrap createElement
-function createElement(...args){
-
-  if(userSetOptions.createElement){
-    return userSetOptions.createElement(...args)
-  } else {
-    return React.createElement(...args)
-  }
-
+  return React.createElement("style",{},css)
 }
 
 export default topLevelWrapStyles

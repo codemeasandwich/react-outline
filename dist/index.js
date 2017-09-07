@@ -88,6 +88,7 @@ function replacedStyleFn(_ref, args) {
 
 
   var processedStyles = 1 === styleFn.length ? styleFn(args[0]) : styleFn(styleCSS, args[0]);
+
   var styleBase = Object.assign({}, styleCSS && styleCSS.base || styleCSS || {});
 
   for (var stylePropName in styleBase) {
@@ -139,20 +140,86 @@ var genStyles = function genStyles(styleStuff, args, colors) {
 
   return venderSpecificPrefixes;
 };
-function topLevelWrapStyles(_styles, options, styleCSS) {
 
-  if (Array.isArray(_styles)) {
-    _styles = Object.assign({}, { base: _styles[0] }, _styles[1]);
-  } else if (!_styles.base) {
-    var styleFunctions = {};
+//+++++++++++++++++++++++++++++ { base:{}, foo: ()=> }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+function topLevelWrapStyles(_styles) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var styleCSS = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-    for (var stylePropName in options) {
-      if ("function" === typeof options[stylePropName]) styleFunctions[stylePropName] = options[stylePropName];
-    }
 
-    _styles = Object.assign({}, { base: _styles }, styleFunctions);
+  if ("object" !== (typeof _styles === 'undefined' ? 'undefined' : _typeof(_styles))) {
+    throw new Error("Bad style values: " + JSON.stringify(_styles));
   }
 
+  //+++++++++++++++++++++++++++++++++++++++ [ base, fn ]
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++
+  if (Array.isArray(_styles)) {
+
+    _styles = Object.assign({}, { base: _styles[0] }, _styles[1]);
+  } else if (!("base" in _styles)) {
+
+    var base = {},
+        fns = {};
+
+    //++++++++++++++ { table: {}, header:{} }, fn:{ ()=> }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    var optionsIsFns = true;
+
+    for (var prop in options) {
+      if ("function" !== typeof options) {
+        optionsIsFns = false;
+      }
+    }
+
+    if (optionsIsFns) {
+      Object.assign(fns, options);
+    }
+
+    for (var _prop in _styles) {
+      //+++++++++++++++++++++++++++ { table: {}, header:{} }
+      //++++++++++++++++++++++++++++++++++++++++++++++++++++
+      if ("object" === _typeof(_styles[_prop])) {
+        base[_prop] = _styles[_prop];
+        //++++++++++++++++++++++++++++++++++++++ { foo: ()=> }
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++
+      } else if ("function" === typeof _styles[_prop]) {
+        fns[_prop] = _styles[_prop];
+      } else {
+        throw new Error("Bad style value: " + JSON.stringify(_styles[_prop]));
+      }
+    }
+    _styles = Object.assign({}, { base: base }, fns);
+  }
+
+  //++++++++++++++++++++++++++++++++++++++++ { base:{} }
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+  /*
+  
+  debugger;
+      if(Array.isArray(_styles)){
+        _styles = Object.assign({},{base:_styles[0]},_styles[1])
+      } else if(! _styles.base){
+      const styleFunctions = {};
+  
+      for(const stylePropName in options){
+        if("function" === typeof options[stylePropName]
+  
+  
+  
+      || "function" === typeof _styles[stylePropName])
+  
+  
+  
+          styleFunctions[stylePropName] = options[stylePropName];
+      }
+  
+      _styles = Object.assign({},{base:_styles},styleFunctions)
+    }
+  */
   //_styles = deepFreeze(_styles)
 
   var wrappedStyles = wrapStyles(_styles, options, styleCSS);
@@ -177,6 +244,7 @@ function wrapStyles(_styles, options, styleCSS) {
   }).forEach(function (styleName) {
 
     var styleFn = _styles[styleName] || function () {};
+
     var cached = { key: null, value: null, source: [] };
     replacedStyle[styleName] = function () {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -257,13 +325,36 @@ function wrapStyles(_styles, options, styleCSS) {
           elemProps.className += randomClassName || "";
           if ("" === elemProps.className) delete elemProps.className;
 
-          return createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
+          return _react2.default.createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
         }; //,props.children
       } // elem gen
 
 
       var styleStuff = { styleCSS: styleCSS[styleName], styleFn: styleFn /*,radium*/ };
-
+      /*
+            if("bazXX" === styleName){
+              console.log("A");
+      
+              console.log("styleName",styleName)
+              console.log("_styles",_styles)
+              console.log("_styles[styleName]",_styles[styleName])
+      
+      
+              console.log(styleName);
+              console.log(styleStuff);
+              console.log(args);
+              console.log(colors);
+              console.log(styleFn);
+              console.log(styleFn());
+              console.log(styleStuff.styleFn,styleStuff.styleFn());
+              console.log(styleStuff.styleCSS,styleStuff.styleCSS());
+      
+              console.log(genStyles(styleStuff,args,colors))
+              console.log("Z");
+              console.log("Z");
+              console.log("Z");
+            }
+      */
       if (!caching) {
         return genStyles(styleStuff, args, colors);
       }
@@ -312,17 +403,7 @@ function Styles(props) {
   }).join(" ");
   css += props.children || undefined;
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return createElement("style", {}, css);
-}
-
-// wrap createElement
-function createElement() {
-
-  if (userSetOptions.createElement) {
-    return userSetOptions.createElement.apply(userSetOptions, arguments);
-  } else {
-    return _react2.default.createElement.apply(_react2.default, arguments);
-  }
+  return _react2.default.createElement("style", {}, css);
 }
 
 exports.default = topLevelWrapStyles;

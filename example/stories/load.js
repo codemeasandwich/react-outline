@@ -11,6 +11,13 @@ import Basic3 from './Basics/ImpliedTags';
 import sourceBasic4 from 'raw-loader!./Basics/WrappingAnExistingElement.js?sourceMap';
 import Basic4 from './Basics/WrappingAnExistingElement';
 
+import sourceBasic5 from 'raw-loader!./Basics/ReusingElements.js?sourceMap';
+import Basic5 from './Basics/ReusingElements';
+
+import sourceBasic6 from 'raw-loader!./Basics/PassingStyleAndFuntionAsArray.js?sourceMap';
+import Basic6 from './Basics/PassingStyleAndFuntionAsArray';
+
+
 import sourceCombine from 'raw-loader!./CombineStyles/CreatingAndApplyingAStyle.js?sourceMap';
 import Combine from './CombineStyles/CreatingAndApplyingAStyle';
 
@@ -66,6 +73,16 @@ const tree = {
     {
       title:'Generate an implied named element',
       source:sourceBasic3,  element:Basic3,
+      options: {propTables: false, source: false }
+    },
+    {
+      title:'Reusing elements',
+      source:sourceBasic5,  element:Basic5,
+      options: {propTables: false, source: false }
+    },
+    {
+      title:'Passing Style and Funtion as Array',
+      source:sourceBasic6,  element:Basic6,
       options: {propTables: false, source: false }
     }
 

@@ -8,5 +8,6 @@ let styles = {
 }
 styles = outline(styles);
 
-const Title = <div style={styles.title()}>basic</div>
-export default Title
+const Title = styles.title`span`
+
+export default <div><Title>foo</Title><Title>bar</Title></div>
