@@ -169,7 +169,6 @@ if(Array.isArray(_styles)){
 
 function wrapStyles(_styles,options,styleCSS){
 
-
   options = Object.assign({},userSetOptions,options);
 //  const radium = !!options.radium;
   const caching = !!options.caching;
@@ -193,7 +192,7 @@ function wrapStyles(_styles,options,styleCSS){
       if(Array.isArray(elemName) && elemName.hasOwnProperty("raw")){
 
         elemName = elemName[0] || args[1];
-        let inlineStyle = replacedStyle[styleName]();
+        let inlineStyle = null;//replacedStyle[styleName]();
 
         const baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {}
         for(const propN in styleCSS[styleName]){
@@ -237,7 +236,7 @@ function wrapStyles(_styles,options,styleCSS){
           const elemProps = Object.assign({},props);
 
         let passedTrueProps = Object.keys(props)
-                                    .filter( name => props[name] === true && Object.keys(styleCSS[styleName]).includes(name) )
+                                    .filter( name => props[name] === true && styleCSS[styleName] && name in styleCSS[styleName] )
         if(0 < passedTrueProps.length){
           passedTrueProps = passedTrueProps.reduce((styleProps, name) => {
             // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
@@ -254,7 +253,7 @@ function wrapStyles(_styles,options,styleCSS){
                 passedTrueProps = Object.assign({},props.style,passedTrueProps);
             elemProps.style = replacedStyle[styleName](props.style,passedTrueProps);
           } else {
-            elemProps.style = inlineStyle;
+            elemProps.style = inlineStyle || replacedStyle[styleName]();
           }
 
           if(options.named)

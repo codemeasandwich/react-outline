@@ -218,7 +218,7 @@ function wrapStyles(_styles, options, styleCSS) {
       if (Array.isArray(elemName) && elemName.hasOwnProperty("raw")) {
 
         elemName = elemName[0] || args[1];
-        var inlineStyle = replacedStyle[styleName]();
+        var inlineStyle = null; //replacedStyle[styleName]();
 
         var baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {};
         for (var propN in styleCSS[styleName]) {
@@ -263,7 +263,7 @@ function wrapStyles(_styles, options, styleCSS) {
           var elemProps = Object.assign({}, props);
 
           var passedTrueProps = Object.keys(props).filter(function (name) {
-            return props[name] === true && Object.keys(styleCSS[styleName]).includes(name);
+            return props[name] === true && styleCSS[styleName] && name in styleCSS[styleName];
           });
           if (0 < passedTrueProps.length) {
             passedTrueProps = passedTrueProps.reduce(function (styleProps, name) {
@@ -280,7 +280,7 @@ function wrapStyles(_styles, options, styleCSS) {
             if (props.style instanceof Object) passedTrueProps = Object.assign({}, props.style, passedTrueProps);
             elemProps.style = replacedStyle[styleName](props.style, passedTrueProps);
           } else {
-            elemProps.style = inlineStyle;
+            elemProps.style = inlineStyle || replacedStyle[styleName]();
           }
 
           if (options.named) elemProps.name = elemProps.name || styleName;

@@ -4,6 +4,7 @@ import faker from 'faker';
 import outline, { withOptions, setOptions } from "react-outline"
 import { Styles } from 'react-outline'
 import { shallow, mount, render } from 'enzyme';
+import renderer from 'react-test-renderer';
 
 function randomColor(){
   return '#'+Math.floor(Math.random()*16777215).toString(16);
@@ -153,6 +154,40 @@ describe('In production mode', () => {
           styles.crazyElem(5);
 
           expect(callCount).toEqual(1);
+      })
+
+      it('should be able to pass an value to style logic', () => {
+          const css = {    };
+          const logic = { dogs: val => ({ color: "string" === typeof val ? "white" : "black" }) };
+          const styles = outline(css,logic); // random name with random value
+
+          const Dogs = styles.dogs`div`;
+          expect(renderer.create(<Dogs style={"boo"} />).toJSON()).toMatchSnapshot();
+          expect(renderer.create(<Dogs style={7}     />).toJSON()).toMatchSnapshot();
+      })
+
+      it('should be able to destructur assignments on generated element', () => {
+          const css = {    };
+          const logic = { cats: ({number})=> ({ color: number > 5 ? "blue" : "pink" }) };
+          const styles = outline(css,logic); // random name with random value
+
+          const Cats = styles.cats`div`;
+          expect(renderer.create(<Cats style={{number:2}} />).toJSON()).toMatchSnapshot();
+          expect(renderer.create(<Cats style={{number:7}} />).toJSON()).toMatchSnapshot();
+      })
+
+      it('should be able to pass true value', () => {
+          const css = {
+            input : {
+              base:{color: "red"},
+              big:{fontSize: "20px"}
+            }
+          };
+          const logic = { input: ()=> ({ background: "gray" }) };
+          const styles = outline(css,logic); // random name with random value
+
+          const Input = styles.input``;
+          expect(renderer.create(<Input big disabled />).toJSON()).toMatchSnapshot();
       })
 /*
       it('should skip unknown css props', () => {

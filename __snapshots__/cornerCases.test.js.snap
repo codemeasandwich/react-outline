@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`In production mode should be able to destructur assignments on generated element 1`] = `
+<div
+  name="cats"
+  style={
+    Object {
+      "color": "pink",
+    }
+  }
+/>
+`;
+
+exports[`In production mode should be able to destructur assignments on generated element 2`] = `
+<div
+  name="cats"
+  style={
+    Object {
+      "color": "blue",
+    }
+  }
+/>
+`;
+
+exports[`In production mode should be able to pass an value to style logic 1`] = `
+<div
+  name="dogs"
+  style={
+    Object {
+      "color": "white",
+    }
+  }
+/>
+`;
+
+exports[`In production mode should be able to pass an value to style logic 2`] = `
+<div
+  name="dogs"
+  style={
+    Object {
+      "color": "black",
+    }
+  }
+/>
+`;
+
+exports[`In production mode should be able to pass true value 1`] = `
+<input
+  disabled={true}
+  name="input"
+  style={
+    Object {
+      "background": "gray",
+      "color": "red",
+      "fontSize": "20px",
+    }
+  }
+/>
+`;
