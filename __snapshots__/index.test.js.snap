@@ -125,6 +125,7 @@ exports[`Basics Passing Style and Funtion as arguments 1`] = `
   style={
     Object {
       "backgroundColor": "red",
+      "color": "white",
     }
   }
 >

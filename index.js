@@ -135,7 +135,7 @@ if(Array.isArray(_styles)){
   let optionsIsFns = true;
 
   for(const prop in options){
-      if("function" !== typeof options){
+      if(options.hasOwnProperty(prop) && "function" !== typeof options[prop]){
         optionsIsFns = false;
       }
   }

@@ -160,7 +160,7 @@ function topLevelWrapStyles(_styles) {
     var optionsIsFns = true;
 
     for (var prop in options) {
-      if ("function" !== typeof options) {
+      if (options.hasOwnProperty(prop) && "function" !== typeof options[prop]) {
         optionsIsFns = false;
       }
     }
