@@ -3,7 +3,8 @@ import addPx from 'add-px-to-style'
 import hyphenate from 'hyphenate-style-name'
 import React from 'react'
 
-const specialCharacters = "@:";//['@',':'].join("");
+const specialCharacters = "@: ";//['@',':'].join("");
+const specialInnerCharacters = " >+~";//['@',':'].join("");
 
 function separateCssStyle(styles){
 
@@ -11,7 +12,7 @@ function separateCssStyle(styles){
   let style = {}
 
   for(const name in styles){
-    if(specialCharacters.includes(name[0]))
+    if(specialCharacters.includes(name[0]) )//|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
         css[name] = styles[name]
     else
         style[name] = styles[name]
@@ -78,7 +79,7 @@ function replacedStyleFn({styleCSS,styleFn/*,radium*/},args){
     if(!!firstVal && "object" === typeof firstVal){
         Object.keys(firstVal)
               .forEach( cssName => {
-          if(true === firstVal[cssName])
+          if(true === firstVal[cssName] && styleCSS && cssName in styleCSS)
             autoAddStyles.push(styleCSS[cssName])
         //  else // to bind style value to output obj
         //    autoAddStyles.push({cssName:firstVal[cssName]})
@@ -106,9 +107,13 @@ const genStyles = (styleStuff, args,colors) =>{
   const userResult = replacedStyleFn(styleStuff,args);
 
   const swapedColor = replaceColors(colors,userResult);
-  const venderSpecificPrefixes = prefixer.prefix(swapedColor);
+  for(const name in swapedColor){
+    if(!specialCharacters.includes(name[0]))
+    swapedColor[name] = prefixer.prefix({a:swapedColor[name]}).a;
+  }
 
-  return venderSpecificPrefixes;
+
+  return swapedColor;
 }
 
 //+++++++++++++++++++++++++++++ { base:{}, foo: ()=> }
@@ -196,8 +201,8 @@ function wrapStyles(_styles,options,styleCSS){
 
         const baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {}
         for(const propN in styleCSS[styleName]){
-          if(specialCharacters.includes(propN[0])){
-            baseStyle[propN] = styleCSS[styleName][propN]
+          if(specialCharacters.includes(propN[0]) || !!propN.match(new RegExp(`[${specialInnerCharacters}]`, "gi"))){
+            baseStyle[(propN[0] === ":")?propN:` ${propN}`] = styleCSS[styleName][propN]
           }
         }
         //splict ":" and "@" from all over styles
@@ -223,6 +228,8 @@ function wrapStyles(_styles,options,styleCSS){
             if(propName[0] === "@")
                 return cssString + ` ${propName}{ .${randomClassName}{ ${ styleContent } } } `
             else if(propName[0] === ":")
+                return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
+            else if(propName[0] === " ")
                 return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
           //  else // skip unknown prop
           //      return cssString
@@ -315,7 +322,7 @@ function setOptions(options){
 
 function Styles(props){
  let css = Object.keys(classes).map(className => classes[className] ).join(" ");
-  css += props.children || undefined;
+  css += props.children || "";
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
   return React.createElement("style",{},css)
 }

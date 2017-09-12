@@ -27,7 +27,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var specialCharacters = "@:"; //['@',':'].join("");
+var specialCharacters = "@: "; //['@',':'].join("");
+var specialInnerCharacters = " >+~"; //['@',':'].join("");
 
 function separateCssStyle(styles) {
 
@@ -35,7 +36,8 @@ function separateCssStyle(styles) {
   var style = {};
 
   for (var name in styles) {
-    if (specialCharacters.includes(name[0])) css[name] = styles[name];else style[name] = styles[name];
+    if (specialCharacters.includes(name[0])) //|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
+      css[name] = styles[name];else style[name] = styles[name];
   }
 
   if (0 === Object.keys(css).length) css = null;
@@ -101,7 +103,7 @@ function replacedStyleFn(_ref, args) {
   //console.log(args)
   if (!!firstVal && "object" === (typeof firstVal === 'undefined' ? 'undefined' : _typeof(firstVal))) {
     Object.keys(firstVal).forEach(function (cssName) {
-      if (true === firstVal[cssName]) autoAddStyles.push(styleCSS[cssName]);
+      if (true === firstVal[cssName] && styleCSS && cssName in styleCSS) autoAddStyles.push(styleCSS[cssName]);
       //  else // to bind style value to output obj
       //    autoAddStyles.push({cssName:firstVal[cssName]})
     });
@@ -128,9 +130,11 @@ var genStyles = function genStyles(styleStuff, args, colors) {
   var userResult = replacedStyleFn(styleStuff, args);
 
   var swapedColor = replaceColors(colors, userResult);
-  var venderSpecificPrefixes = prefixer.prefix(swapedColor);
+  for (var name in swapedColor) {
+    if (!specialCharacters.includes(name[0])) swapedColor[name] = prefixer.prefix({ a: swapedColor[name] }).a;
+  }
 
-  return venderSpecificPrefixes;
+  return swapedColor;
 };
 
 //+++++++++++++++++++++++++++++ { base:{}, foo: ()=> }
@@ -222,8 +226,8 @@ function wrapStyles(_styles, options, styleCSS) {
 
         var baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {};
         for (var propN in styleCSS[styleName]) {
-          if (specialCharacters.includes(propN[0])) {
-            baseStyle[propN] = styleCSS[styleName][propN];
+          if (specialCharacters.includes(propN[0]) || !!propN.match(new RegExp('[' + specialInnerCharacters + ']', "gi"))) {
+            baseStyle[propN[0] === ":" ? propN : ' ' + propN] = styleCSS[styleName][propN];
           }
         }
         //splict ":" and "@" from all over styles
@@ -250,7 +254,7 @@ function wrapStyles(_styles, options, styleCSS) {
 
           classes[randomClassName] = Object.keys(css).reduce(function (cssString, propName) {
             var styleContent = object2css(styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
-            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;
+            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else if (propName[0] === " ") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;
             //  else // skip unknown prop
             //      return cssString
           }, classes[randomClassName]);
@@ -342,7 +346,7 @@ function Styles(props) {
   var css = Object.keys(classes).map(function (className) {
     return classes[className];
   }).join(" ");
-  css += props.children || undefined;
+  css += props.children || "";
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
   return _react2.default.createElement("style", {}, css);
 }

@@ -201,7 +201,7 @@ exports[`CSS Helpers Css Source 1`] = `
 exports[`CSS Helpers Media Query 1`] = `
 <div>
   <style>
-     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }undefined
+     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }
   </style>
   <div
     className="react-outline-"
@@ -216,7 +216,7 @@ exports[`CSS Helpers Media Query 1`] = `
 exports[`CSS Helpers Mouse hover 1`] = `
 <div>
   <style>
-     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }undefined
+     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }
   </style>
   <div
     className="react-outline-"
