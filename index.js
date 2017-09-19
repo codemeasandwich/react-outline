@@ -28,7 +28,8 @@ function separateCssStyle(styles){
 }
 
 // Convert a JS object to CSS string. Similar to React's output of CSS, extracted into a module.
-function object2css(obj) {
+function object2css(colors,obj) {
+  obj = replaceColors(colors,obj);
   let keys = Object.keys(obj)
   //if (!keys.length) return ''
   let i, len = keys.length
@@ -202,7 +203,7 @@ function wrapStyles(_styles,options,styleCSS){
         const baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {}
         for(const propN in styleCSS[styleName]){
           if(specialCharacters.includes(propN[0]) || !!propN.match(new RegExp(`[${specialInnerCharacters}]`, "gi"))){
-            baseStyle[(propN[0] === ":")?propN:` ${propN}`] = styleCSS[styleName][propN]
+            baseStyle[propN] = styleCSS[styleName][propN]
           }
         }
         //splict ":" and "@" from all over styles
@@ -221,16 +222,16 @@ function wrapStyles(_styles,options,styleCSS){
           if(!global.__TEST__)
               randomClassName += makeid();
 
-          classes[randomClassName] = (style)?`.${randomClassName}{${ object2css(style) }}`:""
+          classes[randomClassName] = (style)?`.${randomClassName}{${ object2css(colors,style) }}`:""
 
           classes[randomClassName] = Object.keys(css).reduce( (cssString,propName) => {
-            const styleContent = object2css(styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
+            const styleContent = object2css(colors,styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
             if(propName[0] === "@")
                 return cssString + ` ${propName}{ .${randomClassName}{ ${ styleContent } } } `
             else if(propName[0] === ":")
                 return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
-            else if(propName[0] === " ")
-                return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
+            else
+                return ` .${randomClassName} ${propName}{ ${ styleContent } } ` + cssString
           //  else // skip unknown prop
           //      return cssString
           } ,classes[randomClassName] )
@@ -319,13 +320,21 @@ function setOptions(options){
   }
   Object.assign(userSetOptions,options)
 }
-
-function Styles(props){
+function buildCssString(props={}){
  let css = Object.keys(classes).map(className => classes[className] ).join(" ");
   css += props.children || "";
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return React.createElement("style",{},css)
+  return css
+}
+function Styles(props){
+  return React.createElement("style",{},buildCssString(props))
+}
+
+Styles.toString = ()=>buildCssString()
+
+const testing = {
+  resetCSS: ()=> {  for(const className of Object.getOwnPropertyNames(classes)){ delete classes[className] } }
 }
 
 export default topLevelWrapStyles
-export { withOptions, setOptions, Styles }
+export { withOptions, setOptions, Styles, testing }

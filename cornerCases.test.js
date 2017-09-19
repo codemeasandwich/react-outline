@@ -2,7 +2,7 @@
 import React from 'react';
 import faker from 'faker';
 import outline, { withOptions, setOptions } from "react-outline"
-import { Styles } from 'react-outline'
+import { Styles, testing } from 'react-outline'
 import { shallow, mount, render } from 'enzyme';
 import renderer from 'react-test-renderer';
 
@@ -200,6 +200,52 @@ describe('In production mode', () => {
           };
           styles = outline(styles); // random name with random value
       })*/
+
+
+})
+
+describe('CSS selectors', () => {
+  it('should allow you to select a nested element', () => {
+
+      testing.resetCSS();
+
+      const css = {
+        div : {
+          base:{color: "red"},
+          " .abc":{fontSize: "20px"}
+        }
+      };
+      const styles = outline(css); // random name with random value
+
+      const Elem = styles.div``;
+      expect(renderer.create(<div>
+        <Styles/>
+        <Elem/>
+      </div>).toJSON()).toMatchSnapshot();
+  })
+
+  it('should allow for color replacment', () => {
+
+      testing.resetCSS();
+
+      const custom_outline =  withOptions({colors:{squanchy:"#e5a939"}})
+
+      const css = {
+        div : {
+          base:{color: "squanchy"},
+          " .abc":{fontSize: "20px"}
+        }
+      };
+      const styles = outline(css); // random name with random value
+
+      const Elem = styles.div``;
+      expect(renderer.create(<div>
+        <Styles/>
+        <Elem/>
+      </div>).toJSON()).toMatchSnapshot();
+  })
+
+
 })
 
 describe('Check setOptions', () => {

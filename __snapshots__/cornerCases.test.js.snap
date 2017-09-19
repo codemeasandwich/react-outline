@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CSS selectors should allow for color replacment 1`] = `
+<div>
+  <style>
+     .react-outline- .abc{ font-size:20px; } .react-outline-{color:squanchy; }
+  </style>
+  <div
+    className="react-outline-"
+    name="div"
+    style={Object {}}
+  />
+</div>
+`;
+
+exports[`CSS selectors should allow you to select a nested element 1`] = `
+<div>
+  <style>
+     .react-outline- .abc{ font-size:20px; } .react-outline-{color:red; }
+  </style>
+  <div
+    className="react-outline-"
+    name="div"
+    style={Object {}}
+  />
+</div>
+`;
+
 exports[`In production mode should be able to destructur assignments on generated element 1`] = `
 <div
   name="cats"

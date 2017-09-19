@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Styles = exports.setOptions = exports.withOptions = undefined;
+exports.testing = exports.Styles = exports.setOptions = exports.withOptions = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -48,7 +48,8 @@ function separateCssStyle(styles) {
 }
 
 // Convert a JS object to CSS string. Similar to React's output of CSS, extracted into a module.
-function object2css(obj) {
+function object2css(colors, obj) {
+  obj = replaceColors(colors, obj);
   var keys = Object.keys(obj);
   //if (!keys.length) return ''
   var i = void 0,
@@ -227,7 +228,7 @@ function wrapStyles(_styles, options, styleCSS) {
         var baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {};
         for (var propN in styleCSS[styleName]) {
           if (specialCharacters.includes(propN[0]) || !!propN.match(new RegExp('[' + specialInnerCharacters + ']', "gi"))) {
-            baseStyle[propN[0] === ":" ? propN : ' ' + propN] = styleCSS[styleName][propN];
+            baseStyle[propN] = styleCSS[styleName][propN];
           }
         }
         //splict ":" and "@" from all over styles
@@ -250,11 +251,11 @@ function wrapStyles(_styles, options, styleCSS) {
 
           if (!global.__TEST__) randomClassName += makeid();
 
-          classes[randomClassName] = style ? '.' + randomClassName + '{' + object2css(style) + '}' : "";
+          classes[randomClassName] = style ? '.' + randomClassName + '{' + object2css(colors, style) + '}' : "";
 
           classes[randomClassName] = Object.keys(css).reduce(function (cssString, propName) {
-            var styleContent = object2css(styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
-            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else if (propName[0] === " ") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;
+            var styleContent = object2css(colors, styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
+            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else return ' .' + randomClassName + ' ' + propName + '{ ' + styleContent + ' } ' + cssString;
             //  else // skip unknown prop
             //      return cssString
           }, classes[randomClassName]);
@@ -341,17 +342,54 @@ function setOptions(options) {
   }
   Object.assign(userSetOptions, options);
 }
+function buildCssString() {
+  var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-function Styles(props) {
   var css = Object.keys(classes).map(function (className) {
     return classes[className];
   }).join(" ");
   css += props.children || "";
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
-  return _react2.default.createElement("style", {}, css);
+  return css;
 }
+function Styles(props) {
+  return _react2.default.createElement("style", {}, buildCssString(props));
+}
+
+Styles.toString = function () {
+  return buildCssString();
+};
+
+var testing = {
+  resetCSS: function resetCSS() {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = Object.getOwnPropertyNames(classes)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var className = _step.value;
+        delete classes[className];
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+  }
+};
 
 exports.default = topLevelWrapStyles;
 exports.withOptions = withOptions;
 exports.setOptions = setOptions;
 exports.Styles = Styles;
+exports.testing = testing;

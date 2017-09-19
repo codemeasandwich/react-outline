@@ -185,6 +185,29 @@ exports[`Basics ⚠ Passing Style and Funtion as Array 1`] = `
 </div>
 `;
 
+exports[`CSS Helpers Css Selector 1`] = `
+<div>
+  <style>
+     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }
+  </style>
+  <div
+    className="react-outline-"
+    name="title"
+    style={Object {}}
+  >
+    <div>
+      foo
+    </div>
+    <div>
+      bar
+    </div>
+    <div>
+      baz
+    </div>
+  </div>
+</div>
+`;
+
 exports[`CSS Helpers Css Source 1`] = `
 <div>
   <style>

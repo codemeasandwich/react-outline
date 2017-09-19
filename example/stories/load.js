@@ -53,6 +53,9 @@ import Css3 from './CSSHelpers/CssSource';
 import sourceCss4 from 'raw-loader!./CSSHelpers/VendorPrefix.js?sourceMap';
 import Css4 from './CSSHelpers/VendorPrefix';
 
+import sourceCss5 from 'raw-loader!./CSSHelpers/CssSelector.js?sourceMap';
+import Css5 from './CSSHelpers/CssSelector';
+
 import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
 import Animate from './Animate/basic';
 
@@ -132,6 +135,12 @@ const tree = {
       }
   ],
   "CSS Helpers":[
+  {
+     title:'Media Query',
+     info: 'Resize your screen to less then 600px',
+     source:sourceCss2,   element:Css2,
+     options: {propTables: false, source: false }
+  },
     {
        title:'Mouse hover',
        info: 'You need to include a react-outline Style tag at the top to your page',
@@ -139,15 +148,14 @@ const tree = {
        options: {propTables: false, source: false }
     },
     {
-       title:'Media Query',
-       info: 'Resize your screen to less then 600px',
-       source:sourceCss2,   element:Css2,
-       options: {propTables: false, source: false }
-    },
-    {
        title:'Css Source',
        source:sourceCss3,   element:Css3,
        options: {propTables: false }
+    },
+    {
+       title:'Css Selector',
+       source:sourceCss5,   element:Css5,
+       options: {propTables: false , source: false }
     },
     {
        title:'Vendor Auto-Prefix',
