@@ -66,7 +66,52 @@ function object2css(colors, obj) {
 }
 
 var prefixer = new _inlineStylePrefixer2.default();
-var classes = {};
+
+var classes = new function () {
+
+  var vals = {};
+  var subscribers = [];
+
+  this.publish = function (key, value) {
+
+    vals[key] = value;
+    subscribers.forEach(function (subscriber) {
+      return subscriber(vals);
+    });
+  };
+
+  this.subscribe = function (subscriber) {
+    return subscribers.push(subscriber);
+  };
+  this.get = function () {
+    return vals;
+  };
+  this.clear = function () {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = Object.getOwnPropertyNames(vals)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var className = _step.value;
+        delete vals[className];
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+  };
+}();
 
 function hasKids(obj) {
   for (var name in obj) {
@@ -195,6 +240,27 @@ function topLevelWrapStyles(_styles) {
   return wrappedStyles;
 }
 
+function genCss(_ref2) {
+  var randomClassName = _ref2.randomClassName,
+      css = _ref2.css,
+      styleCSS = _ref2.styleCSS,
+      colors = _ref2.colors,
+      style = _ref2.style,
+      styleName = _ref2.styleName;
+
+
+  var newStyle = style ? '.' + randomClassName + '{' + object2css(colors, style) + '}' : "";
+
+  newStyle = Object.keys(css).reduce(function (cssString, propName) {
+    var styleContent = object2css(colors, css[propName] || styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
+    if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else return ' .' + randomClassName + ' ' + propName + '{ ' + styleContent + ' } ' + cssString;
+    //  else // skip unknown prop
+    //      return cssString
+  }, newStyle);
+
+  return newStyle;
+}
+
 function wrapStyles(_styles, options, styleCSS) {
 
   options = Object.assign({}, userSetOptions, options);
@@ -251,20 +317,24 @@ function wrapStyles(_styles, options, styleCSS) {
 
           if (!global.__TEST__) randomClassName += makeid();
 
-          classes[randomClassName] = style ? '.' + randomClassName + '{' + object2css(colors, style) + '}' : "";
-
-          classes[randomClassName] = Object.keys(css).reduce(function (cssString, propName) {
-            var styleContent = object2css(colors, styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
-            if (propName[0] === "@") return cssString + (' ' + propName + '{ .' + randomClassName + '{ ' + styleContent + ' } } ');else if (propName[0] === ":") return ' .' + randomClassName + propName + '{ ' + styleContent + ' } ' + cssString;else return ' .' + randomClassName + ' ' + propName + '{ ' + styleContent + ' } ' + cssString;
-            //  else // skip unknown prop
-            //      return cssString
-          }, classes[randomClassName]);
+          classes.publish(randomClassName, genCss({ randomClassName: randomClassName, css: css, styleCSS: styleCSS, colors: colors, style: style, styleName: styleName }));
 
           inlineStyle = {};
         }
 
         // return <${elemName} ...props />
         return function (props) {
+
+          if ("css" in props) {
+
+            var updatedCss = Object.assign({}, css);
+
+            for (var selectorRule in props.css) {
+              updatedCss[selectorRule] = Object.assign({}, css[selectorRule], "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule]);
+            }
+            classes.publish(randomClassName, genCss({ randomClassName: randomClassName, css: updatedCss, styleCSS: styleCSS, colors: colors, style: style, styleName: styleName }));
+          }
+
           var elemProps = Object.assign({}, props);
 
           var passedTrueProps = Object.keys(props).filter(function (name) {
@@ -288,7 +358,13 @@ function wrapStyles(_styles, options, styleCSS) {
             elemProps.style = inlineStyle || replacedStyle[styleName]();
           }
 
-          if (options.named) elemProps.name = elemProps.name || styleName;
+          if (Object.keys(elemProps.style).length === 0) {
+            delete elemProps.style;
+          }
+
+          if (options.named) {
+            elemProps.name = elemProps.name || styleName;
+          }
 
           elemProps.className = elemProps.className || "";
           elemProps.className += randomClassName || "";
@@ -345,15 +421,38 @@ function setOptions(options) {
 function buildCssString() {
   var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  var css = Object.keys(classes).map(function (className) {
-    return classes[className];
+  var classesValues = classes.get();
+  var css = Object.keys(classesValues).map(function (className) {
+    return classesValues[className];
   }).join(" ");
   css += props.children || "";
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
   return css;
 }
 function Styles(props) {
-  return _react2.default.createElement("style", {}, buildCssString(props));
+
+  var StylesElem = _react2.default.createClass({
+    displayName: "Styles",
+    getInitialState: function getInitialState() {
+      var _this = this;
+
+      // setTimeout to fix: Warning: setState(...): Cannot update during an existing state transition
+      classes.subscribe(function () {
+        return setTimeout(function () {
+          return _this.setState({ cssString: buildCssString(props) });
+        }, 0);
+      });
+      return { cssString: buildCssString(props) };
+    },
+    render: function render() {
+      return _react2.default.createElement(
+        'style',
+        null,
+        this.state.cssString
+      );
+    }
+  });
+  return _react2.default.createElement(StylesElem);
 }
 
 Styles.toString = function () {
@@ -361,31 +460,7 @@ Styles.toString = function () {
 };
 
 var testing = {
-  resetCSS: function resetCSS() {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = Object.getOwnPropertyNames(classes)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var className = _step.value;
-        delete classes[className];
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-  }
+  resetCSS: classes.clear
 };
 
 exports.default = topLevelWrapStyles;

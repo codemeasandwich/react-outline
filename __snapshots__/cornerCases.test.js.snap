@@ -8,7 +8,6 @@ exports[`CSS selectors should allow for color replacment 1`] = `
   <div
     className="react-outline-"
     name="div"
-    style={Object {}}
   />
 </div>
 `;
@@ -21,7 +20,6 @@ exports[`CSS selectors should allow you to select a nested element 1`] = `
   <div
     className="react-outline-"
     name="div"
-    style={Object {}}
   />
 </div>
 `;

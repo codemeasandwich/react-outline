@@ -56,6 +56,10 @@ import Css4 from './CSSHelpers/VendorPrefix';
 import sourceCss5 from 'raw-loader!./CSSHelpers/CssSelector.js?sourceMap';
 import Css5 from './CSSHelpers/CssSelector';
 
+import sourceCss6 from 'raw-loader!./CSSHelpers/DynamicCssSelectors.js?sourceMap';
+import Css6 from './CSSHelpers/DynamicCssSelectors';
+
+
 import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
 import Animate from './Animate/basic';
 
@@ -155,6 +159,11 @@ const tree = {
     {
        title:'Css Selector',
        source:sourceCss5,   element:Css5,
+       options: {propTables: false , source: false }
+    },
+    {
+       title:'Dynamic Css Selector',
+       source:sourceCss6,   element:Css6,
        options: {propTables: false , source: false }
     },
     {

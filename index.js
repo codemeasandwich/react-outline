@@ -44,8 +44,23 @@ function object2css(colors,obj) {
   return result
 }
 
-const prefixer = new Prefixer()
-const classes = {}
+const prefixer = new Prefixer();
+
+const classes = new function(){
+
+  const vals = {};
+  const subscribers = [];
+
+  this.publish = function(key,value){
+
+    vals[key] = value;
+    subscribers.forEach( subscriber => subscriber(vals) )
+  }
+
+  this.subscribe = (subscriber) =>  subscribers.push(subscriber);
+  this.get = () => vals;
+  this.clear = ()=> {for(const className of Object.getOwnPropertyNames(vals)){ delete vals[className] }}
+}()
 
 function hasKids(obj){
   for(const name in obj){
@@ -173,6 +188,25 @@ if(Array.isArray(_styles)){
   return wrappedStyles;
 }
 
+function genCss({randomClassName, css,styleCSS, colors,style,styleName}){
+
+  let newStyle = (style)?`.${randomClassName}{${ object2css(colors,style) }}`:""
+
+  newStyle = Object.keys(css).reduce( (cssString,propName) => {
+    const styleContent = object2css(colors,css[propName] || styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
+    if(propName[0] === "@")
+        return cssString + ` ${propName}{ .${randomClassName}{ ${ styleContent } } } `
+    else if(propName[0] === ":")
+        return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
+    else
+        return ` .${randomClassName} ${propName}{ ${ styleContent } } ` + cssString
+  //  else // skip unknown prop
+  //      return cssString
+  } ,newStyle )
+
+  return newStyle;
+}
+
 function wrapStyles(_styles,options,styleCSS){
 
   options = Object.assign({},userSetOptions,options);
@@ -222,25 +256,24 @@ function wrapStyles(_styles,options,styleCSS){
           if(!global.__TEST__)
               randomClassName += makeid();
 
-          classes[randomClassName] = (style)?`.${randomClassName}{${ object2css(colors,style) }}`:""
-
-          classes[randomClassName] = Object.keys(css).reduce( (cssString,propName) => {
-            const styleContent = object2css(colors,styleCSS[styleName].base && styleCSS[styleName].base[propName] || styleCSS[styleName][propName]);
-            if(propName[0] === "@")
-                return cssString + ` ${propName}{ .${randomClassName}{ ${ styleContent } } } `
-            else if(propName[0] === ":")
-                return ` .${randomClassName}${propName}{ ${ styleContent } } ` + cssString
-            else
-                return ` .${randomClassName} ${propName}{ ${ styleContent } } ` + cssString
-          //  else // skip unknown prop
-          //      return cssString
-          } ,classes[randomClassName] )
+        classes.publish(randomClassName,genCss({randomClassName, css,styleCSS, colors,style,styleName}))
 
          inlineStyle = {};
         }
 
         // return <${elemName} ...props />
         return props => {
+
+          if("css" in props){
+
+            const updatedCss = Object.assign({},css)
+
+            for(const selectorRule in props.css){
+              updatedCss[selectorRule] = Object.assign({},css[selectorRule], "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule])
+            }
+            classes.publish(randomClassName, genCss({randomClassName, css:updatedCss,styleCSS, colors,style,styleName}))
+          }
+
           const elemProps = Object.assign({},props);
 
         let passedTrueProps = Object.keys(props)
@@ -264,8 +297,13 @@ function wrapStyles(_styles,options,styleCSS){
             elemProps.style = inlineStyle || replacedStyle[styleName]();
           }
 
-          if(options.named)
+          if(Object.keys(elemProps.style).length === 0){
+             delete elemProps.style;
+          }
+
+          if(options.named){
             elemProps.name = elemProps.name || styleName;
+          }
 
             elemProps.className  = elemProps.className || ""
             elemProps.className += randomClassName     || ""
@@ -321,19 +359,32 @@ function setOptions(options){
   Object.assign(userSetOptions,options)
 }
 function buildCssString(props={}){
- let css = Object.keys(classes).map(className => classes[className] ).join(" ");
+const  classesValues = classes.get()
+ let css = Object.keys(classesValues).map(className => classesValues[className] ).join(" ");
   css += props.children || "";
   css = css.replace(/\n/g, ' ').replace(/\s+/g, ' ');
   return css
 }
 function Styles(props){
-  return React.createElement("style",{},buildCssString(props))
+
+  const StylesElem = React.createClass({
+  displayName: "Styles",
+  getInitialState: function getInitialState() {
+    // setTimeout to fix: Warning: setState(...): Cannot update during an existing state transition
+    classes.subscribe(()=> setTimeout(()=>this.setState({cssString:buildCssString(props)}), 0) )
+    return { cssString : buildCssString(props)};
+  },
+  render: function render() {
+    return <style>{this.state.cssString}</style>;
+  }
+})
+  return React.createElement(StylesElem)
 }
 
 Styles.toString = ()=>buildCssString()
 
 const testing = {
-  resetCSS: ()=> {  for(const className of Object.getOwnPropertyNames(classes)){ delete classes[className] } }
+  resetCSS: classes.clear
 }
 
 export default topLevelWrapStyles

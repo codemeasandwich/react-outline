@@ -193,7 +193,6 @@ exports[`CSS Helpers Css Selector 1`] = `
   <div
     className="react-outline-"
     name="title"
-    style={Object {}}
   >
     <div>
       foo
@@ -221,6 +220,35 @@ exports[`CSS Helpers Css Source 1`] = `
 </div>
 `;
 
+exports[`CSS Helpers Dynamic Css Selector 1`] = `
+<div>
+  <style>
+     .react-outline-:hover{ color:blue; } .react-outline-{text-shadow:1px 1px 10px #000; color:white; cursor:pointer; }
+  </style>
+  <div
+    className="react-outline-"
+    css={
+      Object {
+        " div:nth-child(even)": Object {
+          "color": "red",
+        },
+      }
+    }
+    name="title"
+  >
+    <div>
+      foo
+    </div>
+    <div>
+      bar
+    </div>
+    <div>
+      baz
+    </div>
+  </div>
+</div>
+`;
+
 exports[`CSS Helpers Media Query 1`] = `
 <div>
   <style>
@@ -229,7 +257,6 @@ exports[`CSS Helpers Media Query 1`] = `
   <div
     className="react-outline-"
     name="title"
-    style={Object {}}
   >
     basic
   </div>
@@ -244,7 +271,6 @@ exports[`CSS Helpers Mouse hover 1`] = `
   <div
     className="react-outline-"
     name="title"
-    style={Object {}}
   >
     basic
   </div>
