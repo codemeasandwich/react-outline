@@ -3,7 +3,7 @@ var path = require("path");
 module.exports = {
   resolve:{
     alias:{
-      'react-outline$':path.join(__dirname, "../../dist/index.js")
+      'react-outline$':path.join(__dirname, "../../dist/main.js")
     }
   },
   module: {

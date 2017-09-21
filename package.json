@@ -1,10 +1,11 @@
 {
   "name": "react-outline",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "react styling framework to keep your makeup clean",
-  "main": "./dist/index.js",
+  "main": "./dist/main.js",
   "scripts": {
-    "build": "babel ./index.js --presets babel-preset-es2015 --plugins transform-object-rest-spread --out-dir dist",
+    "build": "babel --copy-files source --out-dir dist -s",
+    "build:watch": "npm run build -w",
     "test": "jest --no-cache ",
     "test:go": "npm test -- --watch --coverage",
     "test:update": "npm test -- --updateSnapshot",
@@ -59,14 +60,14 @@
     "moduleNameMapper": {
       "\\.(css|jpg|png)$": "<rootDir>/empty-module.js",
       "^raw-loader": "<rootDir>/empty-module.js",
-      "react-outline": "<rootDir>/index.js",
+      "react-outline": "<rootDir>/source/main.js",
       "^react-addons-css-transition-group$": "<rootDir>/empty-module.js"
     },
     "testPathIgnorePatterns": [
       "/node_modules/"
     ],
     "collectCoverageFrom": [
-      "index.js"
+      "source/main.js"
     ],
     "verbose": true
   }

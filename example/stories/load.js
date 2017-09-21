@@ -29,6 +29,9 @@ import Combine2 from './CombineStyles/UsingTheTagCreater';
 import sourceCombine3 from 'raw-loader!./CombineStyles/UsingAPropFlag.js?sourceMap';
 import Combine3 from './CombineStyles/UsingAPropFlag';
 
+import sourceCombine4 from 'raw-loader!./CombineStyles/PassStyleObjToGenerateElement.js?sourceMap';
+import Combine4 from './CombineStyles/PassStyleObjToGenerateElement';
+
 import sourceLogic from 'raw-loader!./RuntimeFunctions/DynamicStyles.js?sourceMap';
 import Logic from './RuntimeFunctions/DynamicStyles';
 
@@ -117,6 +120,11 @@ const tree = {
       source:sourceCombine3,   element:Combine3,
       options: {propTables: false, source: false }
     },
+    {
+      title:'Passing a Style objct to a generated element',
+      source:sourceCombine4,   element:Combine4,
+      options: { propTables: false, source: false }
+    }
   ],
   "Style Functions":[
       {
