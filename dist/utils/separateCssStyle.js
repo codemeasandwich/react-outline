@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.separateCssStyle = separateCssStyle;
+exports.default = separateCssStyle;
 
 var _index = require('./index');
 
