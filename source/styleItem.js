@@ -1,5 +1,5 @@
 
-import { hasKids, specialCharacters, specialInnerCharacters, separateCssStyle, makeid, genCss, genStyles, classes } from './utils'
+import { hasKids, specialCharacters, specialInnerCharacters, separateCssStyle, makeid, genCss, genStyles, pubsub } from './utils'
 import element from './element'
 
 export default function({_styles,replacedStyle,styleCSS, colors, options,caching, wrapStyles}){
@@ -38,7 +38,7 @@ export default function({_styles,replacedStyle,styleCSS, colors, options,caching
             if(!global.__TEST__)
                 randomClassName += makeid();
 
-          classes.publish(randomClassName,genCss({randomClassName, css,styleCSS, colors,style,styleName}))
+          pubsub.publish(randomClassName,genCss({randomClassName, css,styleCSS, colors,style,styleName}))
 
            inlineStyle = {};
           }

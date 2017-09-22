@@ -4,23 +4,24 @@ module.exports.specialInnerCharacters = " >+~";//['@',':'].join("");
 
 let modules
 
-if(require.context){
+if(global && global.__TEST__) { // TESTING !!!
 
-// webpack magic
-  modules = require.context("./", false, /\.js$/);
+  const loader = {open:require}
 
-} else { // TESTING !!!
-
-  const path = require('path')
-  const fs = require('fs')
+  const path = loader.open('path')
+  const fs = loader.open('fs')
   const paths = [];
 
-  modules = (fileName)=> require(fileName)
+  modules = (fileName)=> loader.open(fileName)
   modules.keys = ()=>paths;
 
   for (let fileName of fs.readdirSync(__dirname))
   {    paths.push("./"+fileName)  }
+} else {
+
+  // webpack magic
+    modules = require.context("./", false, /\.js$/);
 }
 
-let pageFileNames = modules.keys().filter( path => "./index.js" !== path && ! path.endsWith(".test.js") )
-                                .forEach( path => module.exports[path.match(/([^\/]+)(?=\.\w+$)/)[0]] = modules(path).default );
+modules.keys().filter( path => "./index.js" !== path && ! path.endsWith(".test.js") && ! path.endsWith(".js.map"))
+              .forEach( path => module.exports[path.match(/([^\/]+)(?=\.\w+$)/)[0]] = modules(path).default );

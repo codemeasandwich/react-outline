@@ -1,5 +1,5 @@
 
-const classes = new function(){
+const pubsub = new function(){
 
   const vals = {};
   const subscribers = [];
@@ -12,7 +12,11 @@ const classes = new function(){
 
   this.subscribe = (subscriber) =>  subscribers.push(subscriber);
   this.get = () => vals;
-  this.clear = ()=> {for(const className of Object.getOwnPropertyNames(vals)){ delete vals[className] }}
+  this.clear = ()=> {
+    for(const className of Object.getOwnPropertyNames(vals)){
+      delete vals[className]
+    }
+  }
 }()
 
-export default classes
+export default pubsub

@@ -27,6 +27,7 @@ storiesOf('Welcome', module)
     <Welcome showApp={linkTo('Button')}/>
   ));
 
+const allElemes = [];
 
 for(const dir in tree){
   const files = tree[dir];
@@ -49,8 +50,18 @@ ${data.note}
 `
     }
     story.add(data.title,withInfo(options)( () => data.element ))
+    allElemes.push(data.element)
   })
 }
+
+if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+storiesOf('All', module)
+  .add('all elements', () => (
+    <div>{
+      allElemes
+    }</div>
+  ));
+
 
 /*
 storiesOf('Button', module)

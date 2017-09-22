@@ -4,8 +4,8 @@
   "description": "react styling framework to keep your makeup clean",
   "main": "./dist/main.js",
   "scripts": {
-    "build": "babel --copy-files source --out-dir dist -s",
-    "build:watch": "npm run build -w",
+    "build":       "babel --copy-files source --out-dir dist -s --source-maps inline",
+    "build:watch": "babel --copy-files source --out-dir dist -s --source-maps inline -w",
     "test": "jest --no-cache ",
     "test:go": "npm test -- --watch --coverage",
     "test:update": "npm test -- --updateSnapshot",

@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { genCss, replacedStyle, classes } from './utils'
+import { genCss, replacedStyle, pubsub } from './utils'
 
 export default function({elemName, css,styleCSS,inlineStyle,style,styleName, colors, randomClassName, options,replacedStyle}){
 
@@ -13,7 +13,7 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
         for(const selectorRule in props.css){
           updatedCss[selectorRule] = Object.assign({},css[selectorRule], "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule])
         }
-        classes.publish(randomClassName, genCss({randomClassName, css:updatedCss,styleCSS, colors,style,styleName}))
+        pubsub.publish(randomClassName, genCss({randomClassName, css:updatedCss,styleCSS, colors,style,styleName}))
       }
 
       const elemProps = Object.assign({},props);
