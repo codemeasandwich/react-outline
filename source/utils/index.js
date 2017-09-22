@@ -2,6 +2,12 @@
 module.exports.specialCharacters = "@: ";//['@',':'].join("");
 module.exports.specialInnerCharacters = " >+~";//['@',':'].join("");
 
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE BE DRAGONS
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 let modules
 
 if(global && global.__TEST__) { // TESTING !!!

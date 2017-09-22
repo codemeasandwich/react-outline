@@ -119,12 +119,12 @@ const tree = {
       title:'Using a prop flag',
       source:sourceCombine3,   element:Combine3,
       options: {propTables: false, source: false }
-    },
+    }/*, // A work in progress
     {
       title:'Passing a Style objct to a generated element',
       source:sourceCombine4,   element:Combine4,
       options: { propTables: false, source: false }
-    }
+    }*/
   ],
   "Style Functions":[
       {

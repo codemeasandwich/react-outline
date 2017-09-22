@@ -291,20 +291,6 @@ exports[`Combine styles In a generated element 1`] = `
 </div>
 `;
 
-exports[`Combine styles Passing a Style objct to a generated element 1`] = `
-<div
-  name="title"
-  style={
-    Object {
-      "color": "#f00",
-      "fontSize": "25px",
-    }
-  }
->
-  basic
-</div>
-`;
-
 exports[`Combine styles Using a prop flag 1`] = `
 <div
   name="title"

@@ -5,7 +5,11 @@ import outline, { withOptions } from 'react-outline'
 const custom_outline =  withOptions({colors:{CrazyRed:"#f00"}})
 
 // inline the style schema
-const styles = custom_outline({title:{fontSize: "25px" }});
+const styles = custom_outline({
+  title:{fontSize: "25px" }
+},{
+  title:(x)=>x
+});
 
 const Title = styles.title`div`
 

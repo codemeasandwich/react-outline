@@ -1,8 +1,9 @@
 
 import React from 'react'
-import { pubsub, hasKids, specialCharacters, specialInnerCharacters, separateCssStyle, genStyles, genCss, makeid, buildCssString } from './utils'
+import { pubsub } from './utils'
 
 import wrapStylesFactory from './wrapStyles'
+import Styles from './Styles'
 
 const userSetOptions = { named:true/* prefix:getVendorPrefix()*/ }
 
@@ -14,7 +15,7 @@ const wrapStyles = wrapStylesFactory(userSetOptions)
 
 //+++++++++++++++++++++++++++++ { base:{}, foo: ()=> }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-function topLevelWrapStyles(_styles,options={},styleCSS={}){
+function sanitizeWrapStyles(_styles,options={},styleCSS={}){
 
     if("object" !== typeof _styles){
       throw new Error("Bad style values: "+JSON.stringify(_styles))
@@ -68,49 +69,26 @@ function topLevelWrapStyles(_styles,options={},styleCSS={}){
   return wrappedStyles;
 }
 
-
-
-
 //=====================================================
 //============================================= Options
 //=====================================================
 
 function withOptions(options){
   if(!options) throw new Error("Bad options values for react-outline:"+JSON.stringify(options))
-  return (_styles)=>topLevelWrapStyles(_styles,options)
+  return (_styles)=>sanitizeWrapStyles(_styles,options)
 }
 
 function setOptions(options){
   if(!options) throw new Error("Bad options values for react-outline:"+JSON.stringify(options))
   if(options.colors){
-    topLevelWrapStyles.colors = options.colors
+    sanitizeWrapStyles.colors = options.colors
   }
   Object.assign(userSetOptions,options)
 }
-
-
-
-function Styles(props){
-
-  const StylesElem = React.createClass({
-  displayName: "Styles",
-  getInitialState: function getInitialState() {
-    // setTimeout to fix: Warning: setState(...): Cannot update during an existing state transition
-    pubsub.subscribe(()=> setTimeout(()=>this.setState({cssString:buildCssString(pubsub.get(),props)}), 0) )
-    return { cssString : buildCssString(pubsub.get(),props)};
-  },
-  render: function render() {
-    return <style>{this.state.cssString}</style>;
-  }
-})
-  return React.createElement(StylesElem)
-}
-
-Styles.toString = ()=>buildCssString(pubsub.get())
 
 const testing = {
   resetCSS: pubsub.clear
 }
 
-export default topLevelWrapStyles
+export default sanitizeWrapStyles
 export { withOptions, setOptions, Styles, testing }
