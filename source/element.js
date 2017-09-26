@@ -49,7 +49,10 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
       }
 
         elemProps.className  = elemProps.className || ""
-        elemProps.className += randomClassName     || ""
+        if(elemProps.className && randomClassName){
+          elemProps.className += " "
+        }
+        elemProps.className += randomClassName || ""
         if("" === elemProps.className)
             delete elemProps.className;
 

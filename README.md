@@ -36,7 +36,6 @@ Examples
     1. [caching](#caching)
     2. [colors](#colors)
     3. [named](#named)
-7. [A 'kitchen sink' example](#a--kitchen-sink--example)
 
 ### Creating and applying a style (Basic example)
 ```JS
