@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { genCss, replacedStyle, pubsub } from './utils'
+import { genCss, pubsub } from './utils'
 
 export default function({elemName, css,styleCSS,inlineStyle,style,styleName, colors, randomClassName, options,replacedStyle}){
 

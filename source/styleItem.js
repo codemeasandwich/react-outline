@@ -1,5 +1,5 @@
 
-import { hasKids, specialCharacters, specialInnerCharacters, separateCssStyle, makeid, genCss, genStyles, pubsub } from './utils'
+import { hasKids, specialCharacters, specialInnerCharacters, separateCssStyle, makeid, genCss, genStyles, pubsub, sanitizeStyleObj } from './utils'
 import element from './element'
 
 //=====================================================

@@ -32,6 +32,9 @@ import Combine3 from './CombineStyles/UsingAPropFlag';
 import sourceCombine4 from 'raw-loader!./CombineStyles/PassStyleObjToGenerateElement.js?sourceMap';
 import Combine4 from './CombineStyles/PassStyleObjToGenerateElement';
 
+import sourceCombine5 from 'raw-loader!./CombineStyles/LogicFnWithGenerateElement.js?sourceMap';
+import Combine5 from './CombineStyles/LogicFnWithGenerateElement';
+
 import sourceLogic from 'raw-loader!./RuntimeFunctions/DynamicStyles.js?sourceMap';
 import Logic from './RuntimeFunctions/DynamicStyles';
 
@@ -119,12 +122,17 @@ const tree = {
       title:'Using a prop flag',
       source:sourceCombine3,   element:Combine3,
       options: {propTables: false, source: false }
-    }/*, // A work in progress
+    },
+    {
+      title:'Logic function With Generate Element',
+      source:sourceCombine5,   element:Combine5,
+      options: { propTables: false, source: false }
+    }, // A work in progress
     {
       title:'Passing a Style objct to a generated element',
       source:sourceCombine4,   element:Combine4,
       options: { propTables: false, source: false }
-    }*/
+    }
   ],
   "Style Functions":[
       {
