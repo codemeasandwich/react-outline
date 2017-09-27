@@ -24,6 +24,26 @@ exports[`CSS selectors should allow you to select a nested element 1`] = `
 </div>
 `;
 
+exports[`CSS selectors should work with user defined callNames 1`] = `
+<div>
+  <div
+    className="a react-outline-"
+    name="a"
+  />
+  <div
+    className="react-outline-"
+    name="a"
+  />
+  <div
+    className="b"
+    name="b"
+  />
+  <div
+    name="b"
+  />
+</div>
+`;
+
 exports[`In production mode should be able to destructur assignments on generated element 1`] = `
 <div
   name="cats"

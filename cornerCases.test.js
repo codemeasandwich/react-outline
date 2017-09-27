@@ -205,6 +205,21 @@ describe('In production mode', () => {
 })
 
 describe('CSS selectors', () => {
+  it('should work with user defined callNames', () => {
+
+      testing.resetCSS();
+
+      const styles = outline({ a : { based:{}, ":hover":{}  },b : {  } }); // random name with random value
+
+      const ElemA = styles.a`div`;
+      const ElemB = styles.b`div`;
+      expect(renderer.create(<div>
+        <ElemA className="a" />
+        <ElemA />
+        <ElemB className="b"/>
+        <ElemB />
+      </div>).toJSON()).toMatchSnapshot();
+  })
   it('should allow you to select a nested element', () => {
 
       testing.resetCSS();
