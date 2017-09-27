@@ -13,15 +13,13 @@ const wrapStyles = wrapStylesFactory(userSetOptions)
 //============================= top Level - Wrap Styles
 //=====================================================
 
-// TODO remove styleCSS args
-
-function outline(_styles,options={},styleCSS={}){
+function outline(_styles,options={}){
   return sanitizeOutline(sanitizeOutlineInput(_styles,options),options)
 }
 
-function sanitizeOutline(_styles,options={},styleCSS={}){
+function sanitizeOutline(_styles,options={}){
 
-  const wrappedStyles = wrapStyles(_styles,options,styleCSS);
+  const wrappedStyles = wrapStyles(_styles,options);
         wrappedStyles.colors = wrappedStyles.colors
                             || options        && options.colors
                             || userSetOptions && userSetOptions.colors;

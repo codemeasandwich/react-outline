@@ -68,7 +68,7 @@
     ],
     "coverageDirectory":"coverage",
     "collectCoverageFrom": [
-      "source/**/*.js"
+      "source/**/*.js","!source/utils/index.js"
     ],
     "verbose": true
   }

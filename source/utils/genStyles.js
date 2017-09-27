@@ -11,7 +11,7 @@ export default function genStyles(styleStuff, args,colors){
 
   const swapedColor = replaceColors(colors,userResult);
   for(const name in swapedColor){
-    if(!specialCharacters.includes(name[0]))
+    //if(!specialCharacters.includes(name[0]))
     swapedColor[name] = prefixer.prefix({a:swapedColor[name]}).a;
   }
 
