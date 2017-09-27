@@ -310,7 +310,8 @@ exports[`Combine styles Passing a Style objct to a generated element 1`] = `
   name="title"
   style={
     Object {
-      "fontSize": "25px",
+      "color": "red",
+      "fontSize": 25,
     }
   }
 >

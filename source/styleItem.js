@@ -89,7 +89,7 @@ export default function({_styles,replacedStyle,styleCSS, colors, options,caching
 //++++++++++++++++++++++++++++++++++++++ generat style
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-          const styleStuff = { styleCSS:styleCSS[styleName],styleFn };
+          const styleStuff = { styleCSS:styleCSS[styleName],styleFn:("object" === typeof args && !_styles[styleName] )?x=>sanitizeStyleObj(x):styleFn };
 
           return buildStyleObj({styleStuff,genStyles,args,colors,caching,cached})
       } // END replacedStyle[styleName] = function(...args)

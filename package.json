@@ -66,8 +66,9 @@
     "testPathIgnorePatterns": [
       "/node_modules/"
     ],
+    "coverageDirectory":"coverage",
     "collectCoverageFrom": [
-      "source/main.js"
+      "source/**/*.js"
     ],
     "verbose": true
   }
