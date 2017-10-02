@@ -36,6 +36,8 @@ Examples
     1. [caching](#caching)
     2. [colors](#colors)
     3. [named](#named)
+7. [Comparisons](#comparisons)
+    1. [styled-components](#styled-components)
 
 ### Creating and applying a style (Basic example)
 ```JS
@@ -269,6 +271,28 @@ export default Page                   // export the elemet
 */
 ```
 
+### comparisons
+
+#### styled components
+
+I created react-outline becase of some shortcoming I found when trying to use styled-components in a new project. The problem's I addressed as:
+1) Elements where replaced and the new css class name was changed on each render.
+This was a problem with using [animate.css](https://daneden.github.io/animate.css/) + [ReactCSSTransitionGroup](https://www.npmjs.com/package/react-addons-css-transition-group) -> leaveActive.
+The element would enter fine but just disappear immediately on leave.
+
+React-outline supports ReactCSSTransitionGroup [Example](https://s3.amazonaws.com/react-outline/index.html?selectedKind=animate&selectedStory=Animate.css&full=0&down=0&left=1&panelRight=0&downPanel=kadirahq%2Fstorybook-addon-actions%2Factions-panel)
+
+2) You cant style exiting react of elements, only create new ones.
+
+With React-outline you can create any element you what [Example](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Generate%20a%20element%20from%20a%20style&full=0&down=0&left=1&panelRight=0&downPanel=kadirahq%2Fstorybook-addon-actions%2Factions-panel) or style an existing one [Example](https://s3.amazonaws.com/react-outline/index.html?selectedKind=animate&selectedStory=Animate.css&full=0&down=0&left=1&panelRight=0&downPanel=kadirahq%2Fstorybook-addon-actions%2Factions-panel)
+
+3) No vendor prefixes support.
+
+vendor prefixes support is provided by [inline-style-prefixer](https://www.npmjs.com/package/inline-style-prefixer) under the covers
+
+4) The style must be in a CSS string. Then makes moving existing inline style object to CSS is time time consuming
+
+Checkout any of the code here [examples](https://s3.amazonaws.com/react-outline/index.html?down=0)
 
 
 ## Contributing
