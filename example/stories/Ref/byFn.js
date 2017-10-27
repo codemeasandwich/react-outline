@@ -31,8 +31,8 @@ class Panel extends React.Component {
 
   render() {
     return <div>
-      { this.state.scrollTop }<br/>
-      <Textarea ref={(reatElem)=> this.domElem = ReactDOM.findDOMNode(reatElem) } />
+      Scroll me - { this.state.scrollTop }<br/>
+      <Textarea ref={(reatElem)=> this.domElem = ReactDOM.findDOMNode(reatElem) } defaultValue={"1,2,3,4,5".replace(/,/g,"\n")} />
     </div>
   }
 }
