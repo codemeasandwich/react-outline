@@ -66,6 +66,10 @@ import sourceCss6 from 'raw-loader!./CSSHelpers/DynamicCssSelectors.js?sourceMap
 import Css6 from './CSSHelpers/DynamicCssSelectors';
 
 
+import sourceRef1 from 'raw-loader!./Ref/byFn.js?sourceMap';
+import Ref1 from './Ref/byFn';
+
+
 import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
 import Animate from './Animate/basic';
 
@@ -188,7 +192,13 @@ const tree = {
        source:sourceCss4,   element:Css4
     }
   ]
-  ,"animate":[
+  ,"Reference dom element":[
+    {
+      title:'ref by function',
+      source:sourceRef1,   element:Ref1
+    }
+  ]
+  ,"Animate":[
     {
        title:'Animate.css',
        info: "Using [ReactCSSTransitionGroup](https://www.npmjs.com/package/react-addons-css-transition-group) and daneden's [animate.css](https://daneden.github.io/animate.css/)",
