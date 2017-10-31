@@ -46,5 +46,23 @@ export default function sanitizeOutlineInput(_styles,options={}){
       }
       _styles = Object.assign({},{base},fns);
     }
+
+    // apply sharing
+    for(const prop in _styles.base){
+      if(0 < prop.indexOf(',')){
+        prop.split(',')
+        .map(x=>x.trim())
+        .forEach( x => {
+          const root = _styles.base;
+          const val = Object.assign({},root[prop],root[x].base ? root[x].base : root[x] )
+
+          root[x].base ? root[x].base = val : root[x] = val
+
+        } )
+        delete _styles.base[prop]
+      }
+    }
+
+
     return _styles;
 }
