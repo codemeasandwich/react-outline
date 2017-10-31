@@ -1,8 +1,13 @@
 
 
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+
 import { storiesOf, action, linkTo, setAddon } from "@kadira/storybook";
 import { withInfo, setDefaults } from '@storybook/addon-info';
+
+import { html } from 'js-beautify'
+
 function htmlEscape(str) {
     return str
         .replace(/&/g, '&amp;')
@@ -38,17 +43,29 @@ for(const dir in tree){
 
 ---
 ` : ""
-    options.text += `~~~js
+
+    options.text += `
+~~~js
 ${htmlEscape(data.source)}
-      ~~~`
+~~~`
+
     if(data.note){
       options.text += `
 ---
 ${data.note}
 
----
 `
     }
+
+// TODO: KEEP this to SHOW REAL render source <<<<<<<<
+/*
+options.text += `
+---
+
+~~~html
+${htmlEscape(html(ReactDOMServer.renderToStaticMarkup(data.element)))}
+~~~
+`*/
     story.add(data.title,withInfo(options)( () => data.element ))
     allElemes.push(data.element)
   })
