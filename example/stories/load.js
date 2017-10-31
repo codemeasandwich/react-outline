@@ -20,6 +20,9 @@ import Basic6 from './Basics/PassingStyleAndFuntion';
 import sourceBasic7 from 'raw-loader!./Basics/PassingStyleAndFuntionAsArray.js?sourceMap';
 import Basic7 from './Basics/PassingStyleAndFuntionAsArray';
 
+import sourceBasic8 from 'raw-loader!./Basics/Share.js?sourceMap';
+import Basic8 from './Basics/Share';
+
 import sourceCombine from 'raw-loader!./CombineStyles/CreatingAndApplyingAStyle.js?sourceMap';
 import Combine from './CombineStyles/CreatingAndApplyingAStyle';
 
@@ -102,6 +105,11 @@ const tree = {
     {
       title:'Passing Style and Funtion as arguments',
       source:sourceBasic6,  element:Basic6,
+      options: {propTables: false, source: false }
+    },
+    {
+      title:'Sharing Style',
+      source:sourceBasic8,  element:Basic8,
       options: {propTables: false, source: false }
     },
     {
@@ -195,7 +203,8 @@ const tree = {
   ,"Reference dom element":[
     {
       title:'ref by function',
-      source:sourceRef1,   element:Ref1
+      source:sourceRef1,   element:Ref1,
+      options: {propTables: false , source: false }
     }
   ]
   ,"Animate":[

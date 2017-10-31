@@ -7,6 +7,7 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
 
 
   class C2 extends React.Component {
+
     render(){
 
   const props = this.props
@@ -63,12 +64,11 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
 
       return React.createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
 
-
           }
         }
 
+      Object.defineProperty (C2, 'name', {value: styleName||elemName});
 
-return C2
-
+      return C2
 
 }
