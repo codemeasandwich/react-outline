@@ -1,10 +1,10 @@
 {
   "name": "react-outline",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "react styling framework to keep your makeup clean",
   "main": "./dist/main.js",
   "scripts": {
-    "build":       "babel --copy-files source --out-dir dist -s --source-maps inline",
+    "build": "babel --copy-files source --out-dir dist -s --source-maps inline",
     "build:watch": "babel --copy-files source --out-dir dist -s --source-maps inline -w",
     "test": "jest --no-cache ",
     "test:go": "npm test -- --watch --coverage",
@@ -42,6 +42,7 @@
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-cli": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
@@ -66,9 +67,10 @@
     "testPathIgnorePatterns": [
       "/node_modules/"
     ],
-    "coverageDirectory":"coverage",
+    "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "source/**/*.js","!source/utils/index.js"
+      "source/**/*.js",
+      "!source/utils/index.js"
     ],
     "verbose": true
   }

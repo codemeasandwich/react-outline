@@ -17,7 +17,7 @@ function outline(_styles,options={}){
   return sanitizeOutline(sanitizeOutlineInput(_styles,options),options)
 }
 
-function sanitizeOutline(_styles,options={}){
+function sanitizeOutline(_styles,options){
 
   const wrappedStyles = wrapStyles(_styles,options);
         wrappedStyles.colors = wrappedStyles.colors
