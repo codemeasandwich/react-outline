@@ -158,6 +158,32 @@ exports[`Basics Reusing elements 1`] = `
 </div>
 `;
 
+exports[`Basics Sharing Style 1`] = `
+<div>
+  <div
+    name="title"
+    style={
+      Object {
+        "backgroundColor": "red",
+        "textShadow": "2px 2px 2px black",
+      }
+    }
+  >
+    basic
+  </div>
+  <span
+    style={
+      Object {
+        "color": "red",
+        "textShadow": "2px 2px 2px black",
+      }
+    }
+  >
+    content
+  </span>
+</div>
+`;
+
 exports[`Basics Wrapping an existing element 1`] = `
 <div
   style={

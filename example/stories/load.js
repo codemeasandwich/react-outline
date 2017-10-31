@@ -204,7 +204,7 @@ const tree = {
     {
       title:'ref by function',
       source:sourceRef1,   element:Ref1,
-      options: {propTables: false , source: false }
+      options: {propTables: false , source: false, test:false }
     }
   ]
   ,"Animate":[
