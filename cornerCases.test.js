@@ -202,6 +202,24 @@ describe('In production mode', () => {
       })*/
 
 
+      it('should allow cross cutting style to map to only functions', () => {
+          const css = {
+            "foo, bar" : {
+              fontSize: "20px"
+            }
+          };
+          const logic = {
+            foo: x => ({ background: "gray" }),
+            bar: x => ({ background: "black" })
+          };
+          const styles = outline(css,logic); // random name with random value
+
+          const Foo = styles.foo`span`;
+          const Bar = styles.bar`span`;
+          expect(renderer.create(<Foo style={123} />).toJSON()).toMatchSnapshot();
+          expect(renderer.create(<Bar style={123} />).toJSON()).toMatchSnapshot();
+      })
+
 })
 
 describe('CSS selectors', () => {

@@ -54,9 +54,13 @@ export default function sanitizeOutlineInput(_styles,options={}){
         .map(x=>x.trim())
         .forEach( x => {
           const root = _styles.base;
-          const val = Object.assign({},root[prop],root[x].base ? root[x].base : root[x] )
+          var val = Object.assign({}, root[prop],
+            // we need to check if x exists in root style.
+            // e.g. "foo , bar" (cross cutting style) is in style Object
+            // but "foo" & "bar" are functions
+            root[x] && root[x].base ? root[x].base : root[x]);
 
-          root[x].base ? root[x].base = val : root[x] = val
+        root[x] && root[x].base ? root[x].base = val : root[x] = val
 
         } )
         delete _styles.base[prop]

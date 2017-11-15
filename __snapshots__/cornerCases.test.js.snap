@@ -44,6 +44,30 @@ exports[`CSS selectors should work with user defined callNames 1`] = `
 </div>
 `;
 
+exports[`In production mode should allow cross cutting style to map to only functions 1`] = `
+<span
+  name="foo"
+  style={
+    Object {
+      "background": "gray",
+      "fontSize": "20px",
+    }
+  }
+/>
+`;
+
+exports[`In production mode should allow cross cutting style to map to only functions 2`] = `
+<span
+  name="bar"
+  style={
+    Object {
+      "background": "black",
+      "fontSize": "20px",
+    }
+  }
+/>
+`;
+
 exports[`In production mode should be able to destructur assignments on generated element 1`] = `
 <div
   name="cats"
