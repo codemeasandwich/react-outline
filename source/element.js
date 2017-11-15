@@ -10,7 +10,7 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
 
     render(){
 
-  const props = this.props
+      const props = this.props
 
       if("css" in props){
 
@@ -24,24 +24,29 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
 
       const elemProps = Object.assign({},props);
 
-    let passedTrueProps = Object.keys(props)
-                                .filter( name => props[name] === true && styleCSS[styleName] && name in styleCSS[styleName] )
-    //  console.log("passedTrueProps",passedTrueProps)
-    if(0 < passedTrueProps.length){
-      passedTrueProps = passedTrueProps.reduce((styleProps, name) => {
-        // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
-        if("function" !== typeof elemName && "disabled" !== name){
-          delete elemProps[name]
-        }
-        return Object.assign(styleProps,{[name]:true})
-      },{})
-    } else {
-      passedTrueProps = null
-    }
+      let passedTrueProps = Object.keys(props)
+                                  .filter( name => props[name] === true && styleCSS[styleName] && name in styleCSS[styleName] )
+      //  console.log("passedTrueProps",passedTrueProps)
+      if(0 < passedTrueProps.length){
+        passedTrueProps = passedTrueProps.reduce((styleProps, name) => {
+          // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
+          if("function" !== typeof elemName && "disabled" !== name){
+            delete elemProps[name]
+          }
+          return Object.assign(styleProps,{[name]:true})
+        },{})
+      } else {
+        passedTrueProps = null
+      }
+
       if(passedTrueProps || props.hasOwnProperty("style")){
         //if(props.style instanceof Object)
         //    passedTrueProps = Object.assign({},props.style,passedTrueProps);
-        elemProps.style = replacedStyle[styleName](props.style,passedTrueProps);
+        if(randomClassName)
+            elemProps.style = props.style
+        else
+            elemProps.style = replacedStyle[styleName](props.style,passedTrueProps);
+
       } else {
         elemProps.style = inlineStyle || replacedStyle[styleName]();
       }
