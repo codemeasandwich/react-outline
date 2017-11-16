@@ -10,14 +10,14 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
     componentDidMount() {
       const onDomEvent = this.props.onDomEvent
       for (const listen in onDomEvent) {
-        this.domElem.addEventListener(listen, ()=>onDomEvent[listen](this.domElem));
+        this.domElem.addEventListener(listen, event => onDomEvent[listen](this.domElem,event));
       }
     }
 
     componentWillUnmount() {
       const onDomEvent = this.props.onDomEvent
       for (const listen in onDomEvent) {
-        this.domElem.removeEventListener(listen, ()=>onDomEvent[listen](this.domElem));
+        this.domElem.removeEventListener(listen, event => onDomEvent[listen](this.domElem,event));
       }
     }
 

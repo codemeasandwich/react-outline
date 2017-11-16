@@ -206,6 +206,8 @@ const tree = {
     {
       title:'function with Dom Events',
       source:sourceRef2,   element:Ref2,
+      info:"Any easy way to map 'event' names to functions",
+      note:"**You pass an Object(mapping 'event' names to functions) as the 'onDomEvent' prop**",
       options: {propTables: false , source: false, test:false }
     },
     {

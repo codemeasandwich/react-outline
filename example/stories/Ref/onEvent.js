@@ -27,7 +27,7 @@ class Panel extends React.Component {
     this.state = {scrollTop : 0};
   }
 
-  listenScrollEvent(domElem) {
+  listenScrollEvent(domElem,event) {
       this.setState({scrollTop:domElem.scrollTop})
   }
 
