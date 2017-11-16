@@ -72,6 +72,8 @@ import Css6 from './CSSHelpers/DynamicCssSelectors';
 import sourceRef1 from 'raw-loader!./Ref/byFn.js?sourceMap';
 import Ref1 from './Ref/byFn';
 
+import sourceRef2 from 'raw-loader!./Ref/onEvent.js?sourceMap';
+import Ref2 from './Ref/onEvent';
 
 import sourceAnimate from 'raw-loader!./Animate/basic.js?sourceMap';
 import Animate from './Animate/basic';
@@ -201,6 +203,11 @@ const tree = {
     }
   ]
   ,"Reference dom element":[
+    {
+      title:'function with Dom Events',
+      source:sourceRef2,   element:Ref2,
+      options: {propTables: false , source: false, test:false }
+    },
     {
       title:'ref by function',
       source:sourceRef1,   element:Ref1,

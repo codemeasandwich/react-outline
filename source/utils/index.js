@@ -1,4 +1,4 @@
-
+// !/^[a-zA-Z0-9]/.test(propName[0])
 module.exports.specialCharacters = "@: ";//['@',':'].join("");
 module.exports.specialInnerCharacters = " >+~";//['@',':'].join("");
 

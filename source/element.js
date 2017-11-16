@@ -1,12 +1,25 @@
 
 import React from 'react'
+import { findDOMNode } from 'react-dom'
 import { genCss, pubsub } from './utils'
-
 
 export default function({elemName, css,styleCSS,inlineStyle,style,styleName, colors, randomClassName, options,replacedStyle}){
 
-
   class C2 extends React.Component {
+
+    componentDidMount() {
+      const onDomEvent = this.props.onDomEvent
+      for (const listen in onDomEvent) {
+        this.domElem.addEventListener(listen, ()=>onDomEvent[listen](this.domElem));
+      }
+    }
+
+    componentWillUnmount() {
+      const onDomEvent = this.props.onDomEvent
+      for (const listen in onDomEvent) {
+        this.domElem.removeEventListener(listen, ()=>onDomEvent[listen](this.domElem));
+      }
+    }
 
     render(){
 
@@ -67,6 +80,10 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
         if("" === elemProps.className)
             delete elemProps.className;
 
+        if(props.onDomEvent){
+          elemProps.ref = reatElem => this.domElem = findDOMNode(reatElem)
+        }
+
       return React.createElement(elemName||styleName,elemProps,elemProps && elemProps.children)
 
           }
@@ -75,5 +92,4 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
       Object.defineProperty (C2, 'name', {value: styleName||elemName});
 
       return C2
-
 }
