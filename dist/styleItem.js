@@ -87,7 +87,9 @@ function buildElem(_ref) {
 
   var baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {};
   for (var propN in styleCSS[styleName]) {
-    if (_utils.specialCharacters.includes(propN[0]) || !!propN.match(new RegExp('[' + _utils.specialInnerCharacters + ']', "gi"))) {
+//    if (_utils.specialCharacters.includes(propN[0]) || !!propN.match(new RegExp('[' + _utils.specialInnerCharacters + ']', "gi")))
+if (/^[a-zA-Z0-9-]+$/.test(propN) === false) 
+{
       baseStyle[propN] = styleCSS[styleName][propN];
     }
   }

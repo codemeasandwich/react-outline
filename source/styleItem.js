@@ -13,7 +13,8 @@ function buildElem({elemName,args,styleCSS,styleName,options,replacedStyle,color
 
   const baseStyle = styleCSS[styleName] && styleCSS[styleName].base || {}
   for(const propN in styleCSS[styleName]){
-    if(specialCharacters.includes(propN[0]) || !!propN.match(new RegExp(`[${specialInnerCharacters}]`, "gi"))){
+    //if(specialCharacters.includes(propN[0]) || !!propN.match(new RegExp(`[${specialInnerCharacters}]`, "gi"))){
+    if (/^[a-zA-Z0-9-]+$/.test(propN) === false) {
       baseStyle[propN] = styleCSS[styleName][propN]
     }
   }
