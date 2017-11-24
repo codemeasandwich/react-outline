@@ -220,6 +220,21 @@ describe('In production mode', () => {
           expect(renderer.create(<Bar style={123} />).toJSON()).toMatchSnapshot();
       })
 
+      it('should generated an element with a logic fn that can take undefined', () => {
+          const css = {
+            foo : {   fontSize: "20px" }
+          };
+          const logic = {
+            foo: x => ({ background: "gray" }),
+          };
+          const styles = outline(css,logic); // random name with random value
+
+          const Foo = styles.foo`span`;
+
+          //console.log(renderer.create(<Foo style={undefined} />).toJSON());
+          expect(renderer.create(<Foo style={undefined} />).toJSON()).toMatchSnapshot();
+      })
+
 })
 
 describe('CSS selectors', () => {

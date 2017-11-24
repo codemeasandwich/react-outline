@@ -125,3 +125,15 @@ exports[`In production mode should be able to pass true value 1`] = `
   }
 />
 `;
+
+exports[`In production mode should generated an element with a logic fn that can take undefined 1`] = `
+<span
+  name="foo"
+  style={
+    Object {
+      "background": "gray",
+      "fontSize": "20px",
+    }
+  }
+/>
+`;
