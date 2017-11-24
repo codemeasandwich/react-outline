@@ -1,5 +1,5 @@
 
-import { specialCharacters } from './index'
+//import { specialCharacters } from './index'
 
 export default function separateCssStyle(styles){
 
@@ -7,7 +7,8 @@ export default function separateCssStyle(styles){
   let style = {}
 
   for(const name in styles){
-    if(specialCharacters.includes(name[0]) )//|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
+    //if(specialCharacters.includes(name[0]) )//|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
+    if(!/^\w+$/.test(name))
         css[name] = styles[name]
     else
         style[name] = styles[name]

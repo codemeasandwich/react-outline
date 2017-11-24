@@ -255,7 +255,7 @@ exports[`CSS Helpers Dynamic Css Selector 1`] = `
     className="react-outline-"
     css={
       Object {
-        " div:nth-child(even)": Object {
+        "div:nth-child(even)": Object {
           "color": "red",
         },
       }

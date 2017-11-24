@@ -13,7 +13,7 @@ function separateCssStyle(styles) {
   var style = {};
 
   for (var name in styles) {
-    if (_index.specialCharacters.includes(name[0])) //|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
+  if(/^[a-zA-Z0-9-]+$/.test(name) === false)//  if (_index.specialCharacters.includes(name[0])) //|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
       css[name] = styles[name];else style[name] = styles[name];
   }
 

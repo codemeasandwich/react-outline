@@ -6,7 +6,7 @@ let styles = {
     base : {
       title:{
          base:{     background: "lightblue", color:"black" },
-        " div:nth-child(even)":{  background: "darkblue" , color:"white" }
+        "div:nth-child(even)":{  background: "darkblue" , color:"white" }
       }
     }
 }

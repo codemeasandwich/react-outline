@@ -6,7 +6,7 @@ let styles = {
     base : {
       title:{
          base:{     background: "lightblue", color:"black" },
-        " div:nth-child(even)":{  background: "darkblue" , color:"white" }
+        "div:nth-child(even)":{  background: "darkblue" , color:"white" }
       }
     }
 }
@@ -16,7 +16,7 @@ const Title = styles.title`div`
 
 export default <div>
 <Styles/>
-  <Title css={{" div:nth-child(even)":{color:"red"}}}>
+  <Title css={{"div:nth-child(even)":{color:"red"}}}>
     <div>foo</div>
     <div>bar</div>
     <div>baz</div>
