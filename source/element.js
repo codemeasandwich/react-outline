@@ -63,8 +63,13 @@ export default function({elemName, css,styleCSS,inlineStyle,style,styleName, col
       } else {
         elemProps.style = inlineStyle || replacedStyle[styleName]();
       }
-
-      if(Object.keys(elemProps.style).length === 0){
+      //TODO: write a test for this
+      // For some reason in prod!
+      // a custom element in a perfect storm can have style undefined
+      //SEE: test - should generated an element with css selector
+      // thss is the same prod code.. BUT this is not catching this case :(
+      if(elemProps.style &&
+        Object.keys(elemProps.style).length === 0){
          delete elemProps.style;
       }
 

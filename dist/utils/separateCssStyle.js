@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = separateCssStyle;
 
-var _index = require('./index');
+//import { specialCharacters } from './index'
 
 function separateCssStyle(styles) {
 
@@ -13,8 +13,9 @@ function separateCssStyle(styles) {
   var style = {};
 
   for (var name in styles) {
-  if(/^[a-zA-Z0-9-]+$/.test(name) === false)//  if (_index.specialCharacters.includes(name[0])) //|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
-      css[name] = styles[name];else style[name] = styles[name];
+    //if(specialCharacters.includes(name[0]) )//|| !!name.match(new RegExp(`[${specialInnerCharacters}]`, "gi")))
+    //if (!/^\w+$/.test(name))
+    if (!/^[a-zA-Z0-9-]+$/.test(name)) css[name] = styles[name];else style[name] = styles[name];
   }
 
   if (0 === Object.keys(css).length) css = null;

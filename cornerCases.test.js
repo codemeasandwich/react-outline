@@ -221,18 +221,72 @@ describe('In production mode', () => {
       })
 
       it('should generated an element with a logic fn that can take undefined', () => {
+
+        // VERSION  A
           const css = {
             foo : {   fontSize: "20px" }
           };
           const logic = {
             foo: x => ({ background: "gray" }),
           };
-          const styles = outline(css,logic); // random name with random value
+          const stylesA = outline(css,logic); // random name with random value
 
-          const Foo = styles.foo`span`;
+        // VERSION  B
 
-          //console.log(renderer.create(<Foo style={undefined} />).toJSON());
-          expect(renderer.create(<Foo style={undefined} />).toJSON()).toMatchSnapshot();
+          const allStyles = {
+            base: {
+              foo : {   fontSize: "20px" }
+            },
+            foo: x => ({ background: "gray" })
+          };
+          const stylesB = outline(allStyles); // random name with random value
+
+          const FooA = stylesA.foo`span`;
+          const FooB = stylesB.foo`span`;
+
+          expect(renderer.create(<FooA style={undefined} />).toJSON()).toMatchSnapshot();
+          expect(renderer.create(<FooB style={undefined} />).toJSON())
+        .toEqual(renderer.create(<FooA style={undefined} />).toJSON());
+      })
+
+      /*it('should attach dom event to element', () => {
+
+
+          styles = outline({ textarea : {} })
+
+          <Textarea onDomEvent={{'scroll': ()=>{
+
+                    }}}
+                    defaultValue={"1,2,3,4,5".replace(/,/g,"\n")} />
+
+
+          //expect(renderer.create(<FooA style={undefined} />).toJSON()).toMatchSnapshot();
+          console.log(renderer.create(<FooA style={false}/>).toJSON())
+      })*/
+
+
+
+      it.skip('should generated an element with css selector', () => {
+
+          let styles = {
+            base : {
+              cell:{
+                base:{
+                  minHeight: "100%"
+                },
+                ">div": {
+                    minHeight: "100%"
+                }
+              }
+            },
+            cell : x => Object.assign({minHeight: "auto"},x)
+          };
+          styles = outline(styles)
+
+          const FooA = styles.cell`${()=><div/>}`;
+
+          //expect(renderer.create(<FooA style={undefined} />).toJSON()).toMatchSnapshot();
+          console.log(renderer.create(<FooA style={false}/>).toJSON())
       })
 
 })
