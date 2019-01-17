@@ -1,63 +1,69 @@
-"use strict";
+'use strict';
 
-// !/^[a-zA-Z0-9]/.test(propName[0])
-module.exports.specialCharacters = "@: "; //['@',':'].join("");
-module.exports.specialInnerCharacters = " >+~"; //['@',':'].join("");
-
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE BE DRAGONS
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-var modules = void 0;
-
-if (global && global.__TEST__) {
-  // TESTING !!!
-
-  var loader = { open: require };
-
-  var path = loader.open('path');
-  var fs = loader.open('fs');
-  var paths = [];
-
-  modules = function modules(fileName) {
-    return loader.open(fileName);
-  };
-  modules.keys = function () {
-    return paths;
-  };
-
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
-
-  try {
-    for (var _iterator = fs.readdirSync(__dirname)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var fileName = _step.value;
-      paths.push("./" + fileName);
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-} else {
-
-  // webpack magic
-  modules = require.context("./", false, /\.js$/);
-}
-
-modules.keys().filter(function (path) {
-  return "./index.js" !== path && !path.endsWith(".test.js") && !path.endsWith(".js.map");
-}).forEach(function (path) {
-  return module.exports[path.match(/([^\/]+)(?=\.\w+$)/)[0]] = modules(path).default;
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
+exports.separateCssStyle = exports.sanitizeStyleObj = exports.sanitizeOutlineInput = exports.replacedStyleFn = exports.replaceColors = exports.pubsub = exports.object2css = exports.makeid = exports.hasKids = exports.genStyles = exports.genCss = exports.buildCssString = undefined;
+
+var _buildCssString = require('./buildCssString');
+
+var _buildCssString2 = _interopRequireDefault(_buildCssString);
+
+var _genCss = require('./genCss');
+
+var _genCss2 = _interopRequireDefault(_genCss);
+
+var _genStyles = require('./genStyles');
+
+var _genStyles2 = _interopRequireDefault(_genStyles);
+
+var _hasKids = require('./hasKids');
+
+var _hasKids2 = _interopRequireDefault(_hasKids);
+
+var _makeid = require('./makeid');
+
+var _makeid2 = _interopRequireDefault(_makeid);
+
+var _object2css = require('./object2css');
+
+var _object2css2 = _interopRequireDefault(_object2css);
+
+var _pubsub = require('./pubsub');
+
+var _pubsub2 = _interopRequireDefault(_pubsub);
+
+var _replaceColors = require('./replaceColors');
+
+var _replaceColors2 = _interopRequireDefault(_replaceColors);
+
+var _replacedStyleFn = require('./replacedStyleFn');
+
+var _replacedStyleFn2 = _interopRequireDefault(_replacedStyleFn);
+
+var _sanitizeOutlineInput = require('./sanitizeOutlineInput');
+
+var _sanitizeOutlineInput2 = _interopRequireDefault(_sanitizeOutlineInput);
+
+var _sanitizeStyleObj = require('./sanitizeStyleObj');
+
+var _sanitizeStyleObj2 = _interopRequireDefault(_sanitizeStyleObj);
+
+var _separateCssStyle = require('./separateCssStyle');
+
+var _separateCssStyle2 = _interopRequireDefault(_separateCssStyle);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.buildCssString = _buildCssString2.default;
+exports.genCss = _genCss2.default;
+exports.genStyles = _genStyles2.default;
+exports.hasKids = _hasKids2.default;
+exports.makeid = _makeid2.default;
+exports.object2css = _object2css2.default;
+exports.pubsub = _pubsub2.default;
+exports.replaceColors = _replaceColors2.default;
+exports.replacedStyleFn = _replacedStyleFn2.default;
+exports.sanitizeOutlineInput = _sanitizeOutlineInput2.default;
+exports.sanitizeStyleObj = _sanitizeStyleObj2.default;
+exports.separateCssStyle = _separateCssStyle2.default;

@@ -1,33 +1,27 @@
-// !/^[a-zA-Z0-9]/.test(propName[0])
-module.exports.specialCharacters = "@: ";//['@',':'].join("");
-module.exports.specialInnerCharacters = " >+~";//['@',':'].join("");
+import buildCssString from './buildCssString'
+import genCss from './genCss'
+import genStyles from './genStyles'
+import hasKids from './hasKids'
+import makeid from './makeid'
+import object2css from './object2css'
+import pubsub from './pubsub'
+import replaceColors from './replaceColors'
+import replacedStyleFn from './replacedStyleFn'
+import sanitizeOutlineInput from './sanitizeOutlineInput'
+import sanitizeStyleObj from './sanitizeStyleObj'
+import separateCssStyle from './separateCssStyle'
 
-
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! HERE BE DRAGONS
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-let modules
-
-if(global && global.__TEST__) { // TESTING !!!
-
-  const loader = {open:require}
-
-  const path = loader.open('path')
-  const fs = loader.open('fs')
-  const paths = [];
-
-  modules = (fileName)=> loader.open(fileName)
-  modules.keys = ()=>paths;
-
-  for (let fileName of fs.readdirSync(__dirname))
-  {    paths.push("./"+fileName)  }
-} else {
-
-  // webpack magic
-    modules = require.context("./", false, /\.js$/);
+export {
+    buildCssString,
+    genCss,
+    genStyles,
+    hasKids,
+    makeid,
+    object2css,
+    pubsub,
+    replaceColors,
+    replacedStyleFn,
+    sanitizeOutlineInput,
+    sanitizeStyleObj,
+    separateCssStyle
 }
-
-modules.keys().filter( path => "./index.js" !== path && ! path.endsWith(".test.js") && ! path.endsWith(".js.map"))
-              .forEach( path => module.exports[path.match(/([^\/]+)(?=\.\w+$)/)[0]] = modules(path).default );
