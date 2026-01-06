@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = buildCssString;
+exports["default"] = buildCssString;
 function buildCssString(classesValues, props) {
   var css = Object.keys(classesValues).map(function (className) {
     return classesValues[className];

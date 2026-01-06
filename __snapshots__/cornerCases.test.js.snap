@@ -48,7 +48,7 @@ exports[`In production mode should allow cross cutting style to map to only func
 <span
   name="foo"
   style={
-    Object {
+    {
       "background": "gray",
       "fontSize": "20px",
     }
@@ -60,7 +60,7 @@ exports[`In production mode should allow cross cutting style to map to only func
 <span
   name="bar"
   style={
-    Object {
+    {
       "background": "black",
       "fontSize": "20px",
     }
@@ -72,7 +72,7 @@ exports[`In production mode should be able to destructur assignments on generate
 <div
   name="cats"
   style={
-    Object {
+    {
       "color": "pink",
     }
   }
@@ -83,7 +83,7 @@ exports[`In production mode should be able to destructur assignments on generate
 <div
   name="cats"
   style={
-    Object {
+    {
       "color": "blue",
     }
   }
@@ -94,7 +94,7 @@ exports[`In production mode should be able to pass an value to style logic 1`] =
 <div
   name="dogs"
   style={
-    Object {
+    {
       "color": "white",
     }
   }
@@ -105,7 +105,7 @@ exports[`In production mode should be able to pass an value to style logic 2`] =
 <div
   name="dogs"
   style={
-    Object {
+    {
       "color": "black",
     }
   }
@@ -117,7 +117,7 @@ exports[`In production mode should be able to pass true value 1`] = `
   disabled={true}
   name="input"
   style={
-    Object {
+    {
       "background": "gray",
       "color": "red",
       "fontSize": "20px",
@@ -130,7 +130,7 @@ exports[`In production mode should generated an element with a logic fn that can
 <span
   name="foo"
   style={
-    Object {
+    {
       "background": "gray",
       "fontSize": "20px",
     }

@@ -1,85 +1,92 @@
-'use strict';
+"use strict";
 
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-exports.default = function (_ref) {
+exports["default"] = _default;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _utils = require("./utils");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
+function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
+function _default(_ref) {
   var elemName = _ref.elemName,
-      css = _ref.css,
-      styleCSS = _ref.styleCSS,
-      inlineStyle = _ref.inlineStyle,
-      style = _ref.style,
-      styleName = _ref.styleName,
-      colors = _ref.colors,
-      randomClassName = _ref.randomClassName,
-      options = _ref.options,
-      replacedStyle = _ref.replacedStyle;
-
-  var C2 = function (_React$Component) {
-    _inherits(C2, _React$Component);
-
+    css = _ref.css,
+    styleCSS = _ref.styleCSS,
+    inlineStyle = _ref.inlineStyle,
+    style = _ref.style,
+    styleName = _ref.styleName,
+    colors = _ref.colors,
+    randomClassName = _ref.randomClassName,
+    options = _ref.options,
+    replacedStyle = _ref.replacedStyle;
+  var C2 = /*#__PURE__*/function (_React$Component) {
     function C2() {
       _classCallCheck(this, C2);
-
-      return _possibleConstructorReturn(this, (C2.__proto__ || Object.getPrototypeOf(C2)).apply(this, arguments));
+      return _callSuper(this, C2, arguments);
     }
-
-    _createClass(C2, [{
-      key: 'componentDidMount',
+    _inherits(C2, _React$Component);
+    return _createClass(C2, [{
+      key: "componentDidMount",
       value: function componentDidMount() {
-        var _this2 = this;
-
+        var _this = this;
         var onDomEvent = this.props.onDomEvent;
-
         var _loop = function _loop(listen) {
-          _this2.domElem.addEventListener(listen, function (event) {
-            return onDomEvent[listen](_this2.domElem, event);
+          _this.domElem.addEventListener(listen, function (event) {
+            return onDomEvent[listen](_this.domElem, event);
           });
         };
-
         for (var listen in onDomEvent) {
           _loop(listen);
         }
       }
     }, {
-      key: 'componentWillUnmount',
+      key: "componentWillUnmount",
       value: function componentWillUnmount() {
-        var _this3 = this;
-
+        var _this2 = this;
         var onDomEvent = this.props.onDomEvent;
-
         var _loop2 = function _loop2(listen) {
-          _this3.domElem.removeEventListener(listen, function (event) {
-            return onDomEvent[listen](_this3.domElem, event);
+          _this2.domElem.removeEventListener(listen, function (event) {
+            return onDomEvent[listen](_this2.domElem, event);
           });
         };
-
         for (var listen in onDomEvent) {
           _loop2(listen);
         }
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
-        var _this4 = this;
-
+        var _this3 = this;
         var props = this.props;
-
         if ("css" in props) {
-
           var updatedCss = Object.assign({}, css);
-
           for (var selectorRule in props.css) {
             updatedCss[selectorRule] = Object.assign({}, css[selectorRule], "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule]);
           }
-          _utils.pubsub.publish(randomClassName, (0, _utils.genCss)({ randomClassName: randomClassName, css: updatedCss, styleCSS: styleCSS, colors: colors, style: style, styleName: styleName }));
+          _utils.pubsub.publish(randomClassName, (0, _utils.genCss)({
+            randomClassName: randomClassName,
+            css: updatedCss,
+            styleCSS: styleCSS,
+            colors: colors,
+            style: style,
+            styleName: styleName
+          }));
         }
-
         var elemProps = Object.assign({}, props);
-
         var passedTrueProps = Object.keys(props).filter(function (name) {
           return props[name] === true && styleCSS[styleName] && name in styleCSS[styleName];
         });
@@ -95,7 +102,6 @@ exports.default = function (_ref) {
         } else {
           passedTrueProps = null;
         }
-
         if (passedTrueProps || props.hasOwnProperty("style")) {
           //if(props.style instanceof Object)
           //    passedTrueProps = Object.assign({},props.style,passedTrueProps);
@@ -111,50 +117,26 @@ exports.default = function (_ref) {
         if (elemProps.style && Object.keys(elemProps.style).length === 0) {
           delete elemProps.style;
         }
-
         if (options.named) {
           elemProps.name = elemProps.name || styleName;
         }
-
         elemProps.className = elemProps.className || "";
         if (elemProps.className && randomClassName) {
           elemProps.className += " ";
         }
         elemProps.className += randomClassName || "";
         if ("" === elemProps.className) delete elemProps.className;
-
         if (props.onDomEvent) {
           elemProps.ref = function (reatElem) {
-            return _this4.domElem = (0, _reactDom.findDOMNode)(reatElem);
+            return _this3.domElem = (0, _reactDom.findDOMNode)(reatElem);
           };
         }
-
-        return _react2.default.createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
+        return /*#__PURE__*/_react["default"].createElement(elemName || styleName, elemProps, elemProps && elemProps.children);
       }
     }]);
-
-    return C2;
-  }(_react2.default.Component);
-
-  Object.defineProperty(C2, 'name', { value: styleName || elemName });
-
+  }(_react["default"].Component);
+  Object.defineProperty(C2, 'name', {
+    value: styleName || elemName
+  });
   return C2;
-};
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _utils = require('./utils');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+}

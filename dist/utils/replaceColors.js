@@ -3,9 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-exports.default = function (colors, style) {
-
+exports["default"] = _default;
+function _default(colors, style) {
   if (!colors) return style;
   var result = Object.assign({}, style);
   for (var key in result) {
@@ -14,4 +13,4 @@ exports.default = function (colors, style) {
     }
   }
   return result;
-};
+}

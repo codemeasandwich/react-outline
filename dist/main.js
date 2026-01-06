@@ -1,29 +1,27 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.testing = exports.Styles = exports.setOptions = exports.withOptions = undefined;
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _utils = require('./utils');
-
-var _wrapStyles = require('./wrapStyles');
-
-var _wrapStyles2 = _interopRequireDefault(_wrapStyles);
-
-var _Styles = require('./Styles');
-
-var _Styles2 = _interopRequireDefault(_Styles);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var userSetOptions = { named: true /* prefix:getVendorPrefix()*/ };
-
-var wrapStyles = (0, _wrapStyles2.default)(userSetOptions);
+Object.defineProperty(exports, "Styles", {
+  enumerable: true,
+  get: function get() {
+    return _Styles["default"];
+  }
+});
+exports["default"] = void 0;
+exports.setOptions = setOptions;
+exports.testing = void 0;
+exports.withOptions = withOptions;
+var _react = _interopRequireDefault(require("react"));
+var _utils = require("./utils");
+var _wrapStyles = _interopRequireDefault(require("./wrapStyles"));
+var _Styles = _interopRequireDefault(require("./Styles"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
+var userSetOptions = {
+  named: true /* prefix:getVendorPrefix()*/
+};
+var wrapStyles = (0, _wrapStyles["default"])(userSetOptions);
 
 //=====================================================
 //============================= top Level - Wrap Styles
@@ -31,12 +29,9 @@ var wrapStyles = (0, _wrapStyles2.default)(userSetOptions);
 
 function outline(_styles) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
   return sanitizeOutline((0, _utils.sanitizeOutlineInput)(_styles, options), options);
 }
-
 function sanitizeOutline(_styles, options) {
-
   var wrappedStyles = wrapStyles(_styles, options);
   wrappedStyles.colors = wrappedStyles.colors || options && options.colors || userSetOptions && userSetOptions.colors;
   return wrappedStyles;
@@ -48,7 +43,6 @@ function sanitizeOutline(_styles, options) {
 
 function withOptions(options) {
   if (!options) throw new Error("Bad options values for react-outline:" + JSON.stringify(options));
-
   var tempOutlineFn = function tempOutlineFn(_styles, optionsOrLogic) {
     return sanitizeOutline((0, _utils.sanitizeOutlineInput)(_styles, optionsOrLogic), options);
   };
@@ -57,7 +51,6 @@ function withOptions(options) {
   }
   return tempOutlineFn;
 }
-
 function setOptions(options) {
   if (!options) throw new Error("Bad options values for react-outline:" + JSON.stringify(options));
   if (options.colors) {
@@ -65,13 +58,7 @@ function setOptions(options) {
   }
   Object.assign(userSetOptions, options);
 }
-
-var testing = {
+var testing = exports.testing = {
   resetCSS: _utils.pubsub.clear
 };
-
-exports.default = outline;
-exports.withOptions = withOptions;
-exports.setOptions = setOptions;
-exports.Styles = _Styles2.default;
-exports.testing = testing;
+var _default = exports["default"] = outline;
