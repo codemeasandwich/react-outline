@@ -22,7 +22,61 @@ Feathers:
 
 # [Live Demo](https://s3.amazonaws.com/react-outline/index.html?down=0) / [Demo Source](https://github.com/codemeasandwich/react-outline/tree/master/example)
 
-Examples
+## Storybook Examples
+
+### Basics
+| Example | Description |
+|---------|-------------|
+| [Creating and applying a style](#creating-and-applying-a-style--basic-example-) | Define styles object, process with `outline()`, apply via `styles.title()` |
+| [Generate element from style](#the-above-example-can-be-streamlined-using-the-tag-creater) | Use tagged template `styles.title\`div\`` to create styled components |
+| [Wrapping existing elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Wrapping%20an%20existing%20element) | Wrap React components: `styles.title\`${MyComponent}\`` |
+| [Implied named elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Generate%20an%20implied%20named%20element) | Style names matching HTML tags auto-infer element type |
+| [Reusing elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Reusing%20elements) | Use styled components multiple times |
+| [Passing Style and Function](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Passing%20Style%20and%20Funtion%20as%20arguments) | Pass styles and functions as separate args: `outline(styles, fns)` |
+| [Sharing styles](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Sharing%20Style) | Share across elements: `"title, content": { textShadow: "..." }` |
+
+### Combine Styles
+| Example | Description |
+|---------|-------------|
+| [Using style function](#the-attribute-flag-can-be-used-via-the-style-function) | Call with flags: `styles.title({error: true})` |
+| [In generated element](#you-can-combine-attribute-of-a-style-by-using-a-boolean-flag) | Via style prop: `<Title style={{error:true}}>` |
+| [Prop flags](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Combine%20styles&selectedStory=Using%20a%20prop%20flag) | Boolean props: `<Title error>` |
+| [Custom colors](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Combine%20styles&selectedStory=Logic%20function%20With%20Generate%20Element) | Use `withOptions({colors:{...}})` for color mappings |
+| [Pass style objects](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Combine%20styles&selectedStory=Passing%20a%20Style%20objct%20to%20a%20generated%20element) | Raw CSS: `<Title style={{color:"red"}}>` |
+
+### Style Functions
+| Example | Description |
+|---------|-------------|
+| [Dynamic styles](#redux-outline-also-support-custom-function-to-have-run-time-control-over-your-styles) | Runtime computed styles via functions |
+| [Modify existing styles](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Style%20Functions&selectedStory=Modify%20existing%20styles) | 2-arg functions: `(style, props) => ({...})` |
+| [Function without style](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Style%20Functions&selectedStory=Function%20dont%20need%20a%20style) | Functions work without matching base style |
+| [With generated elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Style%20Functions&selectedStory=Function%20with%20generated%20elements) | Pass args via style prop: `<Group style={data.length}>` |
+
+### CSS Helpers
+| Example | Description |
+|---------|-------------|
+| [Media queries](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Media%20Query) | `"@media (max-width: 600px)": {...}` - requires `<Styles/>` |
+| [Hover states](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Mouse%20hover) | `":hover": {...}` - requires `<Styles/>` |
+| [CSS source](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Css%20Source) | Raw CSS strings in `<Styles>` component |
+| [CSS selectors](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Css%20Selector) | Child selectors: `"div:nth-child(even)": {...}` |
+| [Dynamic CSS](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Dynamic%20Css%20Selector) | Runtime via `css` prop |
+| [Vendor prefixes](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Vendor%20Auto-Prefix) | Auto-prefixes for flex, transitions, etc. |
+
+### Reference DOM Element
+| Example | Description |
+|---------|-------------|
+| [DOM events](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Reference%20dom%20element&selectedStory=function%20with%20Dom%20Events) | `onDomEvent={{'scroll': handler}}` |
+| [Ref by function](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Reference%20dom%20element&selectedStory=ref%20by%20function) | Access DOM via React refs |
+
+### Animate
+| Example | Description |
+|---------|-------------|
+| [Animate.css](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Animate&selectedStory=Animate.css) | Integration with ReactCSSTransitionGroup |
+
+---
+
+## Table of Contents
+
 1. [Creating and applying a style](#creating-and-applying-a-style--basic-example-)
 2. [Generate a element from a style](#the-above-example-can-be-streamlined-using-the-tag-creater)
 3. [Combine style attribute](#combine-style-attribute)
@@ -39,154 +93,126 @@ Examples
 7. [Comparisons](#comparisons)
     1. [styled-components](#styled-components)
 
+### Quick Start
+
+The simplest way to create styled components:
+
+```JS
+import outline from 'react-outline'
+
+// Inline style schema - no nesting required!
+const styles = outline({ 
+  title: { fontSize: 25, backgroundColor: "red" } 
+});
+
+const Title = styles.title`div`
+
+export default <Title>Hello World</Title>
+// Renders: <div style={{ fontSize: 25, backgroundColor: "red" }}>Hello World</div>
+```
+
 ### Creating and applying a style (Basic example)
 ```JS
 import outline from 'react-outline'
 
-let styles = {
-    base : {
-      title:{ fontSize: "25px" }
-    }
-}
-styles = outline(styles);
+const styles = outline({ 
+  title: { fontSize: "25px" } 
+});
 
 export default (props) => <div style={styles.title()}>{props.text}</div>
-/*
- props === { text:"hello" }
-<div style={{ fontSize: "25px" }}>"hello"</div>
-*/
+// Renders: <div style={{ fontSize: "25px" }}>"hello"</div>
 ```
 
-### The above example can be streamlined using the tag creater
+### Generate a styled element (Tag Creator)
 
 ```JS
 import outline from 'react-outline'
 
-let styles = {
-    base : {
-      title:{ fontSize: "25px" }
-    }
-}
-styles = outline(styles);
+const styles = outline({ title: { fontSize: "25px" } });
 
 const Title = styles.title`div`
 
 export default (props) => <Title>{props.text}</Title>
-/*
- props === { text:"hello" }
-<div style={{ fontSize: "25px" }}>"hello"</div>
-*/
+// Renders: <div style={{ fontSize: "25px" }}>"hello"</div>
 ```
-### Combine style attribute
-#### You can combine attribute of a style by using a boolean flag
+### Combine style variants
+
+Use `base` for default styles and add variants as sibling keys:
 
 ```JS
 import outline from 'react-outline'
 
-let styles = {
-    base : {
-      title:{
-        base:{fontSize: "25px" },
-        error:{color:"#f00" }
-      }
-    }
-}
-styles = outline(styles);
+const styles = outline({ 
+  title: {
+    base: { fontSize: "25px" },
+    error: { color: "#f00" }
+  }
+});
 
 const Title = styles.title`div`
 
-export default (props) => <Title style={{error:!!props.error}}>{props.text}</Title>
-
-/*
- props === { text:"hello", error:true }
-<div style={{ fontSize: "25px", color:"#f00" }}>"hello"</div>
-*/
-
+// Using a prop flag - cleanest!
+export default <Title error>Something went wrong</Title>
+// Renders: <div style={{ fontSize: "25px", color: "#f00" }}>...</div>
 ```
-#### The attribute flag can be used via the style function
+
+**Alternative syntaxes:**
 ```JS
-<div style={styles.title({error:!!props.error})}>{props.text}</div>
+// Via style prop
+<Title style={{error: true}}>Error</Title>
 
+// Via style function (inline)
+<div style={styles.title({error: true})}>Error</div>
 ```
 
-### redux-outline also support custom function. To have run-time control over your styles.
+### Style Functions (Runtime Control)
 
-NOTE:   
-If your funtion have **1** argument, it will be passed only the incoming arguments.    
-With **2** arguments. The first will be the corresponding style and the second will be the incoming arguments.
+Add functions to compute styles dynamically at runtime:
 
 ```JS
 import outline from 'react-outline'
 
-let styles = {
-    base : {
-      content:{
-        backgroundColor:"gray"
-      }
-      cell:{
-        fontSize:10
-      }
-    }    
-}
+const styles = outline({ 
+  content: { backgroundColor: "gray" },
+  cell: { fontSize: 10 }
+}, {
+  // 1 arg: receives the passed value
+  content: (count) => ({ height: `${count * 50}px` }),
+  
+  // 2 args: receives (baseStyle, passedValue)
+  cell: (style, important) => ({ 
+    fontSize: style.fontSize + (important ? 5 : -5) 
+  })
+});
 
-styles.content = (numberOfCells) => { height : `${numberOfCells*100}px` }
-styles.cell = (style,important) => { fontSize : style.fontSize + (important)?5:-5 }
+const data = [
+  { name: "foo", important: true },
+  { name: "bar", important: false },
+  { name: "baz" }
+]
 
-styles = outline(styles);
-
-export default () => {
-
-const data = [{name:"foo",important:true},
-              {name:"bar",important:false},
-              {name:"cat"}]
-
-return (<div style={styles.content(data.length)}> {
-            data.map( cellData => <span styles={styles.cell(cellData.important)}>{cellData.name}</span> )
-        } </div>)
-}
-
-/*
-<div style={{ backgroundColor:"gray", height : "300px" }}>
-  <span style={{ fontSize : 15 }}> foo </span>
-  <span style={{ fontSize : 5 }}>  bar </span>
-  <span style={{ fontSize : 10 }}> cat </span>
-</div>
-*/
-
+export default (
+  <div style={styles.content(data.length)}>
+    {data.map((item, i) => (
+      <span key={i} style={styles.cell(item.important)}>{item.name}</span>
+    ))}
+  </div>
+)
 ```
 
-👌 Dont forget! [Generated element](#you-can-combine-attribute-of-a-style-by-using-a-boolean-flag) will have there `style` prop used as the [style function](#redux-outline-also-support-custom-function-to-have-run-time-control-over-your-styles) argument.
+**With generated elements** - the `style` prop becomes the function argument:
 
 ```JS
-
-/*
- Same as above !!
-*/
-
-styles = outline(styles);
-
 const Group = styles.content`div`
 const Cell = styles.cell`span`
 
-export default () => {
-
-const data = [{name:"foo",important:true},
-              {name:"bar",important:false},
-              {name:"cat"}]
-
-return (<Group style={data.length}> {
-            data.map( cellData => <Cell styles={cellData.important}>{cellData.name}</Cell> )
-        } </Group>)
-}
-
-/*
-<div style={{ backgroundColor:"gray", height : "300px" }}>
-  <span style={{ fontSize : 15 }}> foo </span>
-  <span style={{ fontSize : 5 }}>  bar </span>
-  <span style={{ fontSize : 10 }}> cat </span>
-</div>
-*/
-
+export default (
+  <Group style={data.length}>
+    {data.map((item, i) => (
+      <Cell key={i} style={item.important}>{item.name}</Cell>
+    ))}
+  </Group>
+)
 ```
 ### Setting the options
 
