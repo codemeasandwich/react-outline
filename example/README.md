@@ -6,6 +6,16 @@
 once you are in the "example" folder and run the following commands
 
 3) `npm install`
-4) `npm start`
+4) `npm run storybook`
 
-then open a web brower to http://localhost:6006
+then open a web browser to http://localhost:6006
+
+---
+
+## Testing Process
+
+The project requires **100% code coverage** before publishing to npm.
+
+- **New features** must include a Storybook example. These examples automatically become tests.
+- **Edge cases** are validated in `cornerCases.test.js` to ensure comprehensive coverage.
+

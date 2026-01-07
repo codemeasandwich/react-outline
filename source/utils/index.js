@@ -8,7 +8,6 @@ import pubsub from './pubsub'
 import replaceColors from './replaceColors'
 import replacedStyleFn from './replacedStyleFn'
 import sanitizeOutlineInput from './sanitizeOutlineInput'
-import sanitizeStyleObj from './sanitizeStyleObj'
 import separateCssStyle from './separateCssStyle'
 
 export {
@@ -22,6 +21,6 @@ export {
     replaceColors,
     replacedStyleFn,
     sanitizeOutlineInput,
-    sanitizeStyleObj,
     separateCssStyle
 }
+

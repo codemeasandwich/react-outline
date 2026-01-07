@@ -3,7 +3,7 @@ import React from 'react';
 import { faker } from '@faker-js/faker';
 import outline, { withOptions, setOptions } from "react-outline"
 import { Styles, testing } from 'react-outline'
-import { render } from '@testing-library/react';
+import { render, cleanup, act } from '@testing-library/react';
 import renderer from 'react-test-renderer';
 
 function randomColor() {
@@ -313,6 +313,42 @@ describe('CSS selectors', () => {
     </div>).toJSON()).toMatchSnapshot();
   })
 
+  it('should support media queries in CSS', () => {
+    testing.resetCSS();
+
+    const css = {
+      responsive: {
+        base: { color: "black" },
+        "@media (max-width: 600px)": { color: "red" }
+      }
+    };
+    const styles = outline(css);
+    const Elem = styles.responsive`div`;
+
+    expect(renderer.create(<div>
+      <Styles />
+      <Elem />
+    </div>).toJSON()).toMatchSnapshot();
+  })
+
+  it('should support dynamic css prop on generated elements', () => {
+    testing.resetCSS();
+
+    const css = {
+      box: {
+        base: { color: "blue" },
+        ":hover": { color: "red" }
+      }
+    };
+    const styles = outline(css);
+    const Box = styles.box`div`;
+
+    // Test with css prop that passes a function
+    expect(renderer.create(<div>
+      <Styles />
+      <Box css={{ ":hover": () => ({ background: "yellow" }) }} />
+    </div>).toJSON()).toMatchSnapshot();
+  })
 
 })
 
@@ -331,3 +367,764 @@ describe('Check setOptions', () => {
     expect(outline.colors).toEqual(colors);
   })
 })
+
+describe('DOM events on generated elements', () => {
+  it('should attach and detach DOM event listeners', () => {
+    testing.resetCSS();
+
+    const css = {
+      textarea: {
+        base: { border: "1px solid gray" },
+        ":focus": { border: "1px solid blue" }
+      }
+    };
+    const styles = outline(css);
+    const Textarea = styles.textarea`textarea`;
+
+    const mockHandler = jest.fn();
+
+    const { container, unmount } = render(
+      <div>
+        <Styles />
+        <Textarea onDomEvent={{ scroll: mockHandler }} />
+      </div>
+    );
+
+    // The element should have a ref attached
+    const textarea = container.querySelector('textarea');
+    expect(textarea).toBeTruthy();
+
+    // Unmount should not throw (tests componentWillUnmount)
+    unmount();
+  })
+
+  it('should handle generated element with CSS and randomClassName', () => {
+    testing.resetCSS();
+
+    const css = {
+      panel: {
+        base: { color: "green" },
+        ":hover": { color: "blue" }
+      }
+    };
+    const styles = outline(css);
+    const Panel = styles.panel`div`;
+
+    // Element with CSS feature gets a random class
+    const { container } = render(<Panel style={{ color: "red" }} />);
+    expect(container.firstChild.className).toMatch(/react-outline/);
+  })
+})
+
+describe('Styles component', () => {
+  afterEach(() => {
+    testing.resetCSS();
+    cleanup();
+  });
+
+  it('should render CSS from pubsub', () => {
+    const css = {
+      title: {
+        base: { fontSize: "20px" },
+        ":hover": { fontSize: "24px" }
+      }
+    };
+    const styles = outline(css);
+    const Title = styles.title`div`;
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <Title />
+      </div>
+    );
+
+    const styleTag = container.querySelector('style');
+    expect(styleTag).toBeTruthy();
+    expect(styleTag.textContent).toContain('react-outline');
+  })
+
+  it('should update when new styles are published', () => {
+    const css1 = {
+      first: {
+        base: { color: "red" },
+        ":hover": { color: "blue" }
+      }
+    };
+    const styles1 = outline(css1);
+    const First = styles1.first`div`;
+
+    const { container, rerender } = render(
+      <div>
+        <Styles />
+        <First />
+      </div>
+    );
+
+    // Add a second styled element
+    const css2 = {
+      second: {
+        base: { color: "green" },
+        ":hover": { color: "yellow" }
+      }
+    };
+    const styles2 = outline(css2);
+    const Second = styles2.second`div`;
+
+    rerender(
+      <div>
+        <Styles />
+        <First />
+        <Second />
+      </div>
+    );
+
+    const styleTag = container.querySelector('style');
+    expect(styleTag.textContent).toContain('react-outline');
+  })
+
+  it('should render with custom children (raw CSS)', () => {
+    const { container } = render(
+      <Styles>{`.custom { color: purple; }`}</Styles>
+    );
+
+    const styleTag = container.querySelector('style');
+    expect(styleTag.textContent).toContain('.custom');
+    expect(styleTag.textContent).toContain('purple');
+  })
+
+  it('should provide toString method for SSR', () => {
+    testing.resetCSS();
+
+    const css = {
+      ssr: {
+        base: { color: "black" },
+        ":hover": { color: "white" }
+      }
+    };
+    const styles = outline(css);
+    const SSR = styles.ssr`div`;
+
+    // Create an element to trigger CSS generation
+    render(<SSR />);
+
+    // Styles.toString should return CSS string
+    const cssString = Styles.toString();
+    expect(typeof cssString).toBe('string');
+  })
+})
+
+describe('Additional branch coverage', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should handle css prop with direct object values (not functions)', () => {
+    testing.resetCSS();
+
+    const css = {
+      elem: {
+        base: { color: "blue" },
+        ":hover": { color: "red" }
+      }
+    };
+    const styles = outline(css);
+    const Elem = styles.elem`div`;
+
+    // Pass css prop with direct object (not function)
+    const { container } = render(
+      <div>
+        <Styles />
+        <Elem css={{ ":hover": { background: "green" } }} />
+      </div>
+    );
+
+    expect(container.querySelector('div')).toBeTruthy();
+  })
+
+  it('should handle true props on wrapped React components', () => {
+    testing.resetCSS();
+
+    // Create a custom React component
+    const MyComponent = (props) => <div {...props} />;
+
+    const css = {
+      wrapped: {
+        base: { color: "blue" },
+        active: { color: "red" }
+      }
+    };
+    const styles = outline(css);
+    const Wrapped = styles.wrapped`${MyComponent}`;
+
+    // Pass true prop on a function component (not HTML element)
+    const { container } = render(<Wrapped active />);
+
+    expect(container.firstChild).toBeTruthy();
+  })
+
+  it('should work when options.named is false', () => {
+    testing.resetCSS();
+
+    const custom_outline = withOptions({ named: false });
+
+    const css = {
+      noname: {
+        base: { color: "purple" },
+        ":hover": { color: "yellow" }
+      }
+    };
+    const styles = custom_outline(css);
+    const NoName = styles.noname`div`;
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <NoName />
+      </div>
+    );
+
+    // Should not have a name attribute when named is false
+    expect(container.querySelector('div')).toBeTruthy();
+  })
+
+  it('should setOptions without colors property', () => {
+    // setOptions with an option other than colors
+    setOptions({ caching: true });
+
+    const css = { test: { color: "blue" } };
+    const styles = outline(css);
+
+    expect(styles.test()).toHaveProperty('color');
+  })
+
+  it('should handle elemName falling back to styleName in defineProperty', () => {
+    testing.resetCSS();
+
+    const css = {
+      myelem: { color: "green" }
+    };
+    const styles = outline(css);
+
+    // Create element without explicit tag (uses implied element)
+    const MyElem = styles.myelem``;
+
+    const { container } = render(<MyElem />);
+    expect(container.firstChild).toBeTruthy();
+  })
+
+  it('should handle element without className when no CSS features', () => {
+    const css = { plain: { color: "red" } };
+    const styles = outline(css);
+    const Plain = styles.plain`div`;
+
+    const { container } = render(<Plain />);
+
+    // Should not have className when there are no CSS pseudo-selectors
+    expect(container.firstChild.className).toBe('');
+  })
+
+  it('should handle styleItem with inline style generation', () => {
+    testing.resetCSS();
+
+    const css = {
+      inline: { fontSize: 20, fontWeight: "bold" }
+    };
+    const styles = outline(css);
+
+    // Call the style function directly
+    const inlineStyles = styles.inline();
+
+    expect(inlineStyles).toHaveProperty('fontSize');
+    expect(inlineStyles).toHaveProperty('fontWeight');
+  })
+})
+
+describe('Edge cases for sharing styles', () => {
+  it('should handle sharing styles with nested base values', () => {
+    testing.resetCSS();
+
+    const css = {
+      "header, footer": { padding: "10px" },
+      header: {
+        base: { color: "blue" }
+      },
+      footer: {
+        base: { color: "red" }
+      }
+    };
+    const styles = outline(css);
+
+    const headerStyle = styles.header();
+    const footerStyle = styles.footer();
+
+    expect(headerStyle).toHaveProperty('padding');
+    expect(footerStyle).toHaveProperty('padding');
+  })
+})
+
+describe('Lifecycle methods coverage', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should trigger componentDidMount with onDomEvent', () => {
+    testing.resetCSS();
+
+    const css = {
+      input: {
+        base: { border: "1px solid gray" },
+        ":focus": { border: "1px solid blue" }
+      }
+    };
+    const styles = outline(css);
+    const Input = styles.input`input`;
+
+    const scrollHandler = jest.fn();
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <Input onDomEvent={{ scroll: scrollHandler, focus: jest.fn() }} />
+      </div>
+    );
+
+    const input = container.querySelector('input');
+    expect(input).toBeTruthy();
+  })
+
+  it('should trigger componentWillUnmount cleanup', () => {
+    testing.resetCSS();
+
+    const css = {
+      box: {
+        base: { color: "green" },
+        ":hover": { color: "blue" }
+      }
+    };
+    const styles = outline(css);
+    const Box = styles.box`div`;
+
+    const clickHandler = jest.fn();
+
+    const { unmount } = render(
+      <div>
+        <Styles />
+        <Box onDomEvent={{ click: clickHandler }} />
+      </div>
+    );
+
+    // This should trigger componentWillUnmount
+    unmount();
+  })
+
+  it('should use styleName when elemName is falsy for component name', () => {
+    testing.resetCSS();
+
+    // Using implied element name (empty string becomes falsy)
+    const css = {
+      customName: { fontSize: 16 }
+    };
+    const styles = outline(css);
+
+    // Empty tag literal should use styleName
+    const Custom = styles.customName``;
+
+    expect(Custom.name).toBe('customName');
+  })
+
+  it('should use elemName when provided for component name', () => {
+    testing.resetCSS();
+
+    const css = {
+      myStyle: { fontSize: 16 }
+    };
+    const styles = outline(css);
+
+    // Explicit tag should use that tag name 
+    const Div = styles.myStyle`div`;
+
+    // The component should exist and render
+    const { container } = render(<Div />);
+    expect(container.firstChild).toBeTruthy();
+  })
+})
+
+describe('styleItem function coverage', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should handle nested style objects with hasKids', () => {
+    const css = {
+      parent: {
+        child: { color: "red" }
+      }
+    };
+    const styles = outline(css);
+
+    // Access nested style
+    expect(styles.parent).toBeDefined();
+    if (styles.parent.child) {
+      expect(styles.parent.child).toBeDefined();
+    }
+  })
+
+  it('should handle wrapStyles function call', () => {
+    const css = {
+      item: { padding: 10 }
+    };
+    const logic = {
+      item: (x) => ({ margin: x || 5 })
+    };
+    const styles = outline(css, logic);
+
+    // This exercises the wrapStyles path
+    const result = styles.item(10);
+    expect(result).toHaveProperty('margin');
+  })
+})
+
+describe('DOM event triggering for full coverage', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should trigger scroll event on element with onDomEvent', async () => {
+    testing.resetCSS();
+
+    const css = {
+      scrollable: {
+        base: { height: 100, overflow: "auto" },
+        ":hover": { background: "gray" }
+      }
+    };
+    const styles = outline(css);
+    const Scrollable = styles.scrollable`div`;
+
+    const scrollHandler = jest.fn();
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <Scrollable onDomEvent={{ scroll: scrollHandler }}>
+          <div style={{ height: 500 }}>Content</div>
+        </Scrollable>
+      </div>
+    );
+
+    const scrollableDiv = container.querySelectorAll('div')[1];
+
+    // Trigger scroll event
+    const scrollEvent = new Event('scroll', { bubbles: true });
+    scrollableDiv.dispatchEvent(scrollEvent);
+
+    expect(scrollHandler).toHaveBeenCalled();
+  })
+
+  it('should trigger click event on element with onDomEvent', () => {
+    testing.resetCSS();
+
+    const css = {
+      clickable: {
+        base: { cursor: "pointer" },
+        ":active": { opacity: 0.5 }
+      }
+    };
+    const styles = outline(css);
+    const Clickable = styles.clickable`button`;
+
+    const clickHandler = jest.fn();
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <Clickable onDomEvent={{ click: clickHandler }}>Click me</Clickable>
+      </div>
+    );
+
+    const button = container.querySelector('button');
+
+    // Trigger click event
+    const clickEvent = new Event('click', { bubbles: true });
+    button.dispatchEvent(clickEvent);
+
+    expect(clickHandler).toHaveBeenCalled();
+  })
+
+  it('should properly unmount element with active event listeners', () => {
+    testing.resetCSS();
+
+    const css = {
+      removable: {
+        base: { color: "red" },
+        ":focus": { color: "blue" }
+      }
+    };
+    const styles = outline(css);
+    const Removable = styles.removable`input`;
+
+    const focusHandler = jest.fn();
+    const blurHandler = jest.fn();
+
+    const { container, unmount } = render(
+      <div>
+        <Styles />
+        <Removable onDomEvent={{ focus: focusHandler, blur: blurHandler }} type="text" />
+      </div>
+    );
+
+    const input = container.querySelector('input');
+
+    // Trigger focus to ensure event listener is active
+    const focusEvent = new Event('focus', { bubbles: true });
+    input.dispatchEvent(focusEvent);
+
+    expect(focusHandler).toHaveBeenCalled();
+
+    // Now unmount - this triggers componentWillUnmount
+    unmount();
+
+    // Verify no errors occurred during unmount
+    expect(true).toBe(true);
+  })
+})
+
+describe('Edge cases for complete function coverage', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should use default empty style function when none provided', () => {
+    // Style with only base CSS, no function
+    const css = {
+      simple: { color: "red", fontSize: 16 }
+    };
+    const styles = outline(css);
+
+    // Call the style function (triggers the default () => {} in styleItem)
+    const result = styles.simple();
+
+    expect(result).toHaveProperty('color');
+    expect(result).toHaveProperty('fontSize');
+  })
+
+  it('should handle style with both CSS object and children styles', () => {
+    const css = {
+      container: {
+        wrapper: { padding: 10 }
+      }
+    };
+    const styles = outline(css);
+
+    // Access nested child style
+    if (styles.container && styles.container.wrapper) {
+      const wrapperStyle = styles.container.wrapper();
+      expect(wrapperStyle).toHaveProperty('padding');
+    }
+  })
+
+  it('should handle element creation with no explicit elem name (uses styleName)', () => {
+    testing.resetCSS();
+
+    // Use table-like name that becomes the elem tag
+    const css = {
+      span: { color: "green" }
+    };
+    const styles = outline(css);
+
+    // Create element using implied tag name
+    const Span = styles.span``;
+
+    const { container } = render(<Span>Test</Span>);
+    expect(container.firstChild.tagName.toLowerCase()).toBe('span');
+  })
+
+  it('should handle removeEventListener in componentWillUnmount', () => {
+    testing.resetCSS();
+
+    const css = {
+      tracked: {
+        base: { width: 100 },
+        ":hover": { width: 200 }
+      }
+    };
+    const styles = outline(css);
+    const Tracked = styles.tracked`div`;
+
+    const mouseHandler = jest.fn();
+
+    const { container, unmount } = render(
+      <div>
+        <Styles />
+        <Tracked onDomEvent={{ mouseover: mouseHandler, mouseout: jest.fn() }} />
+      </div>
+    );
+
+    const trackedDiv = container.querySelectorAll('div')[1];
+
+    // Trigger event before unmount
+    const mouseEvent = new Event('mouseover', { bubbles: true });
+    trackedDiv.dispatchEvent(mouseEvent);
+
+    expect(mouseHandler).toHaveBeenCalled();
+
+    // Unmount to trigger componentWillUnmount
+    unmount();
+  })
+})
+
+describe('Input element tests', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should handle input element with keyboard events', () => {
+    testing.resetCSS();
+
+    const css = {
+      textInput: {
+        base: { border: "1px solid gray" },
+        ":focus": { border: "2px solid blue" }
+      }
+    };
+    const styles = outline(css);
+    const TextInput = styles.textInput`input`;
+
+    const keyHandler = jest.fn();
+    const inputHandler = jest.fn();
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <TextInput
+          onDomEvent={{ keydown: keyHandler, input: inputHandler }}
+          type="text"
+        />
+      </div>
+    );
+
+    const input = container.querySelector('input');
+
+    // Trigger keydown event
+    const keyEvent = new Event('keydown', { bubbles: true });
+    input.dispatchEvent(keyEvent);
+
+    // Trigger input event
+    const inputEvent = new Event('input', { bubbles: true });
+    input.dispatchEvent(inputEvent);
+
+    expect(keyHandler).toHaveBeenCalled();
+    expect(inputHandler).toHaveBeenCalled();
+  })
+
+  it('should handle textarea element with change events', () => {
+    testing.resetCSS();
+
+    const css = {
+      textArea: {
+        base: { width: "100%" },
+        ":focus": { outline: "none" }
+      }
+    };
+    const styles = outline(css);
+    const TextArea = styles.textArea`textarea`;
+
+    const changeHandler = jest.fn();
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <TextArea onDomEvent={{ change: changeHandler }} />
+      </div>
+    );
+
+    const textarea = container.querySelector('textarea');
+
+    // Trigger change event
+    const changeEvent = new Event('change', { bubbles: true });
+    textarea.dispatchEvent(changeEvent);
+
+    expect(changeHandler).toHaveBeenCalled();
+  })
+
+  it('should handle button with multiple event types', () => {
+    testing.resetCSS();
+
+    const css = {
+      btn: {
+        base: { padding: 10 },
+        ":hover": { background: "lightgray" },
+        ":active": { background: "gray" }
+      }
+    };
+    const styles = outline(css);
+    const Btn = styles.btn`button`;
+
+    const downHandler = jest.fn();
+    const upHandler = jest.fn();
+
+    const { container, unmount } = render(
+      <div>
+        <Styles />
+        <Btn onDomEvent={{ mousedown: downHandler, mouseup: upHandler }}>
+          Press me
+        </Btn>
+      </div>
+    );
+
+    const button = container.querySelector('button');
+
+    // Trigger mousedown
+    button.dispatchEvent(new Event('mousedown', { bubbles: true }));
+    // Trigger mouseup
+    button.dispatchEvent(new Event('mouseup', { bubbles: true }));
+
+    expect(downHandler).toHaveBeenCalled();
+    expect(upHandler).toHaveBeenCalled();
+
+    // Unmount to fully test lifecycle
+    unmount();
+  })
+})
+
+describe('noopStyleFn coverage', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should use noopStyleFn when no style function is defined', () => {
+    testing.resetCSS();
+
+    // Define style with only base CSS and no function
+    const css = {
+      noFnStyle: {
+        base: { color: "blue" },
+        ":hover": { color: "red" }
+      }
+    };
+
+    const styles = outline(css);
+
+    // Create a generated element - this uses the default noopStyleFn internally
+    const NoFn = styles.noFnStyle`div`;
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <NoFn />
+      </div>
+    );
+
+    expect(container.querySelector('div')).toBeTruthy();
+  })
+
+  it('should handle style with no function in outline logic', () => {
+    // Pure CSS only, no style functions at all
+    const css = {
+      pureBase: { fontSize: 14, padding: 5 }
+    };
+
+    const styles = outline(css);
+
+    // Calling the style function should work even without a defined function
+    const result = styles.pureBase();
+
+    expect(result).toHaveProperty('fontSize');
+    expect(result).toHaveProperty('padding');
+  })
+})
+

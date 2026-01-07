@@ -7,7 +7,7 @@
 react-outline was designed to more easly manage inline styles and better support server side rendering with complete styling.
 
 [![npm version](https://badge.fury.io/js/react-outline.svg)](https://badge.fury.io/js/react-outline)
-[![Build Status](https://travis-ci.org/codemeasandwich/react-outline.svg?branch=master)](https://travis-ci.org/codemeasandwich/react-outline)
+[![Build Status](https://github.com/codemeasandwich/react-outline/actions/workflows/publish.yml/badge.svg)](https://github.com/codemeasandwich/react-outline/actions/workflows/publish.yml)
 [![Coverage Status](https://coveralls.io/repos/github/codemeasandwich/react-outline/badge.svg?branch=master)](https://coveralls.io/github/codemeasandwich/react-outline?branch=master)
 
 
@@ -328,10 +328,19 @@ Feature requests can be made using [Github issues](https://github.com/codemeasan
 Pull requests are totally encouraged and you are welcome to contribute to the development of `react-outline`. Please do raise an issue before making a pull request so as to determine if a particular feature is already being worked on or is currently out of the scope of this project.
 
 1. [Fork react-outline](https://github.com/codemeasandwich/react-outline/fork)
-2. Create a feature branch (git checkout -b my-new-fature)
+2. Create a feature branch (git checkout -b my-new-feature)
 3. Write tests
-4. Ensure the code the covered
-3. Add story to the example storybook
-5. Commit your changes
-6. Push to your branch
-7. Make a pull request
+4. Ensure the code is covered
+5. Add story to the example storybook
+6. Commit your changes
+7. Push to your branch
+8. Make a pull request
+
+### Testing Process
+
+The project requires **100% code coverage** before publishing to npm.
+
+- **New features** must include a Storybook example. These examples automatically become tests.
+- **Edge cases** are validated in `cornerCases.test.js` to ensure comprehensive coverage.
+- Run `npm run test:cover` to check coverage before submitting a PR.
+

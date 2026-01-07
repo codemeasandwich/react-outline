@@ -1,5 +1,5 @@
 
-import { hasKids, specialCharacters, specialInnerCharacters, separateCssStyle, makeid, genCss, genStyles, pubsub, sanitizeStyleObj } from './utils'
+import { hasKids, separateCssStyle, makeid, genCss, genStyles, pubsub } from './utils'
 import element from './element'
 
 //=====================================================
@@ -74,7 +74,7 @@ export default function ({ _styles, replacedStyle, styleCSS, colors, options, ca
   //++++++++++++++++++++++++++++++++++++++++++++++++++++
   return (styleName) => {
 
-    const styleFn = _styles[styleName] || (() => { });
+    const styleFn = _styles[styleName] || (() => ({}));
 
     const cached = { key: null, value: null, source: [] }
     replacedStyle[styleName] = function (...args) {
@@ -90,7 +90,7 @@ export default function ({ _styles, replacedStyle, styleCSS, colors, options, ca
       //++++++++++++++++++++++++++++++++++++++ generat style
       //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-      const styleStuff = { styleCSS: styleCSS[styleName], styleFn: ("object" === typeof args && !_styles[styleName]) ? x => sanitizeStyleObj(x) : styleFn };
+      const styleStuff = { styleCSS: styleCSS[styleName], styleFn };
 
       return buildStyleObj({ styleStuff, genStyles, args, colors, caching, cached })
     } // END replacedStyle[styleName] = function(...args)

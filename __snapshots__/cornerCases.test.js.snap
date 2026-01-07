@@ -24,6 +24,35 @@ exports[`CSS selectors should allow you to select a nested element 1`] = `
 </div>
 `;
 
+exports[`CSS selectors should support dynamic css prop on generated elements 1`] = `
+<div>
+  <style>
+     .react-outline-:hover{ color:red; } .react-outline-{color:blue; }
+  </style>
+  <div
+    className="react-outline-"
+    css={
+      {
+        ":hover": [Function],
+      }
+    }
+    name="box"
+  />
+</div>
+`;
+
+exports[`CSS selectors should support media queries in CSS 1`] = `
+<div>
+  <style>
+    .react-outline-{color:black; } @media (max-width: 600px){ .react-outline-{ color:red; } } 
+  </style>
+  <div
+    className="react-outline-"
+    name="responsive"
+  />
+</div>
+`;
+
 exports[`CSS selectors should work with user defined callNames 1`] = `
 <div>
   <div
