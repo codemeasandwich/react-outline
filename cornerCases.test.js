@@ -1341,3 +1341,75 @@ describe('Issue #3: Prop flags with CSS selectors', () => {
   });
 })
 
+describe('Issue #2: Scoped css prop in production mode', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should generate unique instance class with makeid when css prop is used', () => {
+    testing.resetCSS();
+
+    const styles = outline({
+      base: {
+        title: {
+          base: { background: 'lightblue', color: 'black' },
+          'div:nth-child(even)': { background: 'darkblue', color: 'white' }
+        }
+      }
+    });
+    const Title = styles.title`div`;
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <Title css={{ 'div:nth-child(even)': { color: 'red' } }}>
+          <div>foo</div>
+        </Title>
+      </div>
+    );
+
+    // Check that the instance has a unique class name with hash (ro-XXXX pattern)
+    // In production mode, makeid generates a 10-char hash
+    const title = container.querySelector('div[name="title"]');
+    expect(title).toBeTruthy();
+    // Should have ro-XXXXXXXX (with 10 char hash from makeid)
+    expect(title.className).toMatch(/ro-[a-z0-9]{10}/);
+  });
+
+  it('should reuse instanceClassName on re-render (cover else branch)', () => {
+    testing.resetCSS();
+
+    const styles = outline({
+      base: {
+        box: {
+          base: { color: 'blue' },
+          ':hover': { color: 'red' }
+        }
+      }
+    });
+    const Box = styles.box`div`;
+
+    const { container, rerender } = render(
+      <div>
+        <Styles />
+        <Box css={{ ':hover': { background: 'yellow' } }}>initial</Box>
+      </div>
+    );
+
+    const box = container.querySelector('div[name="box"]');
+    const initialClassName = box.className;
+    expect(initialClassName).toMatch(/ro-[a-z0-9]{10}/);
+
+    // Re-render the same component - should reuse instanceClassName (else branch)
+    rerender(
+      <div>
+        <Styles />
+        <Box css={{ ':hover': { background: 'green' } }}>updated</Box>
+      </div>
+    );
+
+    const boxAfter = container.querySelector('div[name="box"]');
+    // Class name should be the same after re-render
+    expect(boxAfter.className).toBe(initialClassName);
+  });
+});
+
