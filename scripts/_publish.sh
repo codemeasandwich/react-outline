@@ -317,6 +317,11 @@ strip_prefix() {
 while IFS= read -r line; do
   [[ -z "$line" ]] && continue
   
+  # Skip automated coverage badge updates (internal housekeeping)
+  if [[ "$line" =~ update[[:space:]]coverage[[:space:]]badge ]]; then
+    continue
+  fi
+  
   # Extract the message (without git hash)
   msg="${line#* }"
   
