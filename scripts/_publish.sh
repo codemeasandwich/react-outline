@@ -3,6 +3,52 @@ set -e
 
 PACKAGE_NAME=$(node -p "require('./package.json').name")
 
+# ============================================
+# Safety checks before release
+# ============================================
+
+# Check 1: Must be on main branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$CURRENT_BRANCH" != "main" && "$CURRENT_BRANCH" != "master" ]]; then
+  echo "❌ Error: You must be on the 'main' or 'master' branch to release."
+  echo "   Current branch: $CURRENT_BRANCH"
+  echo "   Run: git checkout main"
+  exit 1
+fi
+echo "✅ On branch: $CURRENT_BRANCH"
+
+# Check 2: Fetch latest from origin
+git fetch origin "$CURRENT_BRANCH" --quiet
+
+# Get commit hashes
+LOCAL_COMMIT=$(git rev-parse HEAD)
+REMOTE_COMMIT=$(git rev-parse "origin/$CURRENT_BRANCH")
+BASE_COMMIT=$(git merge-base HEAD "origin/$CURRENT_BRANCH")
+
+if [[ "$LOCAL_COMMIT" == "$REMOTE_COMMIT" ]]; then
+  echo "✅ Local and origin are in sync"
+elif [[ "$BASE_COMMIT" == "$REMOTE_COMMIT" ]]; then
+  # Local is ahead of origin - can auto-push
+  echo "⚠️  Local is ahead of origin. Pushing changes..."
+  git push origin "$CURRENT_BRANCH"
+  echo "✅ Pushed to origin/$CURRENT_BRANCH"
+elif [[ "$BASE_COMMIT" == "$LOCAL_COMMIT" ]]; then
+  # Origin is ahead of local - need to pull
+  echo "❌ Error: Origin is ahead of local. You need to pull first."
+  echo "   Run: git pull origin $CURRENT_BRANCH"
+  exit 1
+else
+  # Diverged - need to resolve
+  echo "❌ Error: Local and origin have diverged."
+  echo "   You need to resolve this before releasing:"
+  echo "   Run: git pull origin $CURRENT_BRANCH --rebase"
+  exit 1
+fi
+
+# ============================================
+# Version detection and release
+# ============================================
+
 # Get local version from package.json
 LOCAL_VERSION=$(node -p "require('./package.json').version")
 echo "📦 Local version: $LOCAL_VERSION"
@@ -191,6 +237,27 @@ fi
 
 TAG="v$LOCAL_VERSION"
 
+# Update README badge to match the new version
+echo "📝 Updating README coverage badge to $TAG..."
+if grep -q "coveralls.io.*badge.svg?branch=v" README.md; then
+  # Update existing versioned badge
+  sed -i.bak "s|badge.svg?branch=v[0-9.]*|badge.svg?branch=$TAG|g" README.md
+  sed -i.bak "s|react-outline?branch=v[0-9.]*|react-outline?branch=$TAG|g" README.md
+  rm -f README.md.bak
+  
+  # Check if README changed
+  if ! git diff --quiet README.md; then
+    git add README.md
+    git commit -m "docs: update coverage badge to $TAG"
+    git push origin "$CURRENT_BRANCH"
+    echo "✅ README badge updated to $TAG"
+  else
+    echo "ℹ️  README badge already at $TAG"
+  fi
+else
+  echo "⚠️  No versioned coverage badge found in README.md"
+fi
+
 # Check if tag already exists
 TAG_EXISTS=false
 if git rev-parse "$TAG" >/dev/null 2>&1; then
@@ -210,7 +277,8 @@ if [[ "$TAG_EXISTS" == false ]]; then
   # Create and push tag
   echo "🏷️  Creating tag $TAG..."
   git tag -a "$TAG" -m "Release $TAG"
-  git push origin "$TAG"
+  git push origin "$TAG" --quiet
+  echo " * [new tag]         $TAG"
 fi
 
 # Generate changelog from commits since last release
