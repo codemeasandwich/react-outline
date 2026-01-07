@@ -9,14 +9,13 @@
     "index.d.ts"
   ],
   "scripts": {
-    "prepare": "cp .hooks/* .git/hooks/ 2>/dev/null && chmod +x .git/hooks/* || true",
-    "build": "babel --copy-files source --out-dir dist",
-    "build:watch": "babel --copy-files source --out-dir dist -s --source-maps inline -w",
-    "test": "jest --no-cache ",
+    "build:dist": "npx esbuild source/main.js --bundle --minify --sourcemap --outfile=dist/reactOutline.js --format=cjs --platform=node --loader:.js=jsx --external:react --external:react-dom",
+    "pretest": "npm run build:dist",
+    "test": "jest --no-cache",
     "test:go": "npm test -- --watch --coverage",
     "test:update": "npm test -- --updateSnapshot",
-    "test:cover": "npm test -- --coverage --no-cache",
-    "test:watch": "npm test -- --watch --runInBand",
+    "test:cover": "jest --no-cache --config jest.coverage.config.js --coverage",
+    "test:watch": "npm run build:dist && jest --no-cache --watch --runInBand",
     "release": "bash scripts/_publish.sh"
   },
   "repository": {
@@ -70,7 +69,7 @@
     "moduleNameMapper": {
       "\\.(css|jpg|png)$": "<rootDir>/empty-module.js",
       "^raw-loader": "<rootDir>/empty-module.js",
-      "react-outline": "<rootDir>/source/main.js",
+      "react-outline": "<rootDir>/dist/reactOutline.js",
       "^react-addons-css-transition-group$": "<rootDir>/empty-module.js"
     },
     "testPathIgnorePatterns": [

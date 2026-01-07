@@ -23,7 +23,7 @@ jobs:
         run: npm ci
       
       - name: Run tests with coverage
-        run: npm run test:cover -- --coverage --coverageReporters=lcov
+        run: npm run test:cover
       
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
@@ -67,8 +67,8 @@ jobs:
           fi
           echo "✅ All coverage metrics are 100%"
       
-      - name: Build
-        run: npm run build
+      - name: Build dist bundle
+        run: npm run build:dist
       
       - name: Publish to npm with provenance
         run: npm publish --provenance --access public
