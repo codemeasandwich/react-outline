@@ -73,11 +73,23 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
           const dynamicResult = styleFn.length === 1
             ? styleFn(props.style)
             : styleFn(style || {}, props.style);
+
+          // Apply prop-based styles (e.g., error: { color: "red" }) - Issue #3 fix
+          let propFlagStyles = null;
+          if (passedTrueProps && styleCSS[styleName]) {
+            // passedTrueProps only contains props that exist in styleCSS[styleName] (pre-filtered at line 52-53)
+            propFlagStyles = Object.keys(passedTrueProps).reduce((acc, propName) => {
+              return Object.assign(acc, styleCSS[styleName][propName]);
+            }, {});
+          }
+
           if (dynamicResult && typeof dynamicResult === 'object' && Object.keys(dynamicResult).length > 0) {
-            elemProps.style = dynamicResult;
+            elemProps.style = Object.assign({}, propFlagStyles, dynamicResult);
           } else if (props.style && typeof props.style === 'object') {
             // Only pass through if it's a valid style object
-            elemProps.style = props.style;
+            elemProps.style = Object.assign({}, propFlagStyles, props.style);
+          } else if (propFlagStyles && Object.keys(propFlagStyles).length > 0) {
+            elemProps.style = propFlagStyles;
           }
           // If neither condition met, style remains undefined (no inline style)
         } else {

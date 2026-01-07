@@ -1245,3 +1245,99 @@ describe('CSS features with dynamic functions', () => {
   })
 })
 
+describe('Issue #3: Prop flags with CSS selectors', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should apply prop flag styles when CSS selectors are present', () => {
+    testing.resetCSS();
+
+    // This reproduces the exact issue from GitHub #3
+    const styles = outline({
+      base: {
+        title: {
+          base: { color: "blue" },
+          ":hover": { color: "green", fontWeight: "bold" },
+          error: { color: "red" }
+        }
+      }
+    });
+
+    const Title = styles.title`p`;
+
+    // Title with error prop should have red color as inline style
+    // The :hover will be in CSS and override to green on hover
+    const { container } = render(
+      <div>
+        <Styles />
+        <Title error>error text</Title>
+      </div>
+    );
+
+    const pElement = container.querySelector('p');
+    // Should have the CSS class for hover styles
+    expect(pElement.className).toContain('react-outline');
+    // Should have inline style for error prop - overrides base blue to red
+    expect(pElement.style.color).toBe('red');
+  });
+
+  it('should apply multiple prop flags with CSS selectors', () => {
+    testing.resetCSS();
+
+    const styles = outline({
+      base: {
+        button: {
+          base: { color: "black", fontSize: "14px" },
+          ":hover": { backgroundColor: "lightgray" },
+          primary: { color: "blue" },
+          large: { fontSize: "20px" }
+        }
+      }
+    });
+
+    const Button = styles.button`button`;
+
+    const { container } = render(
+      <div>
+        <Styles />
+        <Button primary large>click me</Button>
+      </div>
+    );
+
+    const btnElement = container.querySelector('button');
+    expect(btnElement.className).toContain('react-outline');
+    expect(btnElement.style.color).toBe('blue');
+    expect(btnElement.style.fontSize).toBe('20px');
+  });
+
+  it('should handle prop flags that do not match any style definition', () => {
+    testing.resetCSS();
+
+    const styles = outline({
+      base: {
+        box: {
+          base: { color: "blue" },
+          ":hover": { color: "green" },
+          active: { color: "yellow" }
+          // 'unknown' prop flag is NOT defined here
+        }
+      }
+    });
+
+    const Box = styles.box`div`;
+
+    // Pass both a valid prop flag and an invalid one
+    const { container } = render(
+      <div>
+        <Styles />
+        <Box active unknown>test</Box>
+      </div>
+    );
+
+    const boxElement = container.querySelector('div[name="box"]');
+    expect(boxElement.className).toContain('react-outline');
+    // Only the valid 'active' style should be applied
+    expect(boxElement.style.color).toBe('yellow');
+  });
+})
+

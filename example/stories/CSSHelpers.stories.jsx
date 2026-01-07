@@ -144,3 +144,32 @@ export const VendorAutoPrefix = {
         },
     },
 };
+
+// Prop Flags with CSS - Issue #3
+const styles6 = outline({
+    title: {
+        base: { color: 'blue' },
+        ':hover': { color: 'green', fontWeight: 'bold' },
+        error: { color: 'red' },
+    },
+});
+const PropFlagTitle = styles6.title`p`;
+
+export const PropFlagsWithCss = {
+    render: () => (
+        <div>
+            <Styles />
+            <PropFlagTitle>basic - blue, green on hover</PropFlagTitle>
+            <PropFlagTitle error>error - red, green on hover</PropFlagTitle>
+        </div>
+    ),
+    name: 'Prop Flags with CSS',
+    parameters: {
+        docs: {
+            description: {
+                story:
+                    'Prop flags like "error" work alongside CSS selectors like :hover. The error prop overrides base color to red, and hover turns it green.',
+            },
+        },
+    },
+};
