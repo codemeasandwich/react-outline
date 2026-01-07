@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { findDOMNode } from 'react-dom'
-import { genCss, pubsub } from './utils'
+import { genCss, pubsub, makeid } from './utils'
 
 export default function ({ elemName, css, styleCSS, inlineStyle, style, styleName, colors, randomClassName, options, replacedStyle, styleFn }) {
 
@@ -10,6 +10,7 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
     constructor(props) {
       super(props);
       this.eventHandlers = {};
+      this.instanceClassName = null; // Unique per-instance class for css prop (Issue #2)
     }
 
     createEventHandler(listen, onDomEvent) {
@@ -25,6 +26,10 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
     }
 
     componentWillUnmount() {
+      // Clean up instance-specific CSS (Issue #2)
+      if (this.instanceClassName) {
+        pubsub.publish(this.instanceClassName, null);
+      }
       for (const listen in this.eventHandlers) {
         this.domElem.removeEventListener(listen, this.eventHandlers[listen]);
       }
@@ -35,13 +40,21 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       const props = this.props
 
       if ("css" in props) {
+        // Generate unique instance class for scoped css prop (Issue #2)
+        if (!this.instanceClassName) {
+          this.instanceClassName = "ro-" + (global.__TEST__ ? "" : makeid(props.css));
+        }
 
         const updatedCss = Object.assign({}, css)
 
         for (const selectorRule in props.css) {
           updatedCss[selectorRule] = Object.assign({}, css[selectorRule], "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule])
         }
-        pubsub.publish(randomClassName, genCss({ randomClassName, css: updatedCss, styleCSS, colors, style, styleName }))
+        // Publish with compound selector (.shared.instance) for higher specificity
+        pubsub.publish(this.instanceClassName, genCss({
+          randomClassName: randomClassName + "." + this.instanceClassName,
+          css: updatedCss, styleCSS, colors, style, styleName
+        }))
       }
 
       const elemProps = Object.assign({}, props);
@@ -118,6 +131,10 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
         elemProps.className += " "
       }
       elemProps.className += randomClassName || ""
+      // Add instance class for scoped css prop (Issue #2)
+      if (this.instanceClassName) {
+        elemProps.className += " " + this.instanceClassName;
+      }
       if ("" === elemProps.className)
         delete elemProps.className;
 

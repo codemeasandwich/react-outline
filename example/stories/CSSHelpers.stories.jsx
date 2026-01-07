@@ -173,3 +173,42 @@ export const PropFlagsWithCss = {
         },
     },
 };
+
+// Scoped CSS Prop - Issue #2
+// Each instance gets its own scoped css overrides
+const styles7 = outline({
+    title: {
+        base: { background: 'lightblue', color: 'black' },
+        'div:nth-child(even)': { background: 'darkblue', color: 'white' },
+    },
+});
+const ScopedTitle = styles7.title`div`;
+
+export const ScopedCssProp = {
+    render: () => (
+        <div>
+            <Styles />
+            <p>First Title - even items should be RED:</p>
+            <ScopedTitle css={{ 'div:nth-child(even)': { color: 'red' } }}>
+                <div>foo</div>
+                <div>bar (should be red)</div>
+                <div>baz</div>
+            </ScopedTitle>
+            <p>Second Title - even items should be GREEN:</p>
+            <ScopedTitle css={{ 'div:nth-child(even)': { color: 'green' } }}>
+                <div>foo</div>
+                <div>bar (should be green)</div>
+                <div>baz</div>
+            </ScopedTitle>
+        </div>
+    ),
+    name: 'Scoped CSS Prop',
+    parameters: {
+        docs: {
+            description: {
+                story:
+                    'Issue #2 fix: Each instance\'s css prop is scoped independently. The first Title has red even items, the second has green.',
+            },
+        },
+    },
+};

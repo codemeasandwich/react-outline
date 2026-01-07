@@ -25,60 +25,9 @@ Feathers:
 
 # [Live Demo](https://s3.amazonaws.com/react-outline/index.html?down=0) / [Demo Source](https://github.com/codemeasandwich/react-outline/tree/master/example)
 
-## Storybook Examples
-
-### Basics
-| Example | Description |
-|---------|-------------|
-| [Creating and applying a style](#creating-and-applying-a-style--basic-example-) | Define styles object, process with `outline()`, apply via `styles.title()` |
-| [Generate element from style](#the-above-example-can-be-streamlined-using-the-tag-creater) | Use tagged template `styles.title\`div\`` to create styled components |
-| [Wrapping existing elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Wrapping%20an%20existing%20element) | Wrap React components: `styles.title\`${MyComponent}\`` |
-| [Implied named elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Generate%20an%20implied%20named%20element) | Style names matching HTML tags auto-infer element type |
-| [Reusing elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Reusing%20elements) | Use styled components multiple times |
-| [Passing Style and Function](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Passing%20Style%20and%20Funtion%20as%20arguments) | Pass styles and functions as separate args: `outline(styles, fns)` |
-| [Sharing styles](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Basics&selectedStory=Sharing%20Style) | Share across elements: `"title, content": { textShadow: "..." }` |
-
-### Combine Styles
-| Example | Description |
-|---------|-------------|
-| [Using style function](#the-attribute-flag-can-be-used-via-the-style-function) | Call with flags: `styles.title({error: true})` |
-| [In generated element](#you-can-combine-attribute-of-a-style-by-using-a-boolean-flag) | Via style prop: `<Title style={{error:true}}>` |
-| [Prop flags](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Combine%20styles&selectedStory=Using%20a%20prop%20flag) | Boolean props: `<Title error>` |
-| [Custom colors](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Combine%20styles&selectedStory=Logic%20function%20With%20Generate%20Element) | Use `withOptions({colors:{...}})` for color mappings |
-| [Pass style objects](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Combine%20styles&selectedStory=Passing%20a%20Style%20objct%20to%20a%20generated%20element) | Raw CSS: `<Title style={{color:"red"}}>` |
-
-### Style Functions
-| Example | Description |
-|---------|-------------|
-| [Dynamic styles](#redux-outline-also-support-custom-function-to-have-run-time-control-over-your-styles) | Runtime computed styles via functions |
-| [Modify existing styles](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Style%20Functions&selectedStory=Modify%20existing%20styles) | 2-arg functions: `(style, props) => ({...})` |
-| [Function without style](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Style%20Functions&selectedStory=Function%20dont%20need%20a%20style) | Functions work without matching base style |
-| [With generated elements](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Style%20Functions&selectedStory=Function%20with%20generated%20elements) | Pass args via style prop: `<Group style={data.length}>` |
-
-### CSS Helpers
-| Example | Description |
-|---------|-------------|
-| [Media queries](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Media%20Query) | `"@media (max-width: 600px)": {...}` - requires `<Styles/>` |
-| [Hover states](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Mouse%20hover) | `":hover": {...}` - requires `<Styles/>` |
-| [CSS source](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Css%20Source) | Raw CSS strings in `<Styles>` component |
-| [CSS selectors](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Css%20Selector) | Child selectors: `"div:nth-child(even)": {...}` |
-| [Dynamic CSS](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Dynamic%20Css%20Selector) | Runtime via `css` prop |
-| [Vendor prefixes](https://s3.amazonaws.com/react-outline/index.html?selectedKind=CSS%20Helpers&selectedStory=Vendor%20Auto-Prefix) | Auto-prefixes for flex, transitions, etc. |
-
-### Reference DOM Element
-| Example | Description |
-|---------|-------------|
-| [DOM events](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Reference%20dom%20element&selectedStory=function%20with%20Dom%20Events) | `onDomEvent={{'scroll': handler}}` |
-| [Ref by function](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Reference%20dom%20element&selectedStory=ref%20by%20function) | Access DOM via React refs |
-
-### Animate
-| Example | Description |
-|---------|-------------|
-| [Animate.css](https://s3.amazonaws.com/react-outline/index.html?selectedKind=Animate&selectedStory=Animate.css) | Integration with ReactCSSTransitionGroup |
-
 ---
 
-## Table of Contents
+## Where to start?
 
 1. [Creating and applying a style](#creating-and-applying-a-style--basic-example-)
 2. [Generate a element from a style](#the-above-example-can-be-streamlined-using-the-tag-creater)

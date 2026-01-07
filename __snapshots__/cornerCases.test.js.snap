@@ -30,7 +30,7 @@ exports[`CSS selectors should support dynamic css prop on generated elements 1`]
      .react-outline-:hover{ color:red; } .react-outline-{color:blue; }
   </style>
   <div
-    className="react-outline-"
+    className="react-outline- ro-"
     css={
       {
         ":hover": [Function],
