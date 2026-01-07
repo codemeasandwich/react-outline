@@ -1,8 +1,11 @@
 {
   "name": "react-outline",
-  "version": "2.3.1",
+  "version": "2.0.0",
   "description": "react styling framework to keep your makeup clean",
-  "main": "./dist/main.js",
+  "main": "./dist/reactOutline.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "cp .hooks/* .git/hooks/ 2>/dev/null && chmod +x .git/hooks/* || true",
     "build": "babel --copy-files source --out-dir dist",

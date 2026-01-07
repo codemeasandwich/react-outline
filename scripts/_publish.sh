@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PACKAGE_NAME="api-ape"
+PACKAGE_NAME=$(node -p "require('./package.json').name")
 
 # Get local version from package.json
 LOCAL_VERSION=$(node -p "require('./package.json').version")
@@ -111,14 +111,66 @@ elif [[ $VERSION_CMP -eq 0 ]]; then
   LOCAL_VERSION="$NEW_VERSION"
   echo "✅ Version bumped and commit amended"
 else
-  # Local version is lower than npm - this shouldn't happen, bump to npm + patch
+  # Local version is lower than npm - bump from npm version based on commit types
   echo "⚠️  Local version ($LOCAL_VERSION) is lower than npm ($NPM_VERSION). Bumping from npm version..."
   
-  IFS='.' read -r MAJOR MINOR PATCH <<< "$NPM_VERSION"
-  NEW_PATCH=$((PATCH + 1))
-  NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+  # Get the previous tag to analyze commits
+  PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
   
-  echo "📝 Bumping version: $NPM_VERSION → $NEW_VERSION"
+  if [[ -n "$PREV_TAG" ]]; then
+    COMMIT_RANGE="$PREV_TAG..HEAD"
+  else
+    COMMIT_RANGE="HEAD"
+  fi
+  
+  # Analyze commits to determine bump type
+  HAS_BREAKING=false
+  HAS_FEAT=false
+  HAS_FIX=false
+  
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    
+    # Check for breaking changes (BREAKING CHANGE in message or ! after type)
+    if [[ "$line" =~ BREAKING[[:space:]]CHANGE ]] || [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(feat|fix|refactor|chore)![\:\(] ]]; then
+      HAS_BREAKING=true
+    fi
+    
+    # Check for features
+    if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(feat|feature)[\:\(] ]]; then
+      HAS_FEAT=true
+    fi
+    
+    # Check for fixes
+    if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(fix|bugfix)[\:\(] ]]; then
+      HAS_FIX=true
+    fi
+  done < <(git log $COMMIT_RANGE --oneline)
+  
+  # Parse npm version (base for bumping)
+  IFS='.' read -r MAJOR MINOR PATCH <<< "$NPM_VERSION"
+  
+  # Determine new version based on commit types
+  if [[ "$HAS_BREAKING" == true ]]; then
+    NEW_MAJOR=$((MAJOR + 1))
+    NEW_VERSION="$NEW_MAJOR.0.0"
+    BUMP_TYPE="major (breaking change)"
+  elif [[ "$HAS_FEAT" == true ]]; then
+    NEW_MINOR=$((MINOR + 1))
+    NEW_VERSION="$MAJOR.$NEW_MINOR.0"
+    BUMP_TYPE="minor (new feature)"
+  elif [[ "$HAS_FIX" == true ]]; then
+    NEW_PATCH=$((PATCH + 1))
+    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+    BUMP_TYPE="patch (bug fix)"
+  else
+    # Default to patch if no recognized commit types
+    NEW_PATCH=$((PATCH + 1))
+    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+    BUMP_TYPE="patch (default)"
+  fi
+  
+  echo "📝 Bumping version ($BUMP_TYPE): $NPM_VERSION → $NEW_VERSION"
   
   # Update package.json with new version
   node -e "
@@ -298,7 +350,7 @@ echo "   Changelog generated!"
 echo "🚀 Creating GitHub release..."
 
 REPO_OWNER="codemeasandwich"
-REPO_NAME="api-ape"
+REPO_NAME="react-outline"
 
 # Try gh CLI first, fall back to curl
 if command -v gh &> /dev/null; then
