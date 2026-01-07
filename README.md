@@ -11,7 +11,7 @@ react-outline was designed to more easly manage inline styles and better support
 [![Coverage Status](https://coveralls.io/repos/github/codemeasandwich/react-outline/badge.svg?branch=v2.1.1)](https://coveralls.io/github/codemeasandwich/react-outline?branch=v2.1.1)
 [![GitHub issues](https://img.shields.io/github/issues/codemeasandwich/react-outline)](https://github.com/codemeasandwich/react-outline/issues)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-outline)](https://bundlephobia.com/package/react-outline)
-[![Dependabot](https://img.shields.io/dependabot/codemeasandwich/react-outline)](https://github.com/codemeasandwich/react-outline/security/dependabot)
+[![Known Vulnerabilities](https://snyk.io/test/github/codemeasandwich/react-outline/badge.svg)](https://snyk.io/test/github/codemeasandwich/react-outline)
 
 
 Feathers:
