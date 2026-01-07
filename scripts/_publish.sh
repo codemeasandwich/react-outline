@@ -46,6 +46,52 @@ else
 fi
 
 # ============================================
+# Check 3: Verify 100% test coverage locally
+# ============================================
+echo "🧪 Running tests with coverage check..."
+
+OUTPUT=$(npm run test:cover 2>&1)
+TEST_EXIT_CODE=$?
+
+if [[ $TEST_EXIT_CODE -ne 0 ]]; then
+  echo "❌ Tests failed! Cannot release."
+  echo "$OUTPUT" | tail -50
+  exit 1
+fi
+
+# Extract all coverage metrics from "All files" line
+STMTS=$(echo "$OUTPUT" | grep "All files" | awk '{print $4}' | tr -d '%')
+BRANCH=$(echo "$OUTPUT" | grep "All files" | awk '{print $6}' | tr -d '%')
+FUNCS=$(echo "$OUTPUT" | grep "All files" | awk '{print $8}' | tr -d '%')
+LINES=$(echo "$OUTPUT" | grep "All files" | awk '{print $10}' | tr -d '%')
+
+FAILED=0
+if [ -z "$STMTS" ] || [ $(echo "$STMTS < 100" | bc -l) -eq 1 ]; then
+  echo "❌ Statement coverage is below 100% ($STMTS%)"
+  FAILED=1
+fi
+if [ -z "$BRANCH" ] || [ $(echo "$BRANCH < 100" | bc -l) -eq 1 ]; then
+  echo "❌ Branch coverage is below 100% ($BRANCH%)"
+  FAILED=1
+fi
+if [ -z "$FUNCS" ] || [ $(echo "$FUNCS < 100" | bc -l) -eq 1 ]; then
+  echo "❌ Function coverage is below 100% ($FUNCS%)"
+  FAILED=1
+fi
+if [ -z "$LINES" ] || [ $(echo "$LINES < 100" | bc -l) -eq 1 ]; then
+  echo "❌ Line coverage is below 100% ($LINES%)"
+  FAILED=1
+fi
+
+if [ $FAILED -eq 1 ]; then
+  echo ""
+  echo "❌ Coverage check failed! All metrics must be 100% before release."
+  exit 1
+fi
+
+echo "✅ All coverage metrics are 100% (Stmts: $STMTS%, Branch: $BRANCH%, Funcs: $FUNCS%, Lines: $LINES%)"
+
+# ============================================
 # Version detection and release
 # ============================================
 
