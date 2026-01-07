@@ -1,6 +1,6 @@
 {
   "name": "react-outline",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "react styling framework to keep your makeup clean",
   "main": "./dist/reactOutline.js",
   "types": "./index.d.ts",
