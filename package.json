@@ -1,6 +1,6 @@
 {
   "name": "react-outline",
-  "version": "1.7.3",
+  "version": "2.3.1",
   "description": "react styling framework to keep your makeup clean",
   "main": "./dist/main.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "test:update": "npm test -- --updateSnapshot",
     "test:cover": "npm test -- --coverage --no-cache",
     "test:watch": "npm test -- --watch --runInBand",
-    "release": "bash scripts/publish.sh"
+    "release": "bash scripts/_publish.sh"
   },
   "repository": {
     "type": "git",

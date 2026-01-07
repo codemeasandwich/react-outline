@@ -1,0 +1,146 @@
+import React from 'react';
+import outline, { Styles } from 'react-outline';
+
+// Hover
+const styles1 = outline({
+    title: {
+        base: { background: 'lightblue', color: 'black' },
+        ':hover': { background: 'darkblue', color: 'white' },
+    },
+});
+const HoverTitle = styles1.title`div`;
+
+// Media Query
+const styles2 = outline({
+    title: {
+        base: { background: 'lightgreen', color: 'black' },
+        '@media (max-width: 600px)': { background: 'darkgreen', color: 'white' },
+    },
+});
+const MediaTitle = styles2.title`div`;
+
+// CSS Selector
+const styles3 = outline({
+    title: {
+        base: { background: 'lightblue', color: 'black' },
+        'div:nth-child(even)': { background: 'darkblue', color: 'white' },
+    },
+});
+const SelectorTitle = styles3.title`div`;
+
+// Dynamic CSS Selector
+const styles4 = outline({
+    title: {
+        base: { background: 'lightblue', color: 'black' },
+        'div:nth-child(even)': { background: 'darkblue', color: 'white' },
+    },
+});
+const DynamicTitle = styles4.title`div`;
+
+// Vendor Prefix
+const styles5 = outline({
+    title: {
+        display: 'flex',
+        transition: 'all .5s',
+        userSelect: 'none',
+        fontSize: '40px',
+        background: 'linear-gradient(to bottom, lightblue, darkblue)',
+    },
+});
+
+export default {
+    title: 'CSS Helpers',
+};
+
+export const MediaQuery = {
+    render: () => (
+        <div>
+            <Styles />
+            <MediaTitle>Resize window to less than 600px</MediaTitle>
+        </div>
+    ),
+    name: 'Media Query',
+    parameters: {
+        docs: {
+            description: {
+                story: 'Resize your screen to less than 600px to see the color change',
+            },
+        },
+    },
+};
+
+export const MouseHover = {
+    render: () => (
+        <div>
+            <Styles />
+            <HoverTitle>Hover over me</HoverTitle>
+        </div>
+    ),
+    name: 'Mouse hover',
+    parameters: {
+        docs: {
+            description: {
+                story:
+                    'You need to include a react-outline Style tag at the top of your page',
+            },
+        },
+    },
+};
+
+export const CssSource = {
+    render: () => (
+        <div>
+            <Styles>
+                {`
+        .title {
+          font-size: 25px;
+          background-color: yellow;
+        }
+      `}
+            </Styles>
+            <div className="title">basic</div>
+        </div>
+    ),
+    name: 'Css Source',
+};
+
+export const CssSelector = {
+    render: () => (
+        <div>
+            <Styles />
+            <SelectorTitle>
+                <div>foo</div>
+                <div>bar</div>
+                <div>baz</div>
+            </SelectorTitle>
+        </div>
+    ),
+    name: 'Css Selector',
+};
+
+export const DynamicCssSelector = {
+    render: () => (
+        <div>
+            <Styles />
+            <DynamicTitle css={{ 'div:nth-child(even)': { color: 'red' } }}>
+                <div>foo</div>
+                <div>bar</div>
+                <div>baz</div>
+            </DynamicTitle>
+        </div>
+    ),
+    name: 'Dynamic Css Selector',
+};
+
+export const VendorAutoPrefix = {
+    render: () => <div style={styles5.title()}>basic</div>,
+    name: 'Vendor Auto-Prefix',
+    parameters: {
+        docs: {
+            description: {
+                story:
+                    'CSS vendor prefixes are automatically added for properties that still need them',
+            },
+        },
+    },
+};
