@@ -6,7 +6,7 @@ import element from './element'
 //========================================== build Elem
 //=====================================================
 
-function buildElem({ elemName, args, styleCSS, styleName, options, replacedStyle, colors }) {
+function buildElem({ elemName, args, styleCSS, styleName, options, replacedStyle, colors, styleFn }) {
 
   elemName = elemName[0] || args[1];
   let inlineStyle = null;//replacedStyle[styleName]();
@@ -29,12 +29,12 @@ function buildElem({ elemName, args, styleCSS, styleName, options, replacedStyle
   //if(0 < cssPropNames.length){
   if (css) {
     randomClassName = "react-outline-"
-    if (!global.__TEST__) randomClassName += makeid();
+    if (!global.__TEST__) randomClassName += makeid(baseStyle);
     pubsub.publish(randomClassName, genCss({ randomClassName, css, styleCSS, colors, style, styleName }))
     inlineStyle = {};
   }
 
-  return element({ elemName, css, styleCSS, inlineStyle, style, styleName, colors, randomClassName, options, replacedStyle })
+  return element({ elemName, css, styleCSS, inlineStyle, style, styleName, colors, randomClassName, options, replacedStyle, styleFn })
 }
 
 //=====================================================
@@ -84,7 +84,7 @@ export default function ({ _styles, replacedStyle, styleCSS, colors, options, ca
       //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
       if (Array.isArray(elemName) && elemName.hasOwnProperty("raw")) {
-        return buildElem({ elemName, args, styleCSS, styleName, options, replacedStyle, colors })
+        return buildElem({ elemName, args, styleCSS, styleName, options, replacedStyle, colors, styleFn })
       } // elem gen
 
       //++++++++++++++++++++++++++++++++++++++ generat style

@@ -1128,3 +1128,120 @@ describe('noopStyleFn coverage', () => {
   })
 })
 
+describe('CSS features with dynamic functions', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should apply dynamic function result as inline style when CSS features present', () => {
+    testing.resetCSS();
+
+    // CSS with media query AND dynamic function
+    const styles = outline({
+      widget: {
+        boxShadow: "0px 0px 4px #00000022",
+        "@media (max-width: 600px)": { margin: "10px" }
+      }
+    }, {
+      widget: (selected) => (selected ? { boxShadow: "0px 0px 8px 6px blue" } : {})
+    });
+
+    const Widget = styles.widget`div`;
+
+    // When style prop is true, dynamic function should return styles
+    const { container } = render(
+      <div>
+        <Styles />
+        <Widget style={true} />
+      </div>
+    );
+
+    // Should have inline style with the dynamic boxShadow
+    const widgetEl = container.querySelector('[name="widget"]');
+    expect(widgetEl).toBeTruthy();
+    expect(widgetEl.style.boxShadow).toBe("0px 0px 8px 6px blue");
+  })
+
+  it('should pass through style prop when CSS features present but no dynamic function', () => {
+    testing.resetCSS();
+
+    // CSS features but NO dynamic function
+    const styles = outline({
+      box: {
+        backgroundColor: "lightblue",
+        ":hover": { backgroundColor: "darkblue" }
+      }
+    });
+
+    const Box = styles.box`div`;
+
+    // Pass an object as style prop
+    const { container } = render(
+      <div>
+        <Styles />
+        <Box style={{ color: "red" }} />
+      </div>
+    );
+
+    const boxEl = container.querySelector('[name="box"]');
+    expect(boxEl).toBeTruthy();
+    // Style prop should be passed through
+    expect(boxEl.style.color).toBe("red");
+  })
+
+  it('should handle dynamic function returning empty object', () => {
+    testing.resetCSS();
+
+    // CSS with dynamic function that returns empty
+    const styles = outline({
+      item: {
+        padding: "10px",
+        ":hover": { padding: "15px" }
+      }
+    }, {
+      item: (active) => (active ? { background: "yellow" } : {})
+    });
+
+    const Item = styles.item`div`;
+
+    // When style prop is false, dynamic function returns empty object
+    const { container } = render(
+      <div>
+        <Styles />
+        <Item style={false} />
+      </div>
+    );
+
+    const itemEl = container.querySelector('[name="item"]');
+    expect(itemEl).toBeTruthy();
+  })
+
+  it('should apply 2-argument styleFn that receives base style', () => {
+    testing.resetCSS();
+
+    // CSS with 2-argument dynamic function (style, value)
+    const styles = outline({
+      card: {
+        padding: "10px",
+        ":hover": { padding: "15px" }
+      }
+    }, {
+      // 2-arg function: receives (baseStyle, value)
+      card: (baseStyle, isLarge) => (isLarge ? { padding: "30px" } : baseStyle)
+    });
+
+    const Card = styles.card`div`;
+
+    // When style prop is truthy, dynamic function should use isLarge=true
+    const { container } = render(
+      <div>
+        <Styles />
+        <Card style={true} />
+      </div>
+    );
+
+    const cardEl = container.querySelector('[name="card"]');
+    expect(cardEl).toBeTruthy();
+    expect(cardEl.style.padding).toBe("30px");
+  })
+})
+

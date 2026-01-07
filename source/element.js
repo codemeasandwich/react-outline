@@ -3,7 +3,7 @@ import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { genCss, pubsub } from './utils'
 
-export default function ({ elemName, css, styleCSS, inlineStyle, style, styleName, colors, randomClassName, options, replacedStyle }) {
+export default function ({ elemName, css, styleCSS, inlineStyle, style, styleName, colors, randomClassName, options, replacedStyle, styleFn }) {
 
   class C2 extends React.Component {
 
@@ -45,6 +45,9 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       }
 
       const elemProps = Object.assign({}, props);
+      // Delete style immediately - we'll set it properly below
+      // This prevents invalid style values (non-objects) from reaching React
+      delete elemProps.style;
 
       let passedTrueProps = Object.keys(props)
         .filter(name => props[name] === true && styleCSS[styleName] && name in styleCSS[styleName])
@@ -64,10 +67,22 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       if (passedTrueProps || props.hasOwnProperty("style")) {
         //if(props.style instanceof Object)
         //    passedTrueProps = Object.assign({},props.style,passedTrueProps);
-        if (randomClassName)
-          elemProps.style = props.style
-        else
+        if (randomClassName) {
+          // When CSS features are present, invoke styleFn for dynamic values
+          // styleFn is always defined (default noop in styleItem.js)
+          const dynamicResult = styleFn.length === 1
+            ? styleFn(props.style)
+            : styleFn(style || {}, props.style);
+          if (dynamicResult && typeof dynamicResult === 'object' && Object.keys(dynamicResult).length > 0) {
+            elemProps.style = dynamicResult;
+          } else if (props.style && typeof props.style === 'object') {
+            // Only pass through if it's a valid style object
+            elemProps.style = props.style;
+          }
+          // If neither condition met, style remains undefined (no inline style)
+        } else {
           elemProps.style = replacedStyle[styleName](props.style, passedTrueProps);
+        }
 
       } else {
         elemProps.style = inlineStyle || replacedStyle[styleName]();

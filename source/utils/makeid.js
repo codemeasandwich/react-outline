@@ -1,9 +1,18 @@
-const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-export default function makeid(side = 10) {
-  let text = "";
+// Generate deterministic hash from style content
+// Replaces random ID generation for consistent class names
+// Note: input is always an object (baseStyle) from styleItem.js
+export default function makeHash(input, size = 10) {
+  // Convert object to string - input is always an object from caller
+  const str = JSON.stringify(input);
 
-  for (let i = 0; i < side; i++)
-    text += possible.charAt(~~(Math.random() * possible.length));
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
 
-  return text;
+  // Convert to base36 and pad/truncate to desired size
+  const result = Math.abs(hash).toString(36);
+  return result.padStart(size, '0').slice(0, size);
 }
