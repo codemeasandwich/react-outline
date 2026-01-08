@@ -3,10 +3,10 @@
 exports[`CSS selectors should allow for color replacment 1`] = `
 <div>
   <style>
-     .react-outline- .abc{ font-size:20px; } .react-outline-{color:squanchy; }
+     .react-outline-00001wozlx .abc{ font-size:20px; } .react-outline-00001wozlx{color:squanchy; }
   </style>
   <div
-    className="react-outline-"
+    className="react-outline-00001wozlx"
     name="div"
   />
 </div>
@@ -15,10 +15,10 @@ exports[`CSS selectors should allow for color replacment 1`] = `
 exports[`CSS selectors should allow you to select a nested element 1`] = `
 <div>
   <style>
-     .react-outline- .abc{ font-size:20px; } .react-outline-{color:red; }
+     .react-outline-00000bhtts .abc{ font-size:20px; } .react-outline-00000bhtts{color:red; }
   </style>
   <div
-    className="react-outline-"
+    className="react-outline-00000bhtts"
     name="div"
   />
 </div>
@@ -27,10 +27,10 @@ exports[`CSS selectors should allow you to select a nested element 1`] = `
 exports[`CSS selectors should support dynamic css prop on generated elements 1`] = `
 <div>
   <style>
-     .react-outline-:hover{ color:red; } .react-outline-{color:blue; }
+     .react-outline-0000qcsa5l:hover{ color:red; } .react-outline-0000qcsa5l{color:blue; }
   </style>
   <div
-    className="react-outline- ro-"
+    className="react-outline-0000qcsa5l ro-000000031e"
     css={
       {
         ":hover": [Function],
@@ -44,10 +44,10 @@ exports[`CSS selectors should support dynamic css prop on generated elements 1`]
 exports[`CSS selectors should support media queries in CSS 1`] = `
 <div>
   <style>
-    .react-outline-{color:black; } @media (max-width: 600px){ .react-outline-{ color:red; } } 
+    .react-outline-0000aidy8i{color:black; } @media (max-width: 600px){ .react-outline-0000aidy8i{ color:red; } } 
   </style>
   <div
-    className="react-outline-"
+    className="react-outline-0000aidy8i"
     name="responsive"
   />
 </div>
@@ -56,11 +56,11 @@ exports[`CSS selectors should support media queries in CSS 1`] = `
 exports[`CSS selectors should work with user defined callNames 1`] = `
 <div>
   <div
-    className="a react-outline-"
+    className="a react-outline-0000skxrbu"
     name="a"
   />
   <div
-    className="react-outline-"
+    className="react-outline-0000skxrbu"
     name="a"
   />
   <div

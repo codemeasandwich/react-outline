@@ -50,7 +50,7 @@ function buildElem({ elemName, args, styleCSS, styleName, options, replacedStyle
   //if(0 < cssPropNames.length){
   if (css) {
     randomClassName = "react-outline-"
-    if (!global.__TEST__) randomClassName += makeid(baseStyle);
+    randomClassName += makeid(baseStyle);
     pubsub.publish(randomClassName, genCss({ randomClassName, css, styleCSS, colors, style, styleName }))
     inlineStyle = {};
   }

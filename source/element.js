@@ -96,7 +96,7 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       if ("css" in props) {
         // Generate unique instance class for scoped css prop (Issue #2)
         if (!this.instanceClassName) {
-          this.instanceClassName = "ro-" + (global.__TEST__ ? "" : makeid(props.css));
+          this.instanceClassName = "ro-" + makeid(props.css);
         }
 
         const updatedCss = Object.assign({}, css)
