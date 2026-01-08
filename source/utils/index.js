@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Central export hub for all utility modules.
+ * Re-exports all utility functions for convenient importing.
+ * @module utils
+ */
+
 import buildCssString from './buildCssString'
 import genCss from './genCss'
 import genStyles from './genStyles'

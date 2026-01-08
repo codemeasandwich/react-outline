@@ -1,6 +1,22 @@
-// Generate deterministic hash from style content
-// Replaces random ID generation for consistent class names
-// Note: input is always an object (baseStyle) from styleItem.js
+/**
+ * @fileoverview Generates deterministic hash-based IDs for CSS class names.
+ * Ensures consistent class names across server and client for SSR.
+ * @module makeid
+ */
+
+/**
+ * Generates a deterministic hash from style content for consistent class names.
+ * Uses a simple hash algorithm to convert style objects to unique identifiers.
+ * This ensures the same styles always produce the same class name,
+ * which is critical for SSR hydration.
+ * 
+ * @param {Object} input - Style object to hash (always an object from styleItem.js)
+ * @param {number} [size=10] - Desired length of the hash string
+ * @returns {string} Base36 hash string of the specified size
+ * @example
+ * makeHash({ color: 'red', padding: 10 }) // Returns: '000abc1234'
+ * makeHash({ color: 'red', padding: 10 }, 5) // Returns: '1234a'
+ */
 export default function makeHash(input, size = 10) {
   // Convert object to string - input is always an object from caller
   const str = JSON.stringify(input);

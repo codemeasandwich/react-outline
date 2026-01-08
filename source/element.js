@@ -1,22 +1,67 @@
+/**
+ * @fileoverview Factory function for creating styled React component classes.
+ * Handles CSS class generation, inline styles, DOM events, and prop-based styling.
+ * @module element
+ */
 
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import { genCss, pubsub, makeid } from './utils'
 
+/**
+ * Creates a styled React component class for a given element type.
+ * The returned component handles CSS generation, inline styles, and DOM events.
+ * 
+ * @param {Object} config - Configuration for the styled component
+ * @param {string|React.ComponentType} config.elemName - HTML tag name or React component
+ * @param {Object} [config.css] - CSS selectors (pseudo-classes, media queries, etc.)
+ * @param {Object} config.styleCSS - Full style definitions for the component
+ * @param {Object} [config.inlineStyle] - Pre-computed inline styles
+ * @param {Object} [config.style] - Base style object
+ * @param {string} config.styleName - Name identifier for this style
+ * @param {Object} [config.colors] - Color palette for color replacement
+ * @param {string} [config.randomClassName] - Generated CSS class name
+ * @param {Object} config.options - Configuration options (e.g., named)
+ * @param {Object} config.replacedStyle - Object containing style generator functions
+ * @param {Function} config.styleFn - Dynamic style function
+ * @returns {React.ComponentClass} A React component class with styling capabilities
+ */
 export default function ({ elemName, css, styleCSS, inlineStyle, style, styleName, colors, randomClassName, options, replacedStyle, styleFn }) {
 
+  /**
+   * @class C2
+   * @extends React.Component
+   * @description Styled React component that manages CSS classes, inline styles, and DOM events.
+   */
   class C2 extends React.Component {
 
+    /**
+     * Creates an instance of the styled component.
+     * @param {Object} props - React component props
+     */
     constructor(props) {
       super(props);
+      /** @type {Object.<string, Function>} Map of event names to handler functions */
       this.eventHandlers = {};
-      this.instanceClassName = null; // Unique per-instance class for css prop (Issue #2)
+      /** @type {string|null} Unique class name for instance-specific css prop (Issue #2) */
+      this.instanceClassName = null;
     }
 
+    /**
+     * Creates an event handler function for a DOM event.
+     * @private
+     * @param {string} listen - Event name (e.g., 'click', 'scroll')
+     * @param {Object} onDomEvent - Object mapping event names to handler functions
+     * @returns {Function} Event handler that receives the DOM element and event
+     */
     createEventHandler(listen, onDomEvent) {
       return (event) => onDomEvent[listen](this.domElem, event);
     }
 
+    /**
+     * Attaches DOM event listeners after component mounts.
+     * Iterates through onDomEvent prop and adds listeners to the DOM element.
+     */
     componentDidMount() {
       const onDomEvent = this.props.onDomEvent
       for (const listen in onDomEvent) {
@@ -25,6 +70,10 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       }
     }
 
+    /**
+     * Cleans up resources when component unmounts.
+     * Removes instance-specific CSS and detaches DOM event listeners.
+     */
     componentWillUnmount() {
       // Clean up instance-specific CSS (Issue #2)
       if (this.instanceClassName) {
@@ -35,6 +84,11 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       }
     }
 
+    /**
+     * Renders the styled element with computed styles and classes.
+     * Handles css prop overrides, prop flags, and dynamic style functions.
+     * @returns {React.ReactElement} The rendered element
+     */
     render() {
 
       const props = this.props

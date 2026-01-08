@@ -1,5 +1,29 @@
-//+++++++++++++++++++++++++++++ { base:{}, foo: ()=> }
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
+/**
+ * @fileoverview Normalizes and validates style input definitions.
+ * Handles various input formats and applies cross-cutting (shared) styles.
+ * @module sanitizeOutlineInput
+ */
+
+/**
+ * Normalizes and validates style input into a consistent format.
+ * Handles multiple input formats:
+ * - { base: { button: {} }, button: () => {} } - Standard format with explicit base
+ * - { button: { color: 'red' }, button: () => {} } - Shorthand, auto-creates base
+ * - { 'button, link': { padding: 10 } } - Cross-cutting styles applied to multiple elements
+ * 
+ * @param {Object} _styles - Raw style definitions to normalize
+ * @param {Object} [options={}] - Configuration options or style functions
+ * @returns {Object} Normalized style object with { base: {}, ...styleFunctions }
+ * @throws {Error} If _styles is not an object or contains invalid values
+ * @example
+ * // Shorthand input:
+ * sanitizeOutlineInput({ button: { padding: 10 }, button: () => ({ color: 'blue' }) })
+ * // Returns: { base: { button: { padding: 10 } }, button: () => ({ color: 'blue' }) }
+ * 
+ * // Cross-cutting styles:
+ * sanitizeOutlineInput({ base: { 'button, link': { padding: 10 } } })
+ * // Returns: { base: { button: { padding: 10 }, link: { padding: 10 } } }
+ */
 export default function sanitizeOutlineInput(_styles, options = {}) {
 
   if ("object" !== typeof _styles || Array.isArray(_styles)) {
@@ -8,9 +32,12 @@ export default function sanitizeOutlineInput(_styles, options = {}) {
 
   if (!("base" in _styles)) {
 
-    const base = {}, fns = {};
+    /** @type {Object} Base style definitions */
+    const base = {};
+    /** @type {Object} Style functions */
+    const fns = {};
 
-    //++++++++++++++ { table: {}, header:{} }, fn:{ ()=> }
+    //++++++++++++++ { table: {}, header:{} }, fn:{ () => }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     let optionsIsFns = true;
@@ -30,7 +57,7 @@ export default function sanitizeOutlineInput(_styles, options = {}) {
       //++++++++++++++++++++++++++++++++++++++++++++++++++++
       if ("object" === typeof _styles[prop]) {
         base[prop] = _styles[prop]
-        //++++++++++++++++++++++++++++++++++++++ { foo: ()=> }
+        //++++++++++++++++++++++++++++++++++++++ { foo: () => }
         //++++++++++++++++++++++++++++++++++++++++++++++++++++
       } else if ("function" === typeof _styles[prop]) {
         fns[prop] = _styles[prop]
@@ -41,7 +68,7 @@ export default function sanitizeOutlineInput(_styles, options = {}) {
     _styles = Object.assign({}, { base }, fns);
   }
 
-  // apply sharing
+  // Apply sharing (cross-cutting styles)
   for (const prop in _styles.base) {
     if (0 < prop.indexOf(',')) {
       prop.split(',')
