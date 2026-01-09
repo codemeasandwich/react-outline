@@ -1,6 +1,6 @@
 {
   "name": "react-outline",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "react styling framework to keep your makeup clean",
   "main": "./dist/reactOutline.js",
   "types": "./index.d.ts",
@@ -41,8 +41,8 @@
   "homepage": "https://github.com/codemeasandwich/react-outline#readme",
   "dependencies": {
     "add-px-to-style": "^1.0.0",
-    "hyphenate-style-name": "^1.0.2",
-    "inline-style-prefixer": "^3.0.6"
+    "hyphenate-style-name": "^1.1.0",
+    "inline-style-prefixer": "^7.0.1"
   },
   "peerDependencies": {
     "react": ">=16.0.0 <20.0.0"

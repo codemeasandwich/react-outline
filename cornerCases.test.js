@@ -1567,3 +1567,33 @@ describe('Coverage for new branches', () => {
     expect(subscriber).not.toHaveBeenCalled();
   });
 });
+
+describe('Gradient background prefixing', () => {
+  it('should not create invalid comma-separated vendor prefixes for linear-gradient', () => {
+    const css = {
+      logoText: {
+        background: "linear-gradient(90deg, #00d9ff 0%, #5ce1e6 100%)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+      }
+    };
+    const styles = outline(css);
+
+    const result = styles.logoText();
+
+    // The background value should be a single gradient, not comma-separated vendor prefixes
+    // Invalid: "-webkit-linear-gradient(...), -moz-linear-gradient(...), linear-gradient(...)"
+    // Valid: "linear-gradient(90deg, #00d9ff 0%, #5ce1e6 100%)"
+    expect(result.background).toBeDefined();
+    expect(typeof result.background).toBe('string');
+
+    // Should NOT contain multiple vendor-prefixed gradients concatenated
+    const backgroundValue = result.background;
+    const gradientCount = (backgroundValue.match(/linear-gradient/g) || []).length;
+    expect(gradientCount).toBe(1);
+
+    // Should NOT start with -webkit- or -moz- prefixes
+    expect(backgroundValue).not.toMatch(/^-webkit-/);
+    expect(backgroundValue).not.toMatch(/^-moz-/);
+  });
+});

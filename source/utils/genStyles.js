@@ -4,7 +4,7 @@
  * @module genStyles
  */
 
-import prefixAll from 'inline-style-prefixer/static'
+import { prefix as prefixAll } from 'inline-style-prefixer'
 
 import replacedStyleFn from './replacedStyleFn'
 import replaceColors from './replaceColors'
@@ -34,8 +34,12 @@ export default function genStyles(styleStuff, args, colors) {
   const swapedColor = replaceColors(colors, userResult);
   for (const name in swapedColor) {
     //if(!specialCharacters.includes(name[0]))
-    swapedColor[name] = prefixAll({ a: swapedColor[name] }).a;
+    const prefixed = prefixAll({ a: swapedColor[name] }).a;
+    // inline-style-prefixer returns arrays for values with multiple fallbacks (e.g. gradients)
+    // React inline styles don't support arrays, so use the last value (standard/unprefixed)
+    swapedColor[name] = Array.isArray(prefixed) ? prefixed[prefixed.length - 1] : prefixed;
   }
 
   return swapedColor;
 }
+
