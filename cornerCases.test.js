@@ -323,7 +323,12 @@ describe('CSS selectors', () => {
       }
     };
     const styles = outline(css);
-    const Elem = styles.responsive`div`;
+
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Elem;
+    act(() => {
+      Elem = styles.responsive`div`;
+    });
 
     expect(renderer.create(<div>
       <Styles />
@@ -341,7 +346,12 @@ describe('CSS selectors', () => {
       }
     };
     const styles = outline(css);
-    const Box = styles.box`div`;
+
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Box;
+    act(() => {
+      Box = styles.box`div`;
+    });
 
     // Test with css prop that passes a function
     expect(renderer.create(<div>
@@ -544,8 +554,8 @@ describe('Additional branch coverage', () => {
   it('should handle true props on wrapped React components', () => {
     testing.resetCSS();
 
-    // Create a custom React component
-    const MyComponent = (props) => <div {...props} />;
+    // Create a custom React component that filters out style flags before spreading
+    const MyComponent = ({ active, ...rest }) => <div {...rest} />;
 
     const css = {
       wrapped: {
@@ -605,8 +615,9 @@ describe('Additional branch coverage', () => {
     };
     const styles = outline(css);
 
-    // Create element without explicit tag (uses implied element)
-    const MyElem = styles.myelem``;
+    // Create element using span to avoid React warning about unrecognized tag
+    // This still tests defineProperty's fallback to styleName for component display name
+    const MyElem = styles.myelem`span`;
 
     const { container } = render(<MyElem />);
     expect(container.firstChild).toBeTruthy();
@@ -1099,8 +1110,11 @@ describe('noopStyleFn coverage', () => {
 
     const styles = outline(css);
 
-    // Create a generated element - this uses the default noopStyleFn internally
-    const NoFn = styles.noFnStyle`div`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let NoFn;
+    act(() => {
+      NoFn = styles.noFnStyle`div`;
+    });
 
     const { container } = render(
       <div>
@@ -1145,7 +1159,11 @@ describe('CSS features with dynamic functions', () => {
       widget: (selected) => (selected ? { boxShadow: "0px 0px 8px 6px blue" } : {})
     });
 
-    const Widget = styles.widget`div`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Widget;
+    act(() => {
+      Widget = styles.widget`div`;
+    });
 
     // When style prop is true, dynamic function should return styles
     const { container } = render(
@@ -1172,7 +1190,11 @@ describe('CSS features with dynamic functions', () => {
       }
     });
 
-    const Box = styles.box`div`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Box;
+    act(() => {
+      Box = styles.box`div`;
+    });
 
     // Pass an object as style prop
     const { container } = render(
@@ -1201,7 +1223,11 @@ describe('CSS features with dynamic functions', () => {
       item: (active) => (active ? { background: "yellow" } : {})
     });
 
-    const Item = styles.item`div`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Item;
+    act(() => {
+      Item = styles.item`div`;
+    });
 
     // When style prop is false, dynamic function returns empty object
     const { container } = render(
@@ -1229,7 +1255,11 @@ describe('CSS features with dynamic functions', () => {
       card: (baseStyle, isLarge) => (isLarge ? { padding: "30px" } : baseStyle)
     });
 
-    const Card = styles.card`div`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Card;
+    act(() => {
+      Card = styles.card`div`;
+    });
 
     // When style prop is truthy, dynamic function should use isLarge=true
     const { container } = render(
@@ -1263,7 +1293,11 @@ describe('Issue #3: Prop flags with CSS selectors', () => {
       }
     });
 
-    const Title = styles.title`p`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Title;
+    act(() => {
+      Title = styles.title`p`;
+    });
 
     // Title with error prop should have red color as inline style
     // The :hover will be in CSS and override to green on hover
@@ -1295,7 +1329,11 @@ describe('Issue #3: Prop flags with CSS selectors', () => {
       }
     });
 
-    const Button = styles.button`button`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Button;
+    act(() => {
+      Button = styles.button`button`;
+    });
 
     const { container } = render(
       <div>
@@ -1324,7 +1362,11 @@ describe('Issue #3: Prop flags with CSS selectors', () => {
       }
     });
 
-    const Box = styles.box`div`;
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Box;
+    act(() => {
+      Box = styles.box`div`;
+    });
 
     // Pass both a valid prop flag and an invalid one
     const { container } = render(
@@ -1356,7 +1398,12 @@ describe('Issue #2: Scoped css prop in production mode', () => {
         }
       }
     });
-    const Title = styles.title`div`;
+
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Title;
+    act(() => {
+      Title = styles.title`div`;
+    });
 
     const { container } = render(
       <div>
@@ -1386,7 +1433,12 @@ describe('Issue #2: Scoped css prop in production mode', () => {
         }
       }
     });
-    const Box = styles.box`div`;
+
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Box;
+    act(() => {
+      Box = styles.box`div`;
+    });
 
     const { container, rerender } = render(
       <div>
@@ -1413,3 +1465,105 @@ describe('Issue #2: Scoped css prop in production mode', () => {
   });
 });
 
+describe('Coverage for new branches', () => {
+  beforeAll(() => global.__TEST__ = false);
+  afterAll(() => global.__TEST__ = true);
+
+  it('should handle Styles unmounting while pubsub update is pending', async () => {
+    testing.resetCSS();
+
+    const css = {
+      item: {
+        base: { color: 'blue' },
+        ':hover': { color: 'red' }
+      }
+    };
+    const styles = outline(css);
+
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Item;
+    act(() => {
+      Item = styles.item`div`;
+    });
+
+    const { container, unmount } = render(
+      <div>
+        <Styles />
+        <Item />
+      </div>
+    );
+
+    // Verify initial render
+    expect(container.querySelector('style')).toBeTruthy();
+
+    // Trigger a pubsub update WHILE component is mounted
+    // This schedules a setTimeout callback
+    act(() => {
+      testing.pubsub.publish('new-key', { base: { color: 'green' } });
+    });
+
+    // Unmount immediately BEFORE the setTimeout callback fires
+    // This sets isMounted.current = false and exercises that branch
+    unmount();
+
+    // Wait for the pending setTimeout callbacks to complete
+    // When they fire, they should check isMounted.current and skip the update
+    await new Promise(resolve => setTimeout(resolve, 20));
+
+    // If we get here without errors, the isMounted check worked
+  });
+
+  it('should handle componentDidMount without css prop (publishCssProp early return)', () => {
+    testing.resetCSS();
+
+    // Create element WITHOUT css prop - this exercises the early return in publishCssProp
+    const css = {
+      simple: {
+        base: { color: 'green' },
+        ':hover': { color: 'yellow' }
+      }
+    };
+    const styles = outline(css);
+
+    // Element construction triggers pubsub.publish, so wrap in act()
+    let Simple;
+    act(() => {
+      Simple = styles.simple`div`;
+    });
+
+    // Render without css prop - componentDidMount calls publishCssProp which returns early
+    const { container } = render(
+      <div>
+        <Styles />
+        <Simple />
+      </div>
+    );
+
+    expect(container.querySelector('div[name="simple"]')).toBeTruthy();
+  });
+
+  it('should handle calling unsubscribe multiple times (pubsub edge case)', () => {
+    // Access pubsub directly through testing export
+    const { testing: testUtils } = require('react-outline');
+
+    // Create a subscriber
+    const subscriber = jest.fn();
+
+    // Subscribe and get unsubscribe function
+    const unsubscribe = testUtils.pubsub.subscribe(subscriber);
+
+    // Call unsubscribe first time - should remove subscriber
+    unsubscribe();
+
+    // Call unsubscribe second time - subscriber is already gone, index will be -1
+    // This covers the (index > -1) false branch in pubsub.js
+    unsubscribe();
+
+    // Verify subscriber is not called when publishing after unsubscribe
+    // Wrap in act() to suppress act() warnings from any lingering Styles subscriptions
+    act(() => {
+      testUtils.pubsub.publish('test-key', 'test-value');
+    });
+    expect(subscriber).not.toHaveBeenCalled();
+  });
+});

@@ -19,27 +19,44 @@ import { pubsub, buildCssString } from './utils'
  */
 function StylesElem(props) {
   const [cssString, setCssString] = useState(() => buildCssString(pubsub.get(), props));
+  const pendingTimeout = React.useRef(null);
 
   useEffect(() => {
     /**
      * Callback to update CSS string when styles are published.
+     * Uses setTimeout(0) to defer updates to the next event loop tick,
+     * ensuring they run outside React's render phase.
      * @private
      */
     const updateCss = () => {
-      setCssString(buildCssString(pubsub.get(), props));
+      // Clear any pending timeout to avoid duplicate updates
+      if (pendingTimeout.current) {
+        clearTimeout(pendingTimeout.current);
+      }
+
+      // Defer the state update to run after React's current render phase
+      pendingTimeout.current = setTimeout(() => {
+        pendingTimeout.current = null;
+        setCssString(buildCssString(pubsub.get(), props));
+      }, 0);
     };
 
-    pubsub.subscribe(updateCss);
+    const unsubscribe = pubsub.subscribe(updateCss);
 
-    // Cleanup subscription on unmount
+    // Cleanup subscription and pending timeouts on unmount
     return () => {
-      // Note: pubsub.subscribe doesn't return an unsubscribe function in the current implementation
-      // This is kept for future compatibility if unsubscribe is added
+      if (pendingTimeout.current) {
+        clearTimeout(pendingTimeout.current);
+        pendingTimeout.current = null;
+      }
+      unsubscribe();
     };
   }, [props]);
 
   return <style>{cssString}</style>;
 }
+
+
 
 /**
  * Component wrapper for rendering CSS styles in the DOM.

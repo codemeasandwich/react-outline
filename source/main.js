@@ -103,7 +103,8 @@ function setOptions(options) {
  * @type {{resetCSS: function(): void}}
  */
 const testing = {
-  resetCSS: pubsub.clear
+  resetCSS: pubsub.clear,
+  pubsub
 }
 
 export default outline

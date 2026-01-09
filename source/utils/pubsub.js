@@ -39,8 +39,17 @@ const pubsub = new function () {
    * Subscribes to CSS updates.
    * 
    * @param {function(Object.<string, string>): void} subscriber - Callback receiving all values
+   * @returns {function(): void} Unsubscribe function
    */
-  this.subscribe = (subscriber) => subscribers.push(subscriber);
+  this.subscribe = (subscriber) => {
+    subscribers.push(subscriber);
+    return () => {
+      const index = subscribers.indexOf(subscriber);
+      if (index > -1) {
+        subscribers.splice(index, 1);
+      }
+    };
+  };
 
   /**
    * Gets all published CSS values.

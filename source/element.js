@@ -5,7 +5,6 @@
  */
 
 import React from 'react'
-import { findDOMNode } from 'react-dom'
 import { genCss, pubsub, makeid } from './utils'
 
 /**
@@ -45,6 +44,8 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       this.eventHandlers = {};
       /** @type {string|null} Unique class name for instance-specific css prop (Issue #2) */
       this.instanceClassName = null;
+      /** @type {HTMLElement|null} Reference to the DOM element for event listeners */
+      this.domElem = null;
     }
 
     /**
@@ -63,11 +64,50 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
      * Iterates through onDomEvent prop and adds listeners to the DOM element.
      */
     componentDidMount() {
+      // Publish CSS for css prop here instead of render to avoid updating state during render
+      this.publishCssProp();
+
       const onDomEvent = this.props.onDomEvent
       for (const listen in onDomEvent) {
         this.eventHandlers[listen] = this.createEventHandler(listen, onDomEvent);
         this.domElem.addEventListener(listen, this.eventHandlers[listen]);
       }
+    }
+
+    /**
+     * Re-publish CSS when props change.
+     */
+    componentDidUpdate(prevProps) {
+      if (prevProps.css !== this.props.css) {
+        this.publishCssProp();
+      }
+    }
+
+    /**
+     * Publishes CSS for the css prop to pubsub.
+     * Called from componentDidMount/componentDidUpdate instead of render.
+     * @private
+     */
+    publishCssProp() {
+      const props = this.props;
+      if (!("css" in props)) return;
+
+      // Note: instanceClassName is already set in render() before componentDidMount runs
+
+      const updatedCss = Object.assign({}, css);
+
+      for (const selectorRule in props.css) {
+        updatedCss[selectorRule] = Object.assign(
+          {},
+          css[selectorRule],
+          "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule]
+        );
+      }
+      // Publish with compound selector (.shared.instance) for higher specificity
+      pubsub.publish(this.instanceClassName, genCss({
+        randomClassName: randomClassName + "." + this.instanceClassName,
+        css: updatedCss, styleCSS, colors, style, styleName
+      }));
     }
 
     /**
@@ -93,22 +133,9 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
 
       const props = this.props
 
-      if ("css" in props) {
-        // Generate unique instance class for scoped css prop (Issue #2)
-        if (!this.instanceClassName) {
-          this.instanceClassName = "ro-" + makeid(props.css);
-        }
-
-        const updatedCss = Object.assign({}, css)
-
-        for (const selectorRule in props.css) {
-          updatedCss[selectorRule] = Object.assign({}, css[selectorRule], "function" === typeof props.css[selectorRule] ? props.css[selectorRule]() : props.css[selectorRule])
-        }
-        // Publish with compound selector (.shared.instance) for higher specificity
-        pubsub.publish(this.instanceClassName, genCss({
-          randomClassName: randomClassName + "." + this.instanceClassName,
-          css: updatedCss, styleCSS, colors, style, styleName
-        }))
+      // Generate instanceClassName synchronously if css prop exists (needed for className below)
+      if ("css" in props && !this.instanceClassName) {
+        this.instanceClassName = "ro-" + makeid(props.css);
       }
 
       const elemProps = Object.assign({}, props);
@@ -119,12 +146,19 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
       let passedTrueProps = Object.keys(props)
         .filter(name => props[name] === true && styleCSS[styleName] && name in styleCSS[styleName])
       //  console.log("passedTrueProps",passedTrueProps)
+
+      // Remove ALL true props from elemProps that might be style flags to prevent React warnings
+      // This includes both matched style flags and unknown true props
+      if ("function" !== typeof elemName) {
+        Object.keys(props).forEach(name => {
+          if (props[name] === true && name !== "disabled") {
+            delete elemProps[name];
+          }
+        });
+      }
+
       if (0 < passedTrueProps.length) {
         passedTrueProps = passedTrueProps.reduce((styleProps, name) => {
-          // If elem is a HTML type = Removed it Unknown prop `...` on <...> tag. Remove this prop from the element.
-          if ("function" !== typeof elemName && "disabled" !== name) {
-            delete elemProps[name]
-          }
           return Object.assign(styleProps, { [name]: true })
         }, {})
       } else {
@@ -193,7 +227,10 @@ export default function ({ elemName, css, styleCSS, inlineStyle, style, styleNam
         delete elemProps.className;
 
       if (props.onDomEvent) {
-        elemProps.ref = reatElem => this.domElem = findDOMNode(reatElem)
+        // Use direct ref instead of deprecated findDOMNode
+        elemProps.ref = elem => this.domElem = elem;
+        // Remove onDomEvent from props passed to React to prevent warning
+        delete elemProps.onDomEvent;
       }
 
       return React.createElement(elemName || styleName, elemProps, elemProps && elemProps.children)
