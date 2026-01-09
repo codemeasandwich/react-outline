@@ -209,20 +209,16 @@ bump_version() {
   
   echo "📝 Bumping version ($BUMP_TYPE): $BASE_LABEL → $NEW_VERSION"
   
-  # Update package.json and package-lock.json with new version
+  # Update package.json with new version
   node -e "
     const fs = require('fs');
     const pkg = require('./package.json');
     pkg.version = '$NEW_VERSION';
     fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
-    const lock = require('./package-lock.json');
-    lock.version = '$NEW_VERSION';
-    if (lock.packages && lock.packages['']) { lock.packages[''].version = '$NEW_VERSION'; }
-    fs.writeFileSync('./package-lock.json', JSON.stringify(lock, null, 2) + '\n');
   "
   
   # Amend the last commit with the version bump
-  git add package.json package-lock.json
+  git add package.json
   git commit --amend --no-edit
   git push --force-with-lease
   
