@@ -125,12 +125,15 @@ VERSION_CMP=$(compare_versions "$LOCAL_VERSION" "$NPM_VERSION")
 if [[ $VERSION_CMP -eq 1 ]]; then
   # Local version is higher than npm - use it as-is (manually set)
   echo "✅ Local version ($LOCAL_VERSION) is higher than npm ($NPM_VERSION). Using manually set version."
-elif [[ $VERSION_CMP -eq 0 ]]; then
-  # Versions match - need to bump based on commits
-  echo "⚠️  Local version matches npm. Analyzing commits for semantic version bump..."
-  
+# ============================================
+# Shared functions for version bumping
+# ============================================
+
+# Analyze commits to determine bump type
+# Sets: HAS_BREAKING, HAS_FEAT, HAS_FIX, HAS_PERF
+analyze_commits() {
   # Get the previous tag to analyze commits
-  PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+  local PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
   
   if [[ -n "$PREV_TAG" ]]; then
     COMMIT_RANGE="$PREV_TAG..HEAD"
@@ -138,34 +141,47 @@ elif [[ $VERSION_CMP -eq 0 ]]; then
     COMMIT_RANGE="HEAD"
   fi
   
-  # Analyze commits to determine bump type
   HAS_BREAKING=false
   HAS_FEAT=false
   HAS_FIX=false
+  HAS_PERF=false
   
   while IFS= read -r line; do
     [[ -z "$line" ]] && continue
     
-    # Check for breaking changes (BREAKING CHANGE in message or ! after type)
-    if [[ "$line" =~ BREAKING[[:space:]]CHANGE ]] || [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(feat|fix|refactor|chore)![:\(] ]]; then
+    # Check for breaking changes: commit type followed by ! (e.g. feat!, fix!, refactor!)
+    if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+[a-z]+![:\(] ]]; then
       HAS_BREAKING=true
     fi
     
-    # Check for features
+    # Check for features (minor bump)
     if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(feat|feature)[:\(] ]]; then
       HAS_FEAT=true
     fi
     
-    # Check for fixes
+    # Check for fixes (patch bump)
     if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(fix|bugfix)[:\(] ]]; then
       HAS_FIX=true
     fi
+    
+    # Check for perf (patch bump)
+    if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(perf)[:\(] ]]; then
+      HAS_PERF=true
+    fi
   done < <(git log $COMMIT_RANGE --oneline)
+}
+
+# Bump version based on commit analysis
+# Args: $1 = base version to bump from, $2 = display label for the base version
+bump_version() {
+  local BASE_VERSION="$1"
+  local BASE_LABEL="$2"
   
-  # Parse current version
-  IFS='.' read -r MAJOR MINOR PATCH <<< "$LOCAL_VERSION"
+  # Parse base version
+  IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE_VERSION"
   
   # Determine new version based on commit types
+  # Priority: breaking > feat > fix/perf > default patch
   if [[ "$HAS_BREAKING" == true ]]; then
     NEW_MAJOR=$((MAJOR + 1))
     NEW_VERSION="$NEW_MAJOR.0.0"
@@ -174,111 +190,60 @@ elif [[ $VERSION_CMP -eq 0 ]]; then
     NEW_MINOR=$((MINOR + 1))
     NEW_VERSION="$MAJOR.$NEW_MINOR.0"
     BUMP_TYPE="minor (new feature)"
-  elif [[ "$HAS_FIX" == true ]]; then
+  elif [[ "$HAS_FIX" == true ]] || [[ "$HAS_PERF" == true ]]; then
     NEW_PATCH=$((PATCH + 1))
     NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-    BUMP_TYPE="patch (bug fix)"
+    if [[ "$HAS_FIX" == true ]] && [[ "$HAS_PERF" == true ]]; then
+      BUMP_TYPE="patch (bug fix + perf)"
+    elif [[ "$HAS_FIX" == true ]]; then
+      BUMP_TYPE="patch (bug fix)"
+    else
+      BUMP_TYPE="patch (perf)"
+    fi
   else
-    # Default to patch if no recognized commit types
+    # Default to patch for other commit types (docs, refactor, build, ci, style, test)
     NEW_PATCH=$((PATCH + 1))
     NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-    BUMP_TYPE="patch (default)"
+    BUMP_TYPE="patch (maintenance)"
   fi
   
-  echo "📝 Bumping version ($BUMP_TYPE): $LOCAL_VERSION → $NEW_VERSION"
+  echo "📝 Bumping version ($BUMP_TYPE): $BASE_LABEL → $NEW_VERSION"
   
-  # Update package.json with new version
+  # Update package.json and package-lock.json with new version
   node -e "
     const fs = require('fs');
     const pkg = require('./package.json');
     pkg.version = '$NEW_VERSION';
     fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+    const lock = require('./package-lock.json');
+    lock.version = '$NEW_VERSION';
+    if (lock.packages && lock.packages['']) { lock.packages[''].version = '$NEW_VERSION'; }
+    fs.writeFileSync('./package-lock.json', JSON.stringify(lock, null, 2) + '\n');
   "
   
   # Amend the last commit with the version bump
-  git add package.json
+  git add package.json package-lock.json
   git commit --amend --no-edit
   git push --force-with-lease
   
   LOCAL_VERSION="$NEW_VERSION"
   echo "✅ Version bumped and commit amended"
+}
+
+# ============================================
+# Apply version bump based on version comparison
+# ============================================
+
+elif [[ $VERSION_CMP -eq 0 ]]; then
+  # Versions match - need to bump based on commits
+  echo "⚠️  Local version matches npm. Analyzing commits for semantic version bump..."
+  analyze_commits
+  bump_version "$LOCAL_VERSION" "$LOCAL_VERSION"
 else
   # Local version is lower than npm - bump from npm version based on commit types
   echo "⚠️  Local version ($LOCAL_VERSION) is lower than npm ($NPM_VERSION). Bumping from npm version..."
-  
-  # Get the previous tag to analyze commits
-  PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-  
-  if [[ -n "$PREV_TAG" ]]; then
-    COMMIT_RANGE="$PREV_TAG..HEAD"
-  else
-    COMMIT_RANGE="HEAD"
-  fi
-  
-  # Analyze commits to determine bump type
-  HAS_BREAKING=false
-  HAS_FEAT=false
-  HAS_FIX=false
-  
-  while IFS= read -r line; do
-    [[ -z "$line" ]] && continue
-    
-    # Check for breaking changes (BREAKING CHANGE in message or ! after type)
-    if [[ "$line" =~ BREAKING[[:space:]]CHANGE ]] || [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(feat|fix|refactor|chore)![\:\(] ]]; then
-      HAS_BREAKING=true
-    fi
-    
-    # Check for features
-    if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(feat|feature)[\:\(] ]]; then
-      HAS_FEAT=true
-    fi
-    
-    # Check for fixes
-    if [[ "$line" =~ ^[a-f0-9]+[[:space:]]+(fix|bugfix)[\:\(] ]]; then
-      HAS_FIX=true
-    fi
-  done < <(git log $COMMIT_RANGE --oneline)
-  
-  # Parse npm version (base for bumping)
-  IFS='.' read -r MAJOR MINOR PATCH <<< "$NPM_VERSION"
-  
-  # Determine new version based on commit types
-  if [[ "$HAS_BREAKING" == true ]]; then
-    NEW_MAJOR=$((MAJOR + 1))
-    NEW_VERSION="$NEW_MAJOR.0.0"
-    BUMP_TYPE="major (breaking change)"
-  elif [[ "$HAS_FEAT" == true ]]; then
-    NEW_MINOR=$((MINOR + 1))
-    NEW_VERSION="$MAJOR.$NEW_MINOR.0"
-    BUMP_TYPE="minor (new feature)"
-  elif [[ "$HAS_FIX" == true ]]; then
-    NEW_PATCH=$((PATCH + 1))
-    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-    BUMP_TYPE="patch (bug fix)"
-  else
-    # Default to patch if no recognized commit types
-    NEW_PATCH=$((PATCH + 1))
-    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
-    BUMP_TYPE="patch (default)"
-  fi
-  
-  echo "📝 Bumping version ($BUMP_TYPE): $NPM_VERSION → $NEW_VERSION"
-  
-  # Update package.json with new version
-  node -e "
-    const fs = require('fs');
-    const pkg = require('./package.json');
-    pkg.version = '$NEW_VERSION';
-    fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
-  "
-  
-  # Amend the last commit with the version bump
-  git add package.json
-  git commit --amend --no-edit
-  git push --force-with-lease
-  
-  LOCAL_VERSION="$NEW_VERSION"
-  echo "✅ Version bumped and commit amended"
+  analyze_commits
+  bump_version "$NPM_VERSION" "$NPM_VERSION"
 fi
 
 TAG="v$LOCAL_VERSION"
@@ -294,9 +259,9 @@ if grep -q "coveralls.io.*badge.svg?branch=v" README.md; then
   # Check if README changed
   if ! git diff --quiet README.md; then
     git add README.md
-    git commit -m "docs: update coverage badge to $TAG"
-    git push origin "$CURRENT_BRANCH"
-    echo "✅ README badge updated to $TAG"
+    git commit --amend --no-edit
+    git push --force-with-lease origin "$CURRENT_BRANCH"
+    echo "✅ README badge updated to $TAG (amended to version bump commit)"
   else
     echo "ℹ️  README badge already at $TAG"
   fi
